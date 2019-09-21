@@ -43,10 +43,10 @@ export default StyleSheet.create({
         color: '#434343',
     },
     toggleBarItemActionStatus: {
-        height: 4,
-        marginTop: 2,
         marginLeft: 10,
         marginRight: 10,
+        height: 4,
+        marginTop: 2,
         backgroundColor: '#434343',
     },
     toggleBarItemTextMr: {
@@ -66,9 +66,12 @@ export default StyleSheet.create({
     },
     toggleMainItemCenter: {
         height: 42,
-        borderColor: '#CDCDCD',
+        borderBottomColor: '#CDCDCD',
         fontSize: 16,
         color: '#4E4E4E',
         borderBottomWidth: 2,
-    }
+    },
+    toggleMainItemCenterAction: {
+        borderBottomColor: '#000',
+    },
 });
