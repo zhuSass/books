@@ -74,4 +74,15 @@ export default StyleSheet.create({
     toggleMainItemCenterAction: {
         borderBottomColor: '#000',
     },
+    submit: {
+        borderRadius: 30,
+        backgroundColor: '#4EC2EE',
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    submitText: {
+        fontSize: 20,
+        color: '#fff',
+    }
 });

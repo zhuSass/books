@@ -5,8 +5,11 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
+    Button,
+    Alert,
  } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Loading from 'react-native-loading-spinner-overlay';
 
 import style from './css'
 
@@ -132,18 +135,19 @@ export default function Index() {
       setToggleActionType(type);
     }
     // 获取是否是选中状态
-    const getIsActionType = (type:string):boolean => {
-      return (toggleActionType === type);
-    }
+    const getIsActionType = (type:string):boolean => 
+    (toggleActionType === type);
     // 用户信息单个改变
     const changeUserInfoItem = (obj:userInfoFace):void => {
-      let mergeObj = Object.assign({}, userInfo, obj);
-      setUserInfo(mergeObj);
+      setUserInfo(Object.assign({}, userInfo, obj));
     }
     // 输入框聚焦样式状态单个改变
     const changeFocusStatus = (obj:focusStatusFace):void => {
-      let mergeObj = Object.assign({}, focusStatus, obj);
-      setFocusStatus(mergeObj);
+      setFocusStatus(Object.assign({}, focusStatus, obj));
+    }
+    // handle form submit
+    const submitForm = ():void => {
+      console.log('3------')
     }
 
     return (<View style={style.loginWrap}>
@@ -165,6 +169,17 @@ export default function Index() {
                     changeUserInfoItem={changeUserInfoItem}
                     changeFocusStatus={changeFocusStatus}
                   />
+                  {/* submit button */}
+                  {/* <Button
+                    style={style.submit}
+                    title="登录"
+                    onPress={submitForm}
+                  /> */}
+                  <TouchableWithoutFeedback onPress={submitForm}>
+                    <View style={style.submit}>
+                      <Text style={style.submitText}>登录</Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>
         </View>)
 }

@@ -32,3 +32,24 @@ export default class LoginAuthScreen extends React.Component {
         );
     }
 }
+// 身份验证
+// export default function LoginAuthScreen(props:any) {
+//     const _bootstrapAsync = async () => {
+//         const userToken = await AsyncStorage.getItem('token');
+
+//         props.navigation.navigate(userToken ? 'App' : 'Auth');
+//         console.log('1--------')
+//     };
+
+//     useEffect(() => {
+//         _bootstrapAsync();
+//     }, []);
+
+//     // Render any loading content that you like here
+//     return (
+//     <View style={styles.container}>
+//         <ActivityIndicator size="large" color="#D2D2D2" />
+//         <StatusBar barStyle="default" />
+//     </View>
+//     );
+// }
