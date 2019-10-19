@@ -23,95 +23,8 @@ interface focusStatusFace {
   password?: boolean,
 }
 
-// toggle头部切换主体内容
-interface MainContentToggleProps {
-  userInfo: userInfoFace;
-  focusStatus: focusStatusFace;
-  getIsActionType(type:string):boolean;
-  changeUserInfoItem(userInfo:userInfoFace):void;
-  changeFocusStatus(focusStatus:focusStatusFace):void;
-}
-function MainContentToggle(props:MainContentToggleProps) {
-  const {
-    userInfo,
-    focusStatus,
-    getIsActionType,
-    changeUserInfoItem,
-    changeFocusStatus,
-  } = props;
-  return (
-        <View style={style.toggleMain}>
-          <View style={style.toggleMainItem}>
-            <Text style={style.toggleMainItemLabel}>{
-              getIsActionType('login')?'用户名':'邮箱'
-            }</Text>
-            <TextInput 
-              style={[
-                style.toggleMainItemCenter,
-                focusStatus.name && style.toggleMainItemCenterAction,
-              ]}
-              placeholder={`请输入${getIsActionType('login')?'用户名':'邮箱'}`}
-              onChangeText={(name) => changeUserInfoItem({name})}
-              onFocus={() => changeFocusStatus({name: true})}
-              onBlur={() => changeFocusStatus({name: false})}
-              value={userInfo.name}
-            />
-          </View>
-          <View style={style.toggleMainItem}>
-            <Text style={style.toggleMainItemLabel}>密码</Text>
-            <TextInput 
-              style={[
-                style.toggleMainItemCenter,
-                focusStatus.password && style.toggleMainItemCenterAction,
-              ]}
-              placeholder="请输入密码"
-              secureTextEntry={true}
-              onChangeText={(password) => changeUserInfoItem({password})}
-              onFocus={() => changeFocusStatus({password: true})}
-              onBlur={() => changeFocusStatus({password: false})}
-              value={userInfo.password}
-            />
-          </View>
-      </View>
-  )
-}
-// toggle头部切换
-interface HeaderTitleToggleProps {
-  handleToggleType(type:string):void;
-  getIsActionType(type:string):boolean;
-}
-function HeaderTitleToggle(props:HeaderTitleToggleProps) {
-  const {
-    handleToggleType,
-    getIsActionType,
-  } = props;
-  return (<View style={style.toggleBar}>
-      <TouchableWithoutFeedback onPress={()=>handleToggleType('login')}>
-        <View style={[style.toggleBarItem, style.toggleBarItemTextMr,]}>
-            <Text style={[
-              style.toggleBarItemText,
-              getIsActionType('login') &&
-              style.toggleBarItemTextAction,
-            ]}>登录</Text>
-            {getIsActionType('login')
-            &&<View style={style.toggleBarItemActionStatus}></View>}
-          </View>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={()=>handleToggleType('signIn')}>
-        <View style={style.toggleBarItem}>
-          <Text style={[
-            style.toggleBarItemText,
-            getIsActionType('signIn') &&
-            style.toggleBarItemTextAction,
-            ]}>注册</Text>
-          {getIsActionType('signIn')
-            &&<View style={style.toggleBarItemActionStatus}></View>}
-        </View>
-      </TouchableWithoutFeedback>
-    </View>)
-}
+export default function Index(props:any) {
 
-export default function Index() {
     // 用户信息
     const [userInfo, setUserInfo] = useState({
       name: '',
@@ -147,7 +60,7 @@ export default function Index() {
     }
     // handle form submit
     const submitForm = ():void => {
-      console.log('3------')
+      console.log('3------', userInfo)
     }
 
     return (<View style={style.loginWrap}>
@@ -157,24 +70,65 @@ export default function Index() {
                     <Icon name="book-open" style={style.logoIcon}/>
                   </View>
                   {/* toggle头部切换 */}
-                  <HeaderTitleToggle
-                    handleToggleType={handleToggleType}
-                    getIsActionType={getIsActionType}
-                  />
+                  <View style={style.toggleBar}>
+                    <TouchableWithoutFeedback onPress={()=>handleToggleType('login')}>
+                      <View style={[style.toggleBarItem, style.toggleBarItemTextMr,]}>
+                          <Text style={[
+                            style.toggleBarItemText,
+                            getIsActionType('login') &&
+                            style.toggleBarItemTextAction,
+                          ]}>登录</Text>
+                          {getIsActionType('login')
+                          &&<View style={style.toggleBarItemActionStatus}></View>}
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={()=>handleToggleType('signIn')}>
+                      <View style={style.toggleBarItem}>
+                        <Text style={[
+                          style.toggleBarItemText,
+                          getIsActionType('signIn') &&
+                          style.toggleBarItemTextAction,
+                          ]}>注册</Text>
+                        {getIsActionType('signIn')
+                          &&<View style={style.toggleBarItemActionStatus}></View>}
+                      </View>
+                    </TouchableWithoutFeedback>
+                  </View>
                   {/* toggle切换内容主体 */}
-                  <MainContentToggle
-                    userInfo={userInfo}
-                    focusStatus={focusStatus}
-                    getIsActionType={getIsActionType}
-                    changeUserInfoItem={changeUserInfoItem}
-                    changeFocusStatus={changeFocusStatus}
-                  />
+                  <View style={style.toggleMain}>
+                      <View style={style.toggleMainItem}>
+                        <Text style={style.toggleMainItemLabel}>{
+                          getIsActionType('login')?'用户名':'邮箱'
+                        }</Text>
+                        <TextInput 
+                          style={[
+                            style.toggleMainItemCenter,
+                            focusStatus.name && style.toggleMainItemCenterAction,
+                          ]}
+                          placeholder={`请输入${getIsActionType('login')?'用户名':'邮箱'}`}
+                          onChangeText={(name) => changeUserInfoItem({name})}
+                          onFocus={() => changeFocusStatus({name: true})}
+                          onBlur={() => changeFocusStatus({name: false})}
+                          value={userInfo.name}
+                        />
+                      </View>
+                      <View style={style.toggleMainItem}>
+                        <Text style={style.toggleMainItemLabel}>密码</Text>
+                        <TextInput 
+                          style={[
+                            style.toggleMainItemCenter,
+                            focusStatus.password && style.toggleMainItemCenterAction,
+                          ]}
+                          placeholder="请输入密码"
+                          secureTextEntry={true}
+                          onChangeText={(password) => changeUserInfoItem({password})}
+                          onFocus={() => changeFocusStatus({password: true})}
+                          onBlur={() => changeFocusStatus({password: false})}
+                          value={userInfo.password}
+                        />
+                      </View>
+                  </View>
                   {/* submit button */}
-                  {/* <Button
-                    style={style.submit}
-                    title="登录"
-                    onPress={submitForm}
-                  /> */}
                   <TouchableWithoutFeedback onPress={submitForm}>
                     <View style={style.submit}>
                       <Text style={style.submitText}>登录</Text>
