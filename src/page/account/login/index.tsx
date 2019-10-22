@@ -13,6 +13,7 @@ import Loading from 'react-native-loading-spinner-overlay';
 
 import style from './css'
 
+
 // public interface
 interface userInfoFace {
   name?: string,
@@ -24,7 +25,6 @@ interface focusStatusFace {
 }
 
 export default function Index(props:any) {
-
     // 用户信息
     const [userInfo, setUserInfo] = useState({
       name: '',
