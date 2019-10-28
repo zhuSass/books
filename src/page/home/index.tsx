@@ -6,7 +6,7 @@ import styles from './css'
 function Index(props:any) {
     
     return (<View style={styles.homeWrap}>
-        
+        <Text>home</Text>
     </View>)
 }
 Index.propTypes = {

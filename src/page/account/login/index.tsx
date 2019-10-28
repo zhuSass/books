@@ -5,11 +5,12 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
-    Button,
+    ToastAndroid,
     Alert,
  } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Loading from 'react-native-loading-spinner-overlay';
+// import Loading from 'react-native-loading-spinner-overlay';
+import tools from '@/common/tools'
 
 import style from './css'
 
@@ -65,6 +66,12 @@ export default function Index(props:any) {
     // handle form submit
     const submitForm = ():void => {
       console.log('3------', userInfo)
+      if (!userInfo.name
+        || !userInfo.password) {
+          tools.ui.toast('请输入账户密码！');
+        } else {
+            props.navigation.navigate('App');
+        }
     }
 
     return (<View style={style.loginWrap}>
