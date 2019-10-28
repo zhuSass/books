@@ -1,5 +1,4 @@
 import { StyleSheet, } from "react-native";
-import { arrowFunctionExpression } from "@babel/types";
 
 export default StyleSheet.create({
     loginWrap: {

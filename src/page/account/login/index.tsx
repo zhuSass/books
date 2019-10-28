@@ -52,11 +52,15 @@ export default function Index(props:any) {
     (toggleActionType === type);
     // 用户信息单个改变
     const changeUserInfoItem = (obj:userInfoFace):void => {
-      setUserInfo(Object.assign({}, userInfo, obj));
+      setUserInfo((data) => {
+        return {...data, ...obj};
+      });
     }
     // 输入框聚焦样式状态单个改变
     const changeFocusStatus = (obj:focusStatusFace):void => {
-      setFocusStatus(Object.assign({}, focusStatus, obj));
+      setFocusStatus((data) => {
+        return {...data, ...obj};
+      });
     }
     // handle form submit
     const submitForm = ():void => {

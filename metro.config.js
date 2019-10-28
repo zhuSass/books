@@ -4,6 +4,7 @@
  *
  * @format
  */
+const path = require('path');
 
 module.exports = {
   transformer: {
@@ -13,5 +14,16 @@ module.exports = {
         inlineRequires: false,
       },
     }),
+    babelTransformerPath: require.resolve(
+      'react-native-typescript-transformer',
+    ),
+  },
+  resolver: {
+    extraNodeModules: {
+      '@/common': path.resolve(__dirname, './src/common'),
+      '@/components': path.resolve(__dirname, './src/components'),
+      '@/page': path.resolve(__dirname, './src/page'),
+      '@/static': path.resolve(__dirname, './src/static'),
+    },
   },
 };
