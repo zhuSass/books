@@ -14,7 +14,8 @@ export default function LoginAuthScreen(props:any) {
     const _bootstrapAsync = async () => {
         const userToken = await AsyncStorage.getItem('token');
 
-        props.navigation.navigate(userToken ? 'App' : 'Auth');
+        // props.navigation.navigate(userToken ? 'App' : 'Login');
+        props.navigation.navigate('App');
     };
 
     useEffect(() => {

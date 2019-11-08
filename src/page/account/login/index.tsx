@@ -70,7 +70,7 @@ export default function Index(props:any) {
         || !userInfo.password) {
           tools.ui.toast('请输入账户密码！');
         } else {
-            props.navigation.navigate('App');
+          props.navigation.navigate('App');
         }
     }
 
