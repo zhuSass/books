@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev_android": "SET ENVFILE=.env && react-native run-android",
-    "stag_android": "SET ENVFILE=.env.staging && react-native run-android",
-    "prod_android": "cd android && SET ENVFILE=.env.production  && gradlew assembleRelease",
+    "dev_android": "SET ENVFILE=./config/.env.dev && react-native run-android",
+    "stag_android": "SET ENVFILE=./config/.env.staging && react-native run-android",
+    "prod_android": "cd android && SET ENVFILE=./config/.env.production  && gradlew assembleRelease",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
@@ -14,16 +14,19 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
     "fb-watchman": "^2.0.0",
+    "native-base": "^2.13.8",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-config": "^0.11.7",
     "react-native-custom-components": "^1.0.0",
+    "react-native-debugger": "^1.1.0",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-paper": "^3.2.1",
     "react-native-reanimated": "^1.2.0",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^3.12.1",
-    "react-navigation-material-bottom-tabs": "^2.1.5"
+    "react-navigation-material-bottom-tabs": "^2.1.5",
+    "upgrade": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -41,7 +44,7 @@
     "metro-react-native-babel-preset": "^0.56.0",
     "react-native-typescript-transformer": "^1.2.13",
     "react-test-renderer": "16.8.6",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.2"
   },
   "react-native": {
     "reactNativePath": "./path/to/react-native"

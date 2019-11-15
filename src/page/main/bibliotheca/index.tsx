@@ -4,6 +4,8 @@ import { View, Text,} from 'react-native';
 import styles from './css'
 
 function Index(props:any) {
+    console.log('bibliotheca--------------',
+    props.navigation.state.key)
     return (<View style={styles.homeWrap}>
         <Text>Bibliotheca</Text>
     </View>)

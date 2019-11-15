@@ -8,7 +8,8 @@ import {
     ToastAndroid,
     Alert,
  } from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from '@/components/icon';
+import { NavigationScreenProps, } from 'react-navigation';
 // import Loading from 'react-native-loading-spinner-overlay';
 import tools from '@/common/tools'
 
@@ -25,7 +26,7 @@ interface focusStatusFace {
   password?: boolean,
 }
 
-export default function Index(props:any) {
+export default function Index(props:NavigationScreenProps) {
     // 用户信息
     const [userInfo, setUserInfo] = useState({
       name: '',
@@ -65,12 +66,11 @@ export default function Index(props:any) {
     }
     // handle form submit
     const submitForm = ():void => {
-      console.log('3------', userInfo)
       if (!userInfo.name
         || !userInfo.password) {
           tools.ui.toast('请输入账户密码！');
         } else {
-          props.navigation.navigate('App');
+          props.navigation.replace('App');
         }
     }
 
@@ -78,7 +78,8 @@ export default function Index(props:any) {
                 <KeyboardAvoidingView behavior="position" enabled>
                   <View style={style.logo}>
                     <Text style={style.logoTitle}>iBook</Text> 
-                    <Icon name="book-open" style={style.logoIcon}/>
+                    <Icon fontFileName='FontAwesome5' 
+                      name='book-open' style={style.logoIcon}/>
                   </View>
                   {/* toggle头部切换 */}
                   <View style={style.toggleBar}>

@@ -21,6 +21,7 @@ module.exports = {
       '@/components': path.resolve(__dirname, './src/components'),
       '@/page': path.resolve(__dirname, './src/page'),
       '@/static': path.resolve(__dirname, './src/static'),
+      '@/config': path.resolve(__dirname, './src/config'),
     },
   },
 };
