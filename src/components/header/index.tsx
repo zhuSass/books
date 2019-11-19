@@ -25,7 +25,6 @@ export type HeaderPropsType = {
     >,
     headerLeftClick?: () => void,
     searchParameter?: { // 搜索组件参数
-        fdsfds?: 'fds',
     },
 }
 export default function Header(props: HeaderPropsType,) {

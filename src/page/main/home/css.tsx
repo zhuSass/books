@@ -19,6 +19,7 @@ export default StyleSheet.create({
         paddingTop: 12,
         paddingBottom: 36,
         marginBottom: marginBottom,
+        overflow: 'hidden',
     },
     bannerWrap: {
         flex: 1,
@@ -49,6 +50,7 @@ export default StyleSheet.create({
         paddingTop: 17,
         paddingBottom: 20,
         marginBottom: marginBottom,
+        overflow: 'hidden',
     },
     bananaCameraWrap: {
     },
@@ -78,7 +80,7 @@ export default StyleSheet.create({
         borderRadius: 6,
         elevation: 12,  //  设置阴影角度，通过这个设置有无阴影（这个是最重要的，决定有没有阴影）
         shadowColor: 'black',  //  阴影颜色
-        shadowOffset: { width: 0, height: 0 },  // 阴影偏移
+        shadowOffset: { width: 0, height: 0, },  // 阴影偏移
         shadowOpacity: 1,  // 阴影不透明度
         shadowRadius: 6,  // 圆角
     },
@@ -86,9 +88,13 @@ export default StyleSheet.create({
         height: 184,
         position: 'relative',
     },
+    bananaCameraContainer: {
+        paddingTop: 18, 
+        backgroundColor: 'rgba(000,000,000,0)',
+    },
     bananaCameraImg: {
-        width: 146,
-        height: 183,
+        width: '100%',
+        height: '100%',
     },
     bananaCameraCoverType: {
         position: 'absolute',
@@ -118,11 +124,12 @@ export default StyleSheet.create({
     },
     bananaCameraCoverInfo: {
         paddingTop: 14,
-        paddingBottom: 20,
+        paddingBottom: 16,
         paddingLeft: 10,
         paddingRight: 10,
     },
     bananaCameraCoverTitle: {
+        textAlign: 'center',
         color: '#343434',
         fontSize: 16,
         lineHeight: 16 * 1.2,
@@ -130,5 +137,97 @@ export default StyleSheet.create({
     bananaCameraCoverSubTitle: {
         fontSize: 12,
         color: '#999898',
+        lineHeight: 16 * 1.2,
+    },
+    bananaCameraItemContainer: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    bananaCameraCoverOne: {
+        width: 84,
+        height: 118,
+        position: 'relative',
+        marginTop: -18,
+
+    },
+    bananaCameraItemOne: {
+        overflow: 'visible',
+    },
+    bananaCameraCoverTypeOne: {
+        top: 'auto',
+        bottom: 0,
+        right: 'auto',
+        left: '50%',
+        paddingEnd: 6,
+        paddingStart: 6,
+        overflow: 'hidden',
+        backgroundColor: '#F2E58C',
+    },
+    bananaCameraCoverBtn: {
+        marginBottom: 18,
+        display: 'flex',
+        backgroundColor: '#4EC2EE',
+        borderRadius: 13,
+    },
+    bananaCameraCoverBtnText: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 4,
+        paddingBottom: 4,
+        color: '#FFFFFF',
+        fontSize: 12,
+    },
+    articleMainImg: {
+        height: 150,
+        width: '100%',
+        minHeight: 60,
+        marginBottom: 14,
+        backgroundColor: '#666',
+    },
+    articleFocus: {
+        display: 'flex',
+        width: 'auto',
+        height: 'auto',
+        paddingTop: 2,
+        paddingBottom: 2,
+        borderColor: '#4DBFEC',
+        borderWidth: 1,
+        borderRadius: 12,
+    },
+    articleFocusText: {
+        color: '#4DBFEC',
+        fontSize: 14,
+    },
+    articleMainTitle: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    articleMainTitleTarget: {
+        fontSize: 18,
+        color: '#343434',
+    },
+    articleMainSubTitle: {
+    },
+    articleMainSubTitleTarget: {
+        fontSize: 14,
+        color: '#999999',
+    },
+    articleMainIcon: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+    },
+    articleMainIconCenter: {
+        display: 'flex',
+        paddingLeft: 0,
+        paddingRight: 0,
+        justifyContent: 'center',
+    },
+    articleMainIconInfo: {
+        paddingLeft: 10,
+        paddingRight: 0,
+        width: 'auto',
     },
 });
