@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, 
     TextStyle, 
     TouchableWithoutFeedback,
@@ -8,7 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import React from "react";
+import Feather from 'react-native-vector-icons/Feather';
 
 type IconListFace = {
     Entypo: typeof Entypo,
@@ -16,6 +17,7 @@ type IconListFace = {
     AntDesign: typeof AntDesign,
     EvilIcons: typeof EvilIcons,
     FontAwesome5: typeof FontAwesome5,
+    Feather: typeof Feather,
 };
 const IconList:IconListFace = {
     Entypo: Entypo,
@@ -23,6 +25,7 @@ const IconList:IconListFace = {
     AntDesign: AntDesign,
     EvilIcons: EvilIcons,
     FontAwesome5: FontAwesome5,
+    Feather: Feather,
 }
 
 export const tabBarIcon = (

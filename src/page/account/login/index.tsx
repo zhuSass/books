@@ -11,7 +11,7 @@ import {
 import Icon from '@/components/icon';
 import { NavigationScreenProps, } from 'react-navigation';
 // import Loading from 'react-native-loading-spinner-overlay';
-import tools from '@/common/tools'
+import Ui from '@/utils/ui'
 
 import style from './css'
 
@@ -68,7 +68,7 @@ export default function Index(props:NavigationScreenProps) {
     const submitForm = ():void => {
       if (!userInfo.name
         || !userInfo.password) {
-          tools.ui.toast('请输入账户密码！');
+          Ui.toast('请输入账户密码！');
         } else {
           props.navigation.replace('App');
         }

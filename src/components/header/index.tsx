@@ -16,10 +16,10 @@ enum functionEnum {
     search = 'search', // 搜索
 };
 export type HeaderPropsType = {
-    title: string, // 标题
+    layout?: 'absolute', // 布局模式
     headerLeft?: ReactNode | Boolean, // 左边显示组件,传组件则代表自定义，Boolean则默认的显示/隐藏
-    headerCenter?: ReactNode | Boolean, // 中间显示组件,传组件则代表自定义，Boolean则默认的显示/隐藏
-    headerRight?: ReactNode, // 右边显示组件,传组件则代表自定义
+    headerCenter?: ReactNode | string, // 中间显示组件,传组件则代表自定义，Boolean则默认的显示/隐藏
+    headerRight?: (() => ReactNode) | ReactNode, // 右边显示组件,传组件则代表自定义
     functionList?: Array< // 功能列表
         functionEnum | ReactNode
     >,
@@ -38,11 +38,13 @@ export default function Header(props: HeaderPropsType,) {
         headerLeftClick = props.headerLeftClick
     }
 
-    return (<View ref={haderRef} style={styles.header}>
+    return (<View ref={haderRef} style={[
+                    styles.header,
+                    {position: props.layout},
+                ]}>
                 <View style={styles.headerNavigation}>
                     <View style={styles.headerLfet}>
-                        {(typeof props.headerLeft === 'boolean'
-                            && props.headerLeft === true) ? <IconBtn 
+                        {(props.headerLeft === true) ? <IconBtn 
                             onPress={headerLeftClick}
                             style={styles.headerText}
                             fontFileName='AntDesign'
@@ -52,15 +54,15 @@ export default function Header(props: HeaderPropsType,) {
                             props.headerLeft : null}
                     </View>
                     <View>
-                        {(typeof props.headerCenter === 'boolean'
-                            && props.headerCenter === true) ? <Text style={styles.headerText}>
-                            {props.title}</Text> : null}
+                        {(typeof props.headerCenter === 'string') ? <Text style={styles.headerText}>
+                            {props.headerCenter}</Text> : null}
                         {React.isValidElement(props.headerCenter) ? 
                             props.headerCenter : null}
                     </View>
-                    <View>
+                    <View style={styles.headerRight}>
                         {React.isValidElement(props.headerRight) ? 
-                            props.headerRight : null}
+                        props.headerRight : null}
+                        {typeof props.headerRight === 'function' && props.headerRight()}
                     </View>
                 </View>
                 {/* 功能组件 */}
@@ -93,7 +95,6 @@ export default function Header(props: HeaderPropsType,) {
             </View>)
 };
 Header.defaultProps = {
-    title: '',
     headerLeft: true,
     headerCenter: true,
     headerRight: false,

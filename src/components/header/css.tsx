@@ -2,6 +2,9 @@ import { StyleSheet, } from "react-native";
 
 export default StyleSheet.create({
     header: {
+        top: 0,
+        left: 0,
+        width: '100%',
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: '#fff',
@@ -26,9 +29,12 @@ export default StyleSheet.create({
     headerCenter: {
     },
     headerRight: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
         position: 'absolute',
         right: 0,
-        lineHeight: 44,
+        height: '100%',
     },
     headerFun: {
         paddingBottom: 12,

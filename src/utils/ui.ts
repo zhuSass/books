@@ -2,8 +2,9 @@ import {
     ToastAndroid,
  } from "react-native";
 
-const ui = {
-    toast: function(
+export default {
+
+    toast(
         title:string, 
         time:number = ToastAndroid.LONG, 
         direction:number = ToastAndroid.BOTTOM, 
@@ -18,7 +19,5 @@ const ui = {
                 offY,
                 );
     }
- }
-
- export default ui;
+};
 
