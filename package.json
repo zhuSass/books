@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev_android": "SET ENVFILE=./config/.env.dev && react-native run-android",
-    "stag_android": "SET ENVFILE=./config/.env.staging && react-native run-android",
-    "prod_android": "cd android && SET ENVFILE=./config/.env.production  && gradlew assembleRelease",
+    "dev_android": "set ENVFILE=./config/.env.dev && react-native run-android",
+    "stag_android": "set ENVFILE=./config/.env.staging && react-native run-android",
+    "prod_android": "cd android && set ENVFILE=./config/.env.production  && gradlew assembleRelease",
+    "prod_android_mac": "cd android && set ENVFILE=./config/.env.production  && ./gradlew assembleRelease",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
