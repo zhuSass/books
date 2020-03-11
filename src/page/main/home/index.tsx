@@ -18,9 +18,12 @@ import {
 } from 'native-base';
 
 import Header, {HeaderPropsType,
-                } from '@/components/header'
+                } from '@/components/header';
+import ShuYuanSdk from '@/common/shuYuanSdk';
 
 import styles from './css'
+
+const ShuYuanSdkObj = ShuYuanSdk.newObj(['零七中文网']);
 
 // banner 轮播
 function Banner() {
@@ -299,6 +302,12 @@ function Article() {
     </View> 
 }
 function Index(props:any) {
+    useEffect(() => {
+        console.log('进来了---')
+        ShuYuanSdkObj.getHomePageInfo();
+
+    }, []);
+
     return (<View>
         {/* 头部 */}
         <Header 
