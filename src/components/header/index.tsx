@@ -4,12 +4,9 @@ import React, { ReactNode, useContext,
 import { 
     View, Text,     
 } from 'react-native';
-import { NavigationContext,
-        NavigationScreenProp, 
-    } from 'react-navigation';
+import { useNavigation, } from '@react-navigation/native';
 
 import Icon, {IconBtn} from '@/components/icon';
-
 import styles from './css'
 
 enum functionEnum {
@@ -28,11 +25,11 @@ export type HeaderPropsType = {
     },
 }
 export default function Header(props: HeaderPropsType,) {
+    const navigation = useNavigation();
     const haderRef = useRef(null);
-    const navigation:NavigationScreenProp<{}> = useContext(NavigationContext);
 
     let headerLeftClick = () => {
-        navigation.goBack(null);
+        navigation.goBack();
     };
     if(props.headerLeftClick) {
         headerLeftClick = props.headerLeftClick

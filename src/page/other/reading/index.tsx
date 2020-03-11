@@ -9,7 +9,6 @@ import Header from '@/components/header';
 import {IconBtn} from '@/components/icon';
 
 import styles from './css';
-import { ThemeContext } from 'react-navigation';
 
 // 上下文
 type globalDataType = {
@@ -44,7 +43,6 @@ const GlobalDataContext = React.createContext(globalData);
 
 // 文章主题
 function ReadingMain(props:any) {
-    const themglobalDatae = useContext(GlobalDataContext);
     let  initArticleList =[
         {title: '第一章', content: `妮佛节经文儿科无人机哦危机，妮佛节经文儿科无人机哦危机
         妮佛节经文儿科无人机哦危机，妮佛节经文儿科无人机哦危机妮佛节经文儿科无人机哦危机，妮佛节经文儿科无人机哦危机
@@ -254,7 +252,6 @@ function ReadingMain(props:any) {
     ]
     const [articleList, setArticleList] = useState(initArticleList);
     
-    console.log('2----------', themglobalDatae)
     return <SafeAreaView>
                 <FlatList
                 data={articleList}
@@ -285,8 +282,7 @@ function ReadTheBackground() {
 };
 
 function Index(props:any) {
-    console.log('rading--------------',
-    props.navigation.state.key)
+    console.log('rading--------------')
 
     const themglobalDatae = useContext(GlobalDataContext);
 

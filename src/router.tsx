@@ -1,7 +1,8 @@
+import * as React from 'react';
 import { 
     createStackNavigator,
-  } from "react-navigation";
-import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+  } from "@react-navigation/stack";
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import {tabBarIcon,} from '@/components/icon';
 //*************************账户************************************//
@@ -17,107 +18,145 @@ import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 书籍详情
 //*************************其它模块************************************//
 import ReadingScreen from '@/page/other/reading'; // 阅读
 
+const Stack = createStackNavigator();
+const Tab = createMaterialBottomTabNavigator();
+
 // 书库模块
-const BibliothecaModel = createStackNavigator(
-  {
-    // 主界面-tab
-    BibliothecaMain: {
-      screen: BibliothecaScreen,
-      navigationOptions: ({}) => ({header: null}),
-    },
-    // 书籍详情
-    BookDetails: {
-      screen: BookDetailsScreen,
-      navigationOptions: ({}) => ({header: null, gesturesEnable: true}),
-    },
-  },
-  {
-    initialRouteName: 'BibliothecaMain',
-    mode: 'modal',
-  },
-);
+function BibliothecaModel() {
+  return (
+    <Stack.Navigator
+      initialRouteName="BibliothecaMain"
+      headerMode="none"
+    >
+      {/* 主界面-tab */}
+      <Stack.Screen
+        name="BibliothecaMain"
+        component={BibliothecaScreen}
+        options={{
+          title: '主界面-tab',
+        }}
+      />
+      {/* 书籍详情 */}
+      <Stack.Screen
+        name="BookDetails"
+        component={BookDetailsScreen}
+        options={{
+          title: '书籍详情',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 // 其它模块
-const OtherModel = createStackNavigator(
-  {
-    reading: {
-      screen: ReadingScreen,
-      navigationOptions: ({}) => ({header: null, gesturesEnable: true}),
-    }
-  },
-  {
-    initialRouteName: 'reading',
-    mode: 'modal',
-  },
-);
+function OtherModel() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Reading"
+      headerMode="none"
+    >
+      {/* 文章详情 */}
+      <Stack.Screen
+        name="Reading"
+        component={ReadingScreen}
+        options={{
+          title: '文章详情',
+          gestureEnabled: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 // 主界面
-const AppStack = createMaterialBottomTabNavigator(
-  {
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: {
-        title: '主页',
-        tabBarIcon: tabBarIcon('home', 'Entypo'),
-      }
-    },
-    Bibliotheca: {
-      screen: BibliothecaModel,
-      navigationOptions: {
-        title: '书库',
-        tabBarIcon: tabBarIcon('library', 'MaterialCommunityIcons'),
-      }
-    },
-    Bbs: {
-      screen: BbsScreen,
-      navigationOptions: {
-        title: '社区',
-        tabBarIcon: tabBarIcon('message1', 'AntDesign'),
-      }
-    },
-    MyCenter: {
-      screen: MyCenterScreen,
-      navigationOptions: {
-        title: '个人中心',
-        tabBarIcon: tabBarIcon('user', 'Entypo'),
-      }
-    },
-  },
-  {
-    initialRouteName: 'Home',
-    activeColor: '#3F9CD6',
-    inactiveColor: '#D2D2D2',
-    barStyle: { 
-      backgroundColor: '#FFFFFF',
-      borderTopColor: '#EDEDED',
-      borderTopWidth: 1,
-    },
-  },
-);
+function AppStack() {
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      activeColor="#3F9CD6"
+      inactiveColor="#D2D2D2"
+      barStyle={{
+        backgroundColor: '#FFFFFF',
+        borderTopColor: '#EDEDED',
+        borderTopWidth: 1,
+      }}
+    >
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen} 
+        options={{
+          title: '主页',
+          tabBarIcon: ({color}) => tabBarIcon('home', 'Entypo', color),
+        }}
+       />
+       <Tab.Screen 
+        name="Bibliotheca" 
+        component={BibliothecaModel} 
+        options={{
+          title: '书库',
+          tabBarIcon: ({color}) => tabBarIcon('library', 'MaterialCommunityIcons', color),
+        }}
+       />
+       <Tab.Screen 
+        name="Bbs" 
+        component={BbsScreen} 
+        options={{
+          title: '社区',
+          tabBarIcon: ({color}) => tabBarIcon('message1', 'AntDesign', color),
+        }}
+       />
+       <Tab.Screen 
+        name="MyCenter" 
+        component={MyCenterScreen} 
+        options={{
+          title: '个人中心',
+          tabBarIcon: ({color}) => tabBarIcon('user', 'Entypo', color),
+        }}
+       />
+    </Tab.Navigator>
+  );
+}
 // 入口路由
-export default createStackNavigator(
-    {
-      // 登录验证
-      AuthLoading: {
-        screen: LoginAuthScreen,
-        navigationOptions: ({}) => ({header: null})
-      },
-      // 主界面-tab
-      App: {
-        screen: AppStack,
-        navigationOptions: ({}) => ({header: null}),
-      },
-      // 登录
-      Login: {
-        screen: LoginScreen,
-        navigationOptions: ({}) => ({header: null, gesturesEnable: true}),
-      },
-      // 阅读
-      Other: {
-        screen: OtherModel,
-        navigationOptions: ({}) => ({header: null}),
-      },
-    },
-    {
-      initialRouteName: 'Other',
-      mode: 'modal',
-    },
-  )
+export default function MinRouter() {
+  return (
+    <Stack.Navigator
+      initialRouteName="App"
+      headerMode="none"
+    >
+       {/* 登录验证 */}
+      <Stack.Screen
+        name="AuthLoading"
+        component={LoginAuthScreen}
+        options={{
+          title: '登录验证',
+        }}
+      />
+      {/* 主界面-tab */}
+      <Stack.Screen
+        name="App"
+        component={AppStack}
+        options={{
+          title: '主界面-tab',
+        }}
+      />
+      {/* 登录 */}
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          title: '登录',
+          gestureEnabled: true,
+        }}
+      />
+      {/* 其它 */}
+      <Stack.Screen
+        name="Other"
+        component={OtherModel}
+        options={{
+          title: '其它',
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+
+

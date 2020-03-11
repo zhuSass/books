@@ -9,12 +9,12 @@ import {
     Alert,
  } from "react-native";
 import Icon from '@/components/icon';
-import { NavigationScreenProps, } from 'react-navigation';
+
+import { StackActions, } from '@react-navigation/native';
 // import Loading from 'react-native-loading-spinner-overlay';
 import Ui from '@/utils/ui'
 
 import style from './css'
-
 
 // public interface
 interface userInfoFace {
@@ -26,7 +26,12 @@ interface focusStatusFace {
   password?: boolean,
 }
 
-export default function Index(props:NavigationScreenProps) {
+type SimpleStackParams = {
+  Article: { author: string };
+  Dialog: undefined;
+};
+
+export default function Index(props:any) {
     // 用户信息
     const [userInfo, setUserInfo] = useState({
       name: '',
@@ -70,7 +75,7 @@ export default function Index(props:NavigationScreenProps) {
         || !userInfo.password) {
           Ui.toast('请输入账户密码！');
         } else {
-          props.navigation.replace('App');
+          StackActions.replace('App');
         }
     }
 

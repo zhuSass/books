@@ -28,14 +28,23 @@ const IconList:IconListFace = {
     Feather: Feather,
 }
 
+// export const tabBarIcon = (
+//         name: string, 
+//         fontFileName: (keyof typeof IconList),
+//         styles?: TextStyle,
+//     ) => ({ tintColor }: { tintColor: string }) => {
+//     const Icon = IconList[fontFileName];
+
+//     return <Icon style={styles && styles} name={name} color={'#D2D2D2'} size={24} />
+// };
 export const tabBarIcon = (
-        name: string, 
-        fontFileName: (keyof typeof IconList),
-        styles?: TextStyle,
-    ) => ({ tintColor }: { tintColor: string }) => {
+    name: string, 
+    fontFileName: (keyof typeof IconList),
+    color?: string,
+    ) => {
     const Icon = IconList[fontFileName];
 
-    return <Icon style={styles && styles} name={name} color={tintColor} size={24} />
+    return <Icon name={name} color={color} size={24} />
 };
 
 type iconProps = {

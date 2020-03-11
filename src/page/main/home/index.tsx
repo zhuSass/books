@@ -10,10 +10,7 @@ import {
     Image,
     NativeScrollEvent,
 } from 'react-native';
-import { NavigationContext,
-    NavigationScreenProp, 
-    NavigationScreenProps,
-} from 'react-navigation';
+import { useNavigation, } from '@react-navigation/native';
 import { 
     Content, Card, 
     CardItem, Thumbnail, Text,
@@ -27,12 +24,12 @@ import styles from './css'
 
 // banner 轮播
 function Banner() {
-    const navigation:NavigationScreenProp<{}> = useContext(NavigationContext);
+    const navigation = useNavigation();
 
     let bannerList =[
         {title: 'fds', pagSrc: 'BookDetails', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
-        {title: 'cds', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IZNlnAAXcSmC9yiwAALGkANDfxcABdxi053.jpg',},
-        {title: 'dsew', pagSrc: 'MyCenter', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IHA_bAAdtkjiuJS8AALGkANJW3kAB22q210.jpg',},
+        {title: 'cds', pagSrc: 'Other', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IZNlnAAXcSmC9yiwAALGkANDfxcABdxi053.jpg',},
+        {title: 'dsew', pagSrc: 'Other', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IHA_bAAdtkjiuJS8AALGkANJW3kAB22q210.jpg',},
         {title: '3dsew', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IIgUYAAW-dNoy2CsAALGkANQySMABb6M328.jpg',},
         {title: '4dsew', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IT_bXAA3D8fytBOUAALGkANZB6sADcQJ000.jpg',},
     ]
@@ -68,7 +65,7 @@ function Banner() {
 }
 // NEW 优质推荐
 function NEW() {
-    const navigation:NavigationScreenProp<{}> = useContext(NavigationContext);
+    const navigation = useNavigation();
 
     let bannerList =[
         {title: 'fds', type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
@@ -78,6 +75,7 @@ function NEW() {
         {title: '4dsew', type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IT_bXAA3D8fytBOUAALGkANZB6sADcQJ000.jpg',},
     ]
     const goToPage = function(src: string) {
+        console.log('3-----------', src)
         navigation.navigate(src);
     }
 
@@ -125,7 +123,7 @@ function NEW() {
 }
 // BananaCamera 限时免费
 function BananaCamera() {
-    const navigation:NavigationScreenProp<{}> = useContext(NavigationContext);
+    const navigation = useNavigation();
 
     const initBannerList = [
         {title: 'fds', width: 0, height: 0,type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
@@ -138,6 +136,7 @@ function BananaCamera() {
     const [bannerList, setBannerList] = useState(initBannerList);
 
     const goToPage = function(src: string) {
+        console.log('3------------', src)
         navigation.navigate(src);
     }
     const getItemWH = function(item:any, index:number, layout:any,) {
@@ -213,7 +212,7 @@ function BananaCamera() {
 }
 // Article 文章
 function Article() {
-    const navigation:NavigationScreenProp<{}> = useContext(NavigationContext);
+    const navigation = useNavigation();
 
     let bannerList =[
         {title: 'fds', type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
@@ -299,7 +298,7 @@ function Article() {
         <View style={{height: 60, width: 1}}></View>
     </View> 
 }
-function Index(props:NavigationScreenProps) {
+function Index(props:any) {
     return (<View>
         {/* 头部 */}
         <Header 
