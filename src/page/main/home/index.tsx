@@ -23,7 +23,7 @@ import ShuYuanSdk from '@/common/shuYuanSdk';
 
 import styles from './css'
 
-const ShuYuanSdkObj = ShuYuanSdk.newObj(['零七中文网']);
+const ShuYuanSdkObj = ShuYuanSdk.newObj(['快眼看书']);
 
 // banner 轮播
 function Banner() {

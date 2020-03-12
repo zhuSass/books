@@ -1,7 +1,10 @@
 import iconv from 'iconv-lite';
-import { Buffer } from 'buffer';
+import {Buffer} from 'buffer';
+const cheerio = require('react-native-cheerio')
+const axios = require('axios');
 
 import Config from "@/config/index";
+import { Text } from 'native-base';
 
 const API_LIST = {
     /*******************用户模块****************************/
@@ -50,7 +53,9 @@ export default function request(apiName: apiNameType, params:any = {}, configInf
 // 获取网页html资源
 export function requestGetPage(apiName: string, configInfo:any = {}) {
     let initConfig:any = {
-        encoding: null,
+        headers: {
+            encoding: null,
+        },
     };
     let mergeConfig = Object.assign({}, initConfig, configInfo);
     let url = apiName;
@@ -58,16 +63,41 @@ export function requestGetPage(apiName: string, configInfo:any = {}) {
     return new Promise(reject => {
         console.log(`开始发出请求${url}`)
         fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
-            data = Buffer.from(data, 'utf-8');
-            let html = iconv.decode(data, 'gbk').toString();
-            console.log('1---------', html)
-            reject(html);
+            const htmlObj = cheerio.load(data);
+            reject(htmlObj);
         });
-        // fetch(url, mergeConfig).then((response:any) => response._bodyInit).then(data => {
-        //     let html = iconv.decode(data, 'gbk').toString();
-        //     console.log('1---------', data)
+        // fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
+        //     data = Buffer.from(data, 'utf-8');
+        //     let html = iconv.decode(data, 'utf-8').toString();
+        //     console.log('1---------', html)
         //     reject(html);
         // });
+        // fetch(url, mergeConfig).then((response:any) => response).then(data => {
+        //     console.log('1---------', JSON.parse(JSON.stringify(data)))
+        //     let html = iconv.decode(data._bodyBlob, 'gb2312').toString();
+        //     console.log('1---------', data)
+        //     reject('');
+        // });
+          
+          // this is a simple example using `.then` and `.catch`
+        //   axios({
+        //     // responseType: 'arraybuffer',
+        //     // responseType: 'blob',
+        //     // responseType: 'arraybuffer',
+        //     url: 'https://www.07zw.com',
+        //     // responseEncoding: null, // default
+        //     // transformResponse: [
+        //     //     function(data:any) {
+        //     //       var html = iconv.decode(data, 'gbk')
+        //     //       return html
+        //     //     }
+        //     //   ]
+        //   }).then((res:any) => {
+        //     // let html = iconv.decode(res.body, 'gbk').toString();
+        //     // console.log('3---------', html)
+        //     // let html = iconv.decode(res.data, 'gb2312');
+        //     // console.log('6---------', html)
+        //     console.log('7---------', res.text())
+        //   });
     });
-
 };
