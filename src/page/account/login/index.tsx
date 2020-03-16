@@ -32,6 +32,7 @@ type SimpleStackParams = {
 };
 
 export default function Index(props:any) {
+    const navigation = props.navigation;
     // 用户信息
     const [userInfo, setUserInfo] = useState({
       name: '',
@@ -75,7 +76,7 @@ export default function Index(props:any) {
         || !userInfo.password) {
           Ui.toast('请输入账户密码！');
         } else {
-          StackActions.replace('App');
+          navigation.replace('App');
         }
     }
 

@@ -118,7 +118,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="App"
+      initialRouteName="AuthLoading"
       headerMode="none"
     >
        {/* 登录验证 */}

@@ -1,7 +1,7 @@
 import React,{useEffect} from "react";
 import { View,  StyleSheet, ActivityIndicator, StatusBar, } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
-import { StackActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
     container: {
@@ -12,12 +12,13 @@ const styles = StyleSheet.create({
 });
 
 // 身份验证
-export default function LoginAuthScreen() {
+export default function LoginAuthScreen(navigationProps:any) {
+    const navigation = navigationProps.navigation;
+
     const _bootstrapAsync = async () => {
         const userToken = await AsyncStorage.getItem('token');
 
-        // props.navigation.replace(userToken ? 'App' : 'Login');
-        StackActions.replace('App');
+        navigation.replace(userToken ? 'App' : 'Login');
     };
 
     useEffect(() => {
