@@ -84,7 +84,7 @@ function AppStack() {
         component={HomeScreen} 
         options={{
           title: '主页',
-          tabBarIcon: ({color}) => tabBarIcon('home', 'Entypo', color),
+          tabBarIcon: ({color}:any) => tabBarIcon('home', 'Entypo', color),
         }}
        />
        <Tab.Screen 
@@ -92,7 +92,7 @@ function AppStack() {
         component={BibliothecaModel} 
         options={{
           title: '书库',
-          tabBarIcon: ({color}) => tabBarIcon('library', 'MaterialCommunityIcons', color),
+          tabBarIcon: ({color}:any) => tabBarIcon('library', 'MaterialCommunityIcons', color),
         }}
        />
        <Tab.Screen 
@@ -100,7 +100,7 @@ function AppStack() {
         component={BbsScreen} 
         options={{
           title: '社区',
-          tabBarIcon: ({color}) => tabBarIcon('message1', 'AntDesign', color),
+          tabBarIcon: ({color}:any) => tabBarIcon('message1', 'AntDesign', color),
         }}
        />
        <Tab.Screen 
@@ -108,7 +108,7 @@ function AppStack() {
         component={MyCenterScreen} 
         options={{
           title: '个人中心',
-          tabBarIcon: ({color}) => tabBarIcon('user', 'Entypo', color),
+          tabBarIcon: ({color}:any) => tabBarIcon('user', 'Entypo', color),
         }}
        />
     </Tab.Navigator>
@@ -118,7 +118,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="AuthLoading"
+      initialRouteName="App"
       headerMode="none"
     >
        {/* 登录验证 */}

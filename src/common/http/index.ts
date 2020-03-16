@@ -51,7 +51,7 @@ export default function request(apiName: apiNameType, params:any = {}, configInf
     });
 };
 // 获取网页html资源
-export function requestGetPage(apiName: string, configInfo:any = {}) {
+export function requestGetPage(apiName: string, configInfo:any = {}):Promise<string> {
     let initConfig:any = {
         headers: {
             encoding: null,
