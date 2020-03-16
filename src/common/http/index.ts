@@ -61,7 +61,6 @@ export function requestGetPage(apiName: string, configInfo:any = {}):Promise<str
     let url = apiName;
 
     return new Promise(reject => {
-        console.log(`开始发出请求${url}`)
         fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
             const htmlObj = cheerio.load(data);
             reject(htmlObj);

@@ -19,7 +19,8 @@ export default class ShuYuanSdk {
     };
     // 全部书源对应处理的对象
     static allShuYuanHandle = {
-        '快眼看书': new KuaiYan(),
+        '零七中文网': KuaiYan,
+        '快眼看书': KuaiYan,
     };
     // 全部书源标识
     // static homePageInfo:currentShuYuanIdsProps = {
@@ -31,17 +32,17 @@ export default class ShuYuanSdk {
     // 获取首页信息
     async getHomePageInfo() {
         for (const v of this.currentShuYuanIds) {
-            const html:string = await requestGetPage(ShuYuanSdk.allShuYuanIds[v]);
+            const html:any = await requestGetPage(ShuYuanSdk.allShuYuanIds[v]);
             // 获取分类强推数据
             const classifyList = this.mergeClassify(html);
-            console.log('2------------', html)
         }
     }
-    // 各大书院分类强推数据合并
-    mergeClassify(html: string) {
-        let 
+    // 各大书源分类强推数据合并
+    mergeClassify(html: any) {
+        let datalist:Array<any> = [];
         for (const v of this.currentShuYuanIds) {
-
+            let handles = ShuYuanSdk.allShuYuanHandle[v];
+            datalist.push(handles.getHomeClassifyList(html));
         }
     }
 }
