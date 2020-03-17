@@ -20,6 +20,7 @@ import {
 import Header, {HeaderPropsType,
                 } from '@/components/header';
 import ShuYuanSdk from '@/common/shuYuanSdk';
+import {HomeList} from '@/common/shuYuanSdk/kuaiYan';
 
 import styles from './css'
 
@@ -66,85 +67,87 @@ function Banner() {
         />
   </SafeAreaView>
 }
-// NEW 优质推荐
-function NEW() {
+// NEW 本周排行榜
+function NEW(props: {data:HomeList['weekRankings']}) {
     const navigation = useNavigation();
 
-    let bannerList =[
-        {title: 'fds', type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
-        {title: 'cds', type: 'HOT', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IZNlnAAXcSmC9yiwAALGkANDfxcABdxi053.jpg',},
-        {title: 'dsew', type: 'NEW', pagSrc: 'MyCenter', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IHA_bAAdtkjiuJS8AALGkANJW3kAB22q210.jpg',},
-        {title: '3dsew', type: 'HOT', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IIgUYAAW-dNoy2CsAALGkANQySMABb6M328.jpg',},
-        {title: '4dsew', type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IT_bXAA3D8fytBOUAALGkANZB6sADcQJ000.jpg',},
-    ]
-    const goToPage = function(src: string) {
-        console.log('3-----------', src)
-        navigation.navigate(src);
+    const goToPage = function(id: number) {
+        console.log('3-----------', id)
+        navigation.navigate(`sdfdsf?${id}`);
     }
+
+    const dataList = props.data;
+    if (!dataList.length) return null;
 
     return <View style={styles.bananaCameraWrap}>
         <View style={styles.bananaCameraWrapHeader}>
             <View style={styles.bananaCameraWire}></View>
-            <Text style={styles.bananaCameraTitle}>优质推荐</Text>
+            <Text style={styles.bananaCameraTitle}>本周排行榜</Text>
         </View>
         <SafeAreaView style={styles.bananaCameraScroll}>
                 <FlatList
-                data={bannerList}
+                data={dataList}
                 horizontal={true}
                 getItemLayout={(data: any, index: number) => (
                     {length: 164, offset: 164 * index, index}
                 )}
                 renderItem={({ item, index }) => <View style={[
                         styles.bananaCameraItem,
-                        (bannerList.length - 1) !== index 
+                        (dataList.length - 1) !== index 
                         && styles.imgContainerMr,
                     ]}>
                         <TouchableWithoutFeedback
-                            onPress={() => goToPage(item.pagSrc)}>
+                            onPress={() => goToPage(item.id)}>
                                 <View>
                                     <View style={styles.bananaCameraCover}>
                                         <ImageBackground  
-                                        source={{uri: item.src}}
+                                        source={{uri: item.logo}}
                                         resizeMode='cover'
                                         style={styles.bananaCameraImg}/>
-                                        <Text style={styles.bananaCameraCoverType}>{item.type}</Text>    
+                                        <Text style={styles.bananaCameraCoverType}>HOT</Text>    
                                         <View style={styles.bananaCameraCoverLinke}>
-                                            <Text style={styles.bananaCameraCoverLinkeText} numberOfLines={1}>2600人喜欢</Text>
+                                            <Text style={styles.bananaCameraCoverLinkeText} numberOfLines={1}>
+                                                作者：{item.author}
+                                            </Text>
                                         </View>    
                                     </View> 
                                     <View style={styles.bananaCameraCoverInfo}>
                                         <Text style={styles.bananaCameraCoverTitle} numberOfLines={1}>{item.title}</Text>        
-                                        <Text style={styles.bananaCameraCoverSubTitle} numberOfLines={1}>思考社会的终极难题思考社会的终极难题思考社会的终极难题</Text>        
+                                        <Text style={styles.bananaCameraCoverSubTitle} numberOfLines={2}>{item.desc || '--'}</Text>        
                                     </View>   
                                 </View>
                         </TouchableWithoutFeedback>
                 </View>}
-                keyExtractor={item => item.title}
+                keyExtractor={item => `${item.source}-${item.id}`}
                 />
         </SafeAreaView>
     </View> 
 }
-// BananaCamera 限时免费
-function BananaCamera() {
+// BananaCamera 优质推荐
+function BananaCamera(props: {data:HomeList['qualityRecommended']}) {
     const navigation = useNavigation();
+    const [bannerList, setBannerList] = useState<any[]>([]);
 
-    const initBannerList = [
-        {title: 'fds', width: 0, height: 0,type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
-        {title: 'cds', width: 0, height: 0,type: 'HOT', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IZNlnAAXcSmC9yiwAALGkANDfxcABdxi053.jpg',},
-        {title: 'dsew', width: 0, height: 0,type: 'NEW', pagSrc: 'MyCenter', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IHA_bAAdtkjiuJS8AALGkANJW3kAB22q210.jpg',},
-        {title: '3dsew', width: 0, height: 0,type: 'HOT', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IIgUYAAW-dNoy2CsAALGkANQySMABb6M328.jpg',},
-        {title: '4dsew', width: 0, height: 0,type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IT_bXAA3D8fytBOUAALGkANZB6sADcQJ000.jpg',},
-        {title: '4dsew3', width: 0, height: 0,type: 'NEW', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IT_bXAA3D8fytBOUAALGkANZB6sADcQJ000.jpg',},
-    ];
-    const [bannerList, setBannerList] = useState(initBannerList);
+    useEffect(() => {
+        let list:any[] = [];
+        props.data.forEach(v => {
+            list.push({
+                ...v,
+                type: 'NEW',
+                width: 0, 
+                height: 0,
+            })
+        });
 
-    const goToPage = function(src: string) {
-        console.log('3------------', src)
-        navigation.navigate(src);
+        setBannerList(list);
+    },[props.data]);
+
+    const goToPage = function(id: number) {
+        console.log('3-----------', id)
+        navigation.navigate(`sdfdsf?${id}`);
     }
     const getItemWH = function(item:any, index:number, layout:any,) {
         if(item.width) return;
-        initBannerList.splice(index, 1, item);
         setBannerList((perState) => {
             let perVal = perState.slice();
             perVal[index] = {
@@ -155,11 +158,13 @@ function BananaCamera() {
             return perVal;
         });
     }
+    if (!bannerList.length) return null;
+
 
     return <View style={styles.bananaCameraWrap}>
         <View style={styles.bananaCameraWrapHeader}>
             <View style={styles.bananaCameraWire}></View>
-            <Text style={styles.bananaCameraTitle}>限时免费</Text>
+            <Text style={styles.bananaCameraTitle}>优质推荐</Text>
         </View>
         <SafeAreaView style={styles.bananaCameraScroll}>
                 <FlatList
@@ -176,11 +181,11 @@ function BananaCamera() {
                             && styles.imgContainerMr,
                         ]}>
                             <TouchableWithoutFeedback
-                                onPress={() => goToPage(item.pagSrc)}>
+                                onPress={() => goToPage(item.id)}>
                                     <View style={styles.bananaCameraItemContainer}>
                                         <View style={styles.bananaCameraCoverOne}>
                                             <ImageBackground  
-                                            source={{uri: item.src}}
+                                            source={{uri: item.logo}}
                                             resizeMode='cover'
                                             style={styles.bananaCameraImg}/>
                                             <Text
@@ -199,7 +204,7 @@ function BananaCamera() {
                                         </View> 
                                         <View style={styles.bananaCameraCoverInfo}>
                                             <Text style={styles.bananaCameraCoverTitle} numberOfLines={1}>{item.title}</Text>        
-                                            <Text style={styles.bananaCameraCoverSubTitle} numberOfLines={1}>作者：墨鱼</Text>        
+                                            <Text style={styles.bananaCameraCoverSubTitle} numberOfLines={1}>作者：--</Text>        
                                         </View>  
                                         <View style={styles.bananaCameraCoverBtn}>
                                             <Text style={styles.bananaCameraCoverBtnText}>点击阅读</Text>
@@ -208,7 +213,7 @@ function BananaCamera() {
                             </TouchableWithoutFeedback>
                     </View>
                 </View>}
-                keyExtractor={item => item.title}
+                keyExtractor={item => `${item.source}-${item.id}`}
                 />
         </SafeAreaView>
     </View> 
@@ -302,11 +307,17 @@ function Article() {
     </View> 
 }
 function Index(props:any) {
+    const [homeData, setHomeData] = useState<HomeList>({
+        qualityRecommended: [],
+        weekRankings: [],
+    });
     useEffect(() => {
-        console.log('进来了---')
-        ShuYuanSdkObj.getHomePageInfo();
-
+        initDataHandle();
     }, []);
+    const initDataHandle = async function() {
+        let data:HomeList = await ShuYuanSdkObj.getHomePageInfo();
+        setHomeData(data);
+    };
 
     return (<View>
         {/* 头部 */}
@@ -323,11 +334,11 @@ function Index(props:any) {
             </View>
             {/* NEW 优质推荐 */}
             <View style={styles.cardWrap}>
-                <NEW/>
+                <NEW data={homeData.weekRankings}/>
             </View>
-            {/* bananaCamera 限时免费 */}
+            {/* bananaCamera 优质推荐 */}
             <View style={styles.cardWrap}>
-                <BananaCamera/>
+                <BananaCamera data={homeData.qualityRecommended}/>
             </View>
             {/* article 文章 */}
             <View style={styles.cardWrap}>
