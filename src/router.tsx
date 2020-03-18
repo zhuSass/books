@@ -14,7 +14,8 @@ import BibliothecaScreen from '@/page/main/bibliotheca'; // 书库
 import BbsScreen from '@/page/main/bbs'; // 社区中心
 import MyCenterScreen from '@/page/main/myCenter'; // 个人中心
 //*************************书库模块************************************//
-import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 书籍详情
+import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 小说主页
+import BookDirectoryScreen from '@/page/bibliothecas/directory'; // 小说目录
 //*************************其它模块************************************//
 import ReadingScreen from '@/page/other/reading'; // 阅读
 
@@ -33,15 +34,23 @@ function BibliothecaModel() {
         name="BibliothecaMain"
         component={BibliothecaScreen}
         options={{
-          title: '主界面-tab',
+          title: '书库',
         }}
       />
-      {/* 书籍详情 */}
+      {/* 小说主页 */}
       <Stack.Screen
         name="BookDetails"
         component={BookDetailsScreen}
         options={{
-          title: '书籍详情',
+          title: '小说主页',
+        }}
+      />
+      {/* 小说目录 */}
+      <Stack.Screen
+        name="BookDetails"
+        component={BookDirectoryScreen}
+        options={{
+          title: '小说目录',
         }}
       />
     </Stack.Navigator>

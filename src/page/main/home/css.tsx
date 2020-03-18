@@ -48,7 +48,7 @@ export default StyleSheet.create({
         paddingRight: publicPaddingR,
         backgroundColor: '#fff',
         paddingTop: 17,
-        paddingBottom: 20,
+        paddingBottom: 30,
         marginBottom: marginBottom,
         overflow: 'hidden',
     },

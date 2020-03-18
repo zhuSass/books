@@ -10,7 +10,7 @@ import {
     Image,
     NativeScrollEvent,
 } from 'react-native';
-import { useNavigation, } from '@react-navigation/native';
+import { useNavigation,NavigationProp, } from '@react-navigation/native';
 import { 
     Content, Card, 
     CardItem, Thumbnail, Text,
@@ -124,8 +124,8 @@ function NEW(props: {data:HomeList['weekRankings']}) {
     </View> 
 }
 // BananaCamera 优质推荐
-function BananaCamera(props: {data:HomeList['qualityRecommended']}) {
-    const navigation = useNavigation();
+function BananaCamera(props: {data:HomeList['qualityRecommended'], navigation: any}) {
+    // const navigation = useNavigation();
     const [bannerList, setBannerList] = useState<any[]>([]);
 
     useEffect(() => {
@@ -142,9 +142,16 @@ function BananaCamera(props: {data:HomeList['qualityRecommended']}) {
         setBannerList(list);
     },[props.data]);
 
-    const goToPage = function(id: number) {
-        console.log('3-----------', id)
-        navigation.navigate(`sdfdsf?${id}`);
+    const goToPage = function(item: any) {
+        // navigation.navigate(`BookDetails`, {
+        //     id: item.id,
+        //     source: item.source,
+        // });
+        console.log('456666666666666', JSON.stringify(props.navigation))
+        props.navigation.push(`BookDetails`, {
+            id: item.id,
+            source: item.source,
+        });
     }
     const getItemWH = function(item:any, index:number, layout:any,) {
         if(item.width) return;
@@ -181,7 +188,7 @@ function BananaCamera(props: {data:HomeList['qualityRecommended']}) {
                             && styles.imgContainerMr,
                         ]}>
                             <TouchableWithoutFeedback
-                                onPress={() => goToPage(item.id)}>
+                                onPress={() => goToPage(item)}>
                                     <View style={styles.bananaCameraItemContainer}>
                                         <View style={styles.bananaCameraCoverOne}>
                                             <ImageBackground  
@@ -332,17 +339,17 @@ function Index(props:any) {
             <View style={styles.mainBanner}>
                 <Banner/>
             </View>
-            {/* NEW 优质推荐 */}
+            {/* NEW 本周排行榜 */}
             <View style={styles.cardWrap}>
-                <NEW data={homeData.weekRankings}/>
+                <NEW data={homeData.weekRankings} />
             </View>
             {/* bananaCamera 优质推荐 */}
             <View style={styles.cardWrap}>
-                <BananaCamera data={homeData.qualityRecommended}/>
+                <BananaCamera data={homeData.qualityRecommended} navigation={props.navigation}/>
             </View>
             {/* article 文章 */}
             <View style={styles.cardWrap}>
-                <Article/>
+                {/* <Article/> */}
             </View>
         </ScrollView>
     </View>)
