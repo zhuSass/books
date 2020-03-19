@@ -148,7 +148,7 @@ function BananaCamera(props: {data:HomeList['qualityRecommended'], navigation: a
         //     source: item.source,
         // });
         console.log('456666666666666', JSON.stringify(props.navigation))
-        props.navigation.push(`BookDetails`, {
+        props.navigation.push(`Bibliotheca`, {
             id: item.id,
             source: item.source,
         });

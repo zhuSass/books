@@ -21,6 +21,8 @@ export type HomeList = {
 }
 
 export default class KuaiYan {
+    constructor() {
+    }
     static sourceName = 'KuaiYan';
     // 获取首页分类强推
     static getHomeClassifyList($:any):HomeList {
