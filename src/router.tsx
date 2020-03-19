@@ -37,22 +37,6 @@ function BibliothecaModel() {
           title: '书库',
         }}
       />
-      {/* 小说主页 */}
-      <Stack.Screen
-        name="BookDetails"
-        component={BookDetailsScreen}
-        options={{
-          title: '小说主页',
-        }}
-      />
-      {/* 小说目录 */}
-      <Stack.Screen
-        name="BookDetails"
-        component={BookDirectoryScreen}
-        options={{
-          title: '小说目录',
-        }}
-      />
     </Stack.Navigator>
   );
 }
@@ -70,6 +54,22 @@ function OtherModel() {
         options={{
           title: '文章详情',
           gestureEnabled: true,
+        }}
+      />
+      {/* 小说主页 */}
+            <Stack.Screen
+        name="BookDetails"
+        component={BookDetailsScreen}
+        options={{
+          title: '小说主页',
+        }}
+      />
+      {/* 小说目录 */}
+      <Stack.Screen
+        name="BookDirectory"
+        component={BookDirectoryScreen}
+        options={{
+          title: '小说目录',
         }}
       />
     </Stack.Navigator>

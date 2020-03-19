@@ -124,8 +124,8 @@ function NEW(props: {data:HomeList['weekRankings']}) {
     </View> 
 }
 // BananaCamera 优质推荐
-function BananaCamera(props: {data:HomeList['qualityRecommended'], navigation: any}) {
-    // const navigation = useNavigation();
+function BananaCamera(props: {data:HomeList['qualityRecommended']}) {
+    const navigation = useNavigation();
     const [bannerList, setBannerList] = useState<any[]>([]);
 
     useEffect(() => {
@@ -143,15 +143,13 @@ function BananaCamera(props: {data:HomeList['qualityRecommended'], navigation: a
     },[props.data]);
 
     const goToPage = function(item: any) {
-        // navigation.navigate(`BookDetails`, {
-        //     id: item.id,
-        //     source: item.source,
-        // });
-        console.log('456666666666666', JSON.stringify(props.navigation))
-        props.navigation.push(`Bibliotheca`, {
-            id: item.id,
-            source: item.source,
-        });
+        navigation.navigate('Other', { 
+            screen: 'BookDirectory', 
+            params: {
+                id: item.id,
+                source: item.source,
+            },
+        })
     }
     const getItemWH = function(item:any, index:number, layout:any,) {
         if(item.width) return;
@@ -345,7 +343,7 @@ function Index(props:any) {
             </View>
             {/* bananaCamera 优质推荐 */}
             <View style={styles.cardWrap}>
-                <BananaCamera data={homeData.qualityRecommended} navigation={props.navigation}/>
+                <BananaCamera data={homeData.qualityRecommended}/>
             </View>
             {/* article 文章 */}
             <View style={styles.cardWrap}>
