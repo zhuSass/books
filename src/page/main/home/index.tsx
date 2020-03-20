@@ -19,8 +19,7 @@ import {
 
 import Header, {HeaderPropsType,
                 } from '@/components/header';
-import ShuYuanSdk from '@/common/shuYuanSdk';
-import {HomeList} from '@/common/shuYuanSdk/kuaiYan';
+import ShuYuanSdk,{HomeList} from '@/common/shuYuanSdk';
 
 import styles from './css'
 

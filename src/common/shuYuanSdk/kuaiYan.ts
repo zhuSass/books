@@ -1,29 +1,13 @@
 
-import {AllShuYuanIdsKey} from './index';
-// 首页数据类型
-export type HomeList = {
-    // 优质推荐
-    qualityRecommended: Array<{
-        title?: string,
-        logo?: string,
-        id: number,
-        source: AllShuYuanIdsKey,
-    }>,
-    // 本周排行榜
-    weekRankings: Array<{
-        title?: string,
-        logo?: string,
-        id: number,
-        author?: string,
-        desc?: string,
-        source: AllShuYuanIdsKey,
-    }>,
-}
+import {HomeList,
+        DirectoryListType,
+        AllShuYuanIdsKey,
+     } from './index';
 
 export default class KuaiYan {
     constructor() {
     }
-    static sourceName = 'KuaiYan';
+    static sourceName:AllShuYuanIdsKey = '快眼看书';
     // 获取首页分类强推
     static getHomeClassifyList($:any):HomeList {
         const ptCard1Obj = $('.pt-card-1 li');
@@ -65,5 +49,24 @@ export default class KuaiYan {
             
         });
         return dataList;
+    }
+    // 获取首页分类强推
+    static getDirectoryList($:any):DirectoryListType {
+        const liDom = $('.fulldir li');
+        const data:DirectoryListType = [];
+        liDom.each((indexItem:number,elementItem:any) => {
+            const targetDom = $(elementItem).find('a');
+            const center = targetDom.text();
+            const textArray = center.split(/\s+/);
+            const pageNum = textArray[0].replace('第', '').replace('章', '');
+
+            data.push({
+                title: textArray[1].trim(),
+                number: pageNum,
+                id: targetDom.attr('href'),
+                source: KuaiYan.sourceName,
+            })
+        });
+        return data;
     }
 };
