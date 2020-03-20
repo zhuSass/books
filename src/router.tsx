@@ -15,9 +15,9 @@ import BbsScreen from '@/page/main/bbs'; // 社区中心
 import MyCenterScreen from '@/page/main/myCenter'; // 个人中心
 //*************************书库模块************************************//
 import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 小说主页
-import BookDirectoryScreen from '@/page/bibliothecas/directory'; // 小说目录
 //*************************其它模块************************************//
 import ReadingScreen from '@/page/other/reading'; // 阅读
+import BookDirectoryScreen from '@/page/other/directory'; // 小说目录
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();

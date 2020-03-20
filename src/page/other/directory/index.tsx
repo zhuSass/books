@@ -1,4 +1,4 @@
-import React,{useEffect,useState,} from 'react';
+import React,{useEffect,useState,useCallback,} from 'react';
 import { View, Text,
     SafeAreaView, FlatList,
     TouchableOpacity,
@@ -60,23 +60,24 @@ function Index(props:any) {
         setDataList(sliceData);
     };
     // 加载目录列表
-    const loadDataHandle = function(info: any) {
+    const loadDataHandle = useCallback((info: any) => {
         setPageInfo((dataInfo:PageInfoType) => {
             return {
                 ...dataInfo,
                 currentPage: dataInfo.currentPage + 1,
             };
         });
+        const start = (pageInfo.currentPage) * pageInfo.pageSize;
         const sliceData = allDataList.slice(
-            (pageInfo.currentPage - 1) * pageInfo.pageSize,
-            pageInfo.pageSize,
+            start,
+            start + pageInfo.pageSize,
             );
         const concatArray = dataList.concat(sliceData);
         setDataList(concatArray);
-        setTimeout
 
-        console.log('当前页码----------', pageInfo.currentPage)
-    }
+        console.log('当前页码----------', pageInfo)
+        console.log('dfssd----------', sliceData)
+    }, [pageInfo,allDataList,dataList]);
 
     const goToPage = function(item: any) {
         navigation.navigate('Other', { 

@@ -1,7 +1,4 @@
-import iconv from 'iconv-lite';
-import {Buffer} from 'buffer';
 const cheerio = require('react-native-cheerio')
-const axios = require('axios');
 
 import Config from "@/config/index";
 import { Text } from 'native-base';
