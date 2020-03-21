@@ -1,7 +1,7 @@
 const cheerio = require('react-native-cheerio')
 
 import Config from "@/config/index";
-import { Text } from 'native-base';
+import { Alert } from 'react-native';
 
 const API_LIST = {
     /*******************用户模块****************************/
@@ -53,6 +53,7 @@ export function requestGetPage(apiName: string, configInfo:any = {}):Promise<str
         headers: {
             encoding: null,
         },
+        mode: "cors",
     };
     let mergeConfig = Object.assign({}, initConfig, configInfo);
     let url = apiName;
@@ -62,6 +63,8 @@ export function requestGetPage(apiName: string, configInfo:any = {}):Promise<str
         fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
             const htmlObj = cheerio.load(data);
             reject(htmlObj);
+        }).catch((err) => {
+            // Alert.alert(`请求地址：${url}`,`请求失败：${JSON.stringify(err)};`)
         });
     });
 };

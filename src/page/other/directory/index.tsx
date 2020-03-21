@@ -57,12 +57,12 @@ function Index(props:any) {
         navigation.goBack();
     };
     const initDataHandle = async function() {
-        const params:GetDirectoryPageInfoType = {
-            id: "349010", 
-            source: "快眼看书",
-            title: 'jfiojdi',
-        };
-        // const params = route.params;
+        // const params:GetDirectoryPageInfoType = {
+        //     id: "349010", 
+        //     source: "快眼看书",
+        //     title: 'jfiojdi',
+        // };
+        const params = route.params;
         setBaseInfo(params);
         const list:DirectoryListType =  await ShuYuanSdk.getDirectoryPageInfo(params);
         setAllDataList(list);
