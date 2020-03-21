@@ -50,7 +50,7 @@ export default class KuaiYan {
         });
         return dataList;
     }
-    // 获取首页分类强推
+    // 获取目录章节
     static getDirectoryList($:any):DirectoryListType {
         const liDom = $('.fulldir li');
         const data:DirectoryListType = [];
@@ -58,10 +58,18 @@ export default class KuaiYan {
             const targetDom = $(elementItem).find('a');
             const center = targetDom.text();
             const textArray = center.split(/\s+/);
-            const pageNum = textArray[0].replace('第', '').replace('章', '');
+            let pageNum = '';
+            let title = '';
+            if (textArray.length === 2) { // 正常章节
+                pageNum = textArray[0].replace('第', '').replace('章', '');
+                title = textArray[1].trim()
+            } else {
+                title = textArray[0];
+                pageNum = `闲言-${indexItem}`;
+            }
 
             data.push({
-                title: textArray[1].trim(),
+                title: title,
                 number: pageNum,
                 id: targetDom.attr('href'),
                 source: KuaiYan.sourceName,

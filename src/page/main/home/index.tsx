@@ -70,9 +70,15 @@ function Banner() {
 function NEW(props: {data:HomeList['weekRankings']}) {
     const navigation = useNavigation();
 
-    const goToPage = function(id: number) {
-        console.log('3-----------', id)
-        navigation.navigate(`sdfdsf?${id}`);
+    const goToPage = function(item: any) {
+        navigation.navigate('Other', { 
+            screen: 'BookDirectory', 
+            params: {
+                id: item.id,
+                source: item.source,
+                title: item.title,
+            },
+        });
     }
 
     const dataList = props.data;
@@ -90,13 +96,16 @@ function NEW(props: {data:HomeList['weekRankings']}) {
                 getItemLayout={(data: any, index: number) => (
                     {length: 164, offset: 164 * index, index}
                 )}
-                renderItem={({ item, index }) => <View style={[
+                renderItem={(data:{item: any, index: number}) => {
+                    const {item, index} = data;
+                    
+                    return <View style={[
                         styles.bananaCameraItem,
                         (dataList.length - 1) !== index 
                         && styles.imgContainerMr,
                     ]}>
                         <TouchableWithoutFeedback
-                            onPress={() => goToPage(item.id)}>
+                            onPress={() => goToPage(item)}>
                                 <View>
                                     <View style={styles.bananaCameraCover}>
                                         <ImageBackground  
@@ -116,7 +125,8 @@ function NEW(props: {data:HomeList['weekRankings']}) {
                                     </View>   
                                 </View>
                         </TouchableWithoutFeedback>
-                </View>}
+                </View>
+                }}
                 keyExtractor={item => `${item.source}-${item.id}`}
                 />
         </SafeAreaView>
@@ -147,8 +157,9 @@ function BananaCamera(props: {data:HomeList['qualityRecommended']}) {
             params: {
                 id: item.id,
                 source: item.source,
+                title: item.title,
             },
-        })
+        });
     }
     const getItemWH = function(item:any, index:number, layout:any,) {
         if(item.width) return;

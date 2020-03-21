@@ -38,7 +38,7 @@ export type DirectoryListType = Array<{
     /** 文章标题 **/
     title: string,
     /** 第几章 **/
-    number: number,
+    number: string,
     /** 文章地址 **/
     id: '',
     /** 平台标识 **/
@@ -49,6 +49,8 @@ export type DirectoryListType = Array<{
 export type GetDirectoryPageInfoType = {
     /** 小说标识 **/
     id: string, 
+    /** 小说名字 **/
+    title: string, 
     /** 平台标识 **/
     source: AllShuYuanIdsKey, 
 }

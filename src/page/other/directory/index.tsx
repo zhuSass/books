@@ -1,10 +1,12 @@
-import React,{useEffect,useState,useCallback,} from 'react';
+import React,{useEffect,useState,
+    useCallback,useRef,} from 'react';
 import { View, Text,
     SafeAreaView, FlatList,
+    FlatListProps,
     TouchableOpacity,
     TouchableWithoutFeedback,
 } from 'react-native';
-import { useRoute ,useNavigation, } from '@react-navigation/native';
+import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
 import { Button, } from 'native-base';
 
 import ShuYuanSdk,{
@@ -15,7 +17,12 @@ import Header, {HeaderPropsType,
 } from '@/components/header';
 import Icon from '@/components/icon';
 
-import styles from './css'
+import styles from './css';
+
+type RootStackParamList = {
+    Profile: GetDirectoryPageInfoType;
+  };
+type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
 
 type PageInfoType = {
     currentPage: number,
@@ -25,10 +32,13 @@ type PageInfoType = {
 }
 
 function Index(props:any) {
-    const route = useRoute();
+    const route = useRoute<ProfileScreenRouteProp>();
     const navigation = useNavigation();
+    const flatListEl = useRef<any>(null);
     // 所有数据
     const [allDataList, setAllDataList] = useState<DirectoryListType>([]);
+    // 基础数据
+    const [baseInfo, setBaseInfo] = useState<GetDirectoryPageInfoType>();
     // 当前用户浏览到的数据
     const [dataList, setDataList] = useState<DirectoryListType>([]);
     // 分页信息
@@ -50,7 +60,10 @@ function Index(props:any) {
         const params:GetDirectoryPageInfoType = {
             id: "349010", 
             source: "快眼看书",
+            title: 'jfiojdi',
         };
+        // const params = route.params;
+        setBaseInfo(params);
         const list:DirectoryListType =  await ShuYuanSdk.getDirectoryPageInfo(params);
         setAllDataList(list);
         const sliceData = list.slice(
@@ -75,10 +88,7 @@ function Index(props:any) {
         const concatArray = dataList.concat(sliceData);
         setDataList(concatArray);
 
-        console.log('当前页码----------', pageInfo)
-        console.log('dfssd----------', sliceData)
     }, [pageInfo,allDataList,dataList]);
-
     const goToPage = function(item: any) {
         navigation.navigate('Other', { 
             screen: 'BookDirectory', 
@@ -88,10 +98,29 @@ function Index(props:any) {
             },
         })
     }
+    // 切换章节顺序
+    const toggleOrderHandle = useCallback(() => {
+        setPageInfo((item: PageInfoType) => {
+            return {
+                ...item,
+                sort: item.sort === 'positiveSequence' ? 'reverseOrder' : 'positiveSequence',
+                currentPage: 1,
+            }
+        });
+        flatListEl?.current?.scrollToOffset({
+            animated: false, offset: 0,
+        });
+        const reverseArray = JSON.parse(JSON.stringify(allDataList)).reverse();
+        setAllDataList(reverseArray);
+        const sliceData = reverseArray.slice(
+            0,
+            pageInfo.pageSize,
+            );
+        setDataList(sliceData);
+    }, [pageInfo, allDataList]);
     // 渲染目标列表
     const renderFlatList = function(data:{item: any, index: number}) {
         const {item, index} = data;
-
 
         return  <TouchableOpacity onPress={() => goToPage(item)}>
                 <View style={styles.renderFlatListWap}>
@@ -113,7 +142,7 @@ function Index(props:any) {
                             color='#33373d'
                             size={26}
                             name='ios-arrow-back'/>
-                        <Text style={styles.headerLeftText}>斗破苍穹</Text>  
+                        <Text style={styles.headerLeftText}>{baseInfo?.title}</Text>  
                 </Button>
                 }
             />
@@ -121,8 +150,12 @@ function Index(props:any) {
                 <Text style={styles.separatedTitleContent}>目录</Text>
             </View>
             <View style={styles.baseInfo}>
-                <Text style={styles.baseInfoTotalNumber}>共600章</Text>
-                <Text style={styles.baseInfoTotalSort}>正序</Text>
+                <Text style={styles.baseInfoTotalNumber}>共{allDataList.length}章</Text>
+                <Button transparent onPress={toggleOrderHandle}>
+                    <Text style={styles.baseInfoTotalSort}>
+                        {pageInfo.sort === 'positiveSequence' ? '倒序' : '正序'}
+                    </Text>
+                </Button>
             </View>
             <View style={styles.contentType}>
                 <Text style={styles.contentTypeText}>正文卷</Text>
@@ -130,14 +163,12 @@ function Index(props:any) {
             {/* 目录列表 */}
             <SafeAreaView style={styles.safeAreaView}>
                 <FlatList
+                    ref={flatListEl}
                     data={dataList}
-                    getItemLayout={(data: any, index: number) => (
-                        {length: 164, offset: 164 * index, index}
-                    )}
                     onEndReached={loadDataHandle}
-                    onEndReachedThreshold={0.1}
+                    onEndReachedThreshold={0.2}
                     renderItem={renderFlatList}
-                    keyExtractor={item => `${item.source}-${item.id}`}
+                    keyExtractor={(item:any) => `${item.source}-${item.id}`}
                     />
             </SafeAreaView>
     </View>)
