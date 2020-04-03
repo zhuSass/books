@@ -44,7 +44,7 @@ function BibliothecaModel() {
 function OtherModel() {
   return (
     <Stack.Navigator
-      initialRouteName="BookDirectory"
+      initialRouteName="Reading"
       headerMode="none"
     >
       {/* 文章详情 */}
@@ -57,7 +57,7 @@ function OtherModel() {
         }}
       />
       {/* 小说主页 */}
-            <Stack.Screen
+      <Stack.Screen
         name="BookDetails"
         component={BookDetailsScreen}
         options={{
@@ -127,7 +127,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="App"
+      initialRouteName="Other"
       headerMode="none"
     >
        {/* 登录验证 */}

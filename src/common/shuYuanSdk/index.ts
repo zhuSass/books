@@ -13,6 +13,8 @@ type CurrentShuYuanIdsProps = {
         home: string, 
         /** 小说目录网址 **/ 
         directory: string, 
+        /** 小说文章网址 **/ 
+        article: string, 
     }
 };
 /** 首页数据类型 **/
@@ -36,14 +38,24 @@ export type HomeList = {
 }
 export type DirectoryListType = Array<{
     /** 文章标题 **/
-    title: string,
+    title?: string,
     /** 第几章 **/
-    number: string,
+    number?: string,
     /** 文章地址 **/
-    id: '',
+    id: string,
     /** 平台标识 **/
     source: AllShuYuanIdsKey,
 }>;
+export type ArticleType = {
+    /** 上一页地址 **/
+    prev: string,
+    /** 下一页地址 **/
+    next: string,
+    /** 文章 **/
+    doc: string,
+    /** 文章标题 **/
+    title: string,
+};
 
 /** 获取目录方法参数类型 **/
 export type GetDirectoryPageInfoType = {
@@ -68,11 +80,13 @@ export default class ShuYuanSdk {
             handle: KuaiYan,
             home: 'https://www.07zw.com',
             directory: '', 
+            article: '',
         },
         '快眼看书': {
             handle: KuaiYan, // 处理方法
             home: 'http://m.booksky.cc',
             directory: 'http://www.booksky.cc/', // http://www.booksky.cc/355476.html 
+            article: 'http://www.booksky.cc/',
         },
     };
     /** 当前需要获取的书院源 **/
@@ -104,10 +118,18 @@ export default class ShuYuanSdk {
         return handle.getDirectoryList(html);
 
     }
+    static async getArticleInfo(data: DirectoryListType[0]):Promise<ArticleType> {
+        const html:any = await requestGetPage(
+            `${ShuYuanSdk.allShuYuanIds[data.source].article}${data.id}`
+            );
+        let handle = ShuYuanSdk.allShuYuanIds[data.source].handle;
+
+        return handle.getArticleInfo(html);
+    }
     /** 各大书院分类强推数据合并 **/
     mergeClassify(html: any, v:keyof typeof ShuYuanSdk.allShuYuanIds):HomeList {
         let handle = ShuYuanSdk.allShuYuanIds[v].handle;
-        let homeListObj:HomeList = handle.getHomeClassifyList(html)
+        let homeListObj:HomeList = handle.getHomeClassifyList(html);
 
         return homeListObj;
     }

@@ -2,6 +2,7 @@
 import {HomeList,
         DirectoryListType,
         AllShuYuanIdsKey,
+        ArticleType,
      } from './index';
 
 export default class KuaiYan {
@@ -76,5 +77,23 @@ export default class KuaiYan {
             })
         });
         return data;
+    }
+    // 获取小说详情
+    static getArticleInfo($:any):ArticleType {
+        const titleArray = ($('.title a').attr('title') || []).split(/\s+/);
+        const title:string = titleArray.slice(1).join(' ');
+        const doc:string = $('#chaptercontent').text();
+        const operateDom = $('.operate ul').children();
+        const prevDom = operateDom.first().find('a');
+        const nextDom = operateDom.last().find('a');
+        const prev:string = prevDom.attr('title') === '没有了' ? '' : prevDom.attr('href');
+        const next:string = nextDom.attr('title') === '没有了' ? '' : nextDom.attr('href');
+
+        return {
+            title,
+            doc,
+            prev,
+            next,
+        }
     }
 };

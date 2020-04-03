@@ -89,13 +89,10 @@ function Index(props:any) {
         setDataList(concatArray);
 
     }, [pageInfo,allDataList,dataList]);
-    const goToPage = function(item: any) {
+    const goToPage = function(item: DirectoryListType[0]) {
         navigation.navigate('Other', { 
-            screen: 'BookDirectory', 
-            params: {
-                id: item.id,
-                source: item.source,
-            },
+            screen: 'Reading', 
+            params: item,
         })
     }
     // 切换章节顺序
