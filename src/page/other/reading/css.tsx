@@ -1,4 +1,6 @@
-import { StyleSheet, } from "react-native";
+import { StyleSheet, Dimensions, } from "react-native";
+
+const {height} =  Dimensions.get('window');
 
 export default StyleSheet.create({
     homeWrap: {
@@ -9,7 +11,7 @@ export default StyleSheet.create({
         top: 0,
         left: 0,
         width: '100%',
-        height: '100%',
+        height: height,
         zIndex: -1,
     },
     bgColorContainerTop: {

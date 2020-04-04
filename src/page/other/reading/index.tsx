@@ -1,4 +1,5 @@
 import React,{useContext, useState,
+    useLayoutEffect,
     useEffect, } from 'react';
 import { View, Text, ScrollView,
     SafeAreaView, FlatList, Image,
@@ -108,17 +109,17 @@ function Index(props:any) {
     const [urlParams, setUrlParams] = useState<DirectoryListType[0]>();
     const [globalData, setGlobalData] = useState<GlobalDataType>(initGlobalDataData);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         initDataHandle();
     }, []);
     const initDataHandle = async function() {
-        const params:DirectoryListType[0] = {
-            "title":"高深莫测的老板",
-            "number":"002",
-            "id":"/novel/147649/read_2.html",
-            "source":"快眼看书",
-        };
-        // const params = route.params;
+        // const params:DirectoryListType[0] = {
+        //     "title":"高深莫测的老板",
+        //     "number":"002",
+        //     "id":"/novel/147649/read_2.html",
+        //     "source":"快眼看书",
+        // };
+        const params = route.params;
         setUrlParams(params);
         // 获取文章数据
         const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);
