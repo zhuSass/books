@@ -77,7 +77,7 @@ function ReadingMain(props:any) {
                 refreshing={false}
                 onEndReached={()=>globalDatae.loadArticleHandle('next')}
                 onRefresh={()=>globalDatae.loadArticleHandle('prev')}
-                onEndReachedThreshold={0.2}
+                onEndReachedThreshold={0.5}
                 renderItem={({ item, index }) => <View style={styles.ReadingMainItem}>
                     <Text style={styles.ReadingMainItemTitle}>{item.title}</Text>    
                     <Text style={styles.ReadingMainItemcontent}>{item.doc}</Text>    

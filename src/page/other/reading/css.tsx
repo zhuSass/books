@@ -11,7 +11,7 @@ export default StyleSheet.create({
         top: 0,
         left: 0,
         width: '100%',
-        height: height,
+        height: height + 20,
         zIndex: -1,
     },
     bgColorContainerTop: {
