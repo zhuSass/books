@@ -1,8 +1,9 @@
 import React,{useContext, useState,
     useLayoutEffect,
-    useEffect, } from 'react';
+    useRef, } from 'react';
 import { View, Text, ScrollView,
     SafeAreaView, FlatList, Image,
+    ToastAndroid,
     StatusBarIOS,
 } from 'react-native';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
@@ -15,6 +16,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import Header from '@/components/header';
 import {IconBtn} from '@/components/icon';
+import Ui from '@/utils/ui'
 
 import styles from './css';
 
@@ -36,11 +38,13 @@ type GlobalDataType = {
             imgSrcMain: string, // 放到主体的图片
         },
     },
+    isUnshiftOperation: boolean,
     articleList: Array<ArticleType>, // 文章列表
     articleBase: ArticleType, // 文章基础数据
     setArticleList: Function,
     setArticleBase: Function,
     loadArticleHandle: Function,
+    setIsUnshiftOperation: Function,
 };
 const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
@@ -61,24 +65,55 @@ const initGlobalDataData:GlobalDataType = {
         doc: '',
         title: '',
     },
+    isUnshiftOperation: false,
     articleList: [], // 文章列表
     setArticleList: ()=>{},
     setArticleBase: ()=>{},
     loadArticleHandle: ()=>{},
+    setIsUnshiftOperation: ()=>{},
 };
 const GlobalDataContext = React.createContext(initGlobalDataData);
 // 文章主体
 function ReadingMain(props:any) {
+    const flatlistEl = useRef<any>(null);
+
     const globalDatae = useContext<GlobalDataType>(GlobalDataContext);
+
+    const  loadPrevArticleHandle = function() {
+        globalDatae.loadArticleHandle('prev');
+        setTimeout(() => {
+            // flatlistEl.current?.scrollToIndex({
+            //     animated: false,
+            //     index: 1,
+            // });
+        }, 0)
+
+        
+    };
+    const getItemWH = function(index:number, layout:any) {
+        if (index === 0 && globalDatae.isUnshiftOperation) {
+            flatlistEl.current?.scrollToOffset({
+                offset: layout.height,
+                animated: false,
+            })
+            // console.log('3--------', 3267.047607421875)
+
+            globalDatae.setIsUnshiftOperation(false);
+        }
+    }
+
     
     return <SafeAreaView>
                 <FlatList
+                ref={flatlistEl}
                 data={globalDatae.articleList}
                 refreshing={false}
                 onEndReached={()=>globalDatae.loadArticleHandle('next')}
-                onRefresh={()=>globalDatae.loadArticleHandle('prev')}
+                onRefresh={loadPrevArticleHandle}
                 onEndReachedThreshold={0.5}
-                renderItem={({ item, index }) => <View style={styles.ReadingMainItem}>
+                renderItem={({ item, index }) => <View 
+                    onLayout={(e)=>getItemWH(index, e.nativeEvent.layout)}
+                    style={styles.ReadingMainItem}>
                     <Text style={styles.ReadingMainItemTitle}>{item.title}</Text>    
                     <Text style={styles.ReadingMainItemcontent}>{item.doc}</Text>    
                 </View>}
@@ -113,13 +148,13 @@ function Index(props:any) {
         initDataHandle();
     }, []);
     const initDataHandle = async function() {
-        // const params:DirectoryListType[0] = {
-        //     "title":"高深莫测的老板",
-        //     "number":"002",
-        //     "id":"/novel/147649/read_2.html",
-        //     "source":"快眼看书",
-        // };
-        const params = route.params;
+        const params:DirectoryListType[0] = {
+            "title":"高深莫测的老板",
+            "number":"002",
+            "id":"/novel/147649/read_2.html",
+            "source":"快眼看书",
+        };
+        // const params = route.params;
         setUrlParams(params);
         // 获取文章数据
         const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);
@@ -143,9 +178,21 @@ function Index(props:any) {
         });
     };
     const loadArticleHandle = async function(type: 'next' | 'prev') {
-        if (type === 'next' && !globalData.articleBase.next) return;
-        if (type === 'prev' && !globalData.articleBase.prev) return;
-
+        if (type === 'next' && !globalData.articleBase.next) {
+            Ui.toast({
+                title: '已经到底了！',
+            });
+            return;
+        };
+        if (type === 'prev' && !globalData.articleBase.prev) {
+            Ui.toast({
+                title: '已经到顶了！',
+                directions: 'TOP',
+                offX: 0, 
+                offY: 20,
+            });
+            return;
+        };
         let id = '';
         let target:any = {};
         if (type === 'next') {
@@ -166,6 +213,7 @@ function Index(props:any) {
         }
         if (type === 'prev') {
             globalData.articleList.unshift(data);
+            setIsUnshiftOperation(true);
         }
         setArticleList(globalData.articleList);
     }
@@ -193,6 +241,14 @@ function Index(props:any) {
             </View>
         </View>
     };
+    const setIsUnshiftOperation = function(isUnshiftOperation: boolean) {
+        setGlobalData((data: GlobalDataType) => {
+            return {
+                ...data,
+                isUnshiftOperation,
+            }
+        });
+    }
     const onResponderEndFun = function() {
     }
 
@@ -208,6 +264,7 @@ function Index(props:any) {
                 setArticleList,
                 setArticleBase,
                 loadArticleHandle,
+                setIsUnshiftOperation,
             }}>
                 {globalData.pageType === 'setting' ? <Header
                     layout='absolute'

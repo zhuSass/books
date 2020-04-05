@@ -66,7 +66,7 @@ export default class KuaiYan {
                 title = textArray[1].trim()
             } else {
                 title = textArray[0];
-                pageNum = `闲言-${indexItem}`;
+                pageNum = title;
             }
 
             data.push({
