@@ -31,6 +31,14 @@ export default class KuaiYan {
             })
         });
         // 本周排行榜
+        dataList.weekRankings.push({
+            title: '诡秘之主',
+            logo: 'http://www.booksky.cc/headimgs/322/322877/s322877.jpg',
+            id: '322877',
+            author: '爱潜水的乌贼',
+            source: KuaiYan.sourceName,
+            desc: '蒸汽与机械的浪潮中，谁能触及非凡？',
+        });
         ptCard2Obj.each((index:number,element:any) => {
             const liDom = $(element).find('li');
             liDom.each((indexItem:number,elementItem:any) => {
