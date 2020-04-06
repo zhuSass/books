@@ -62,11 +62,11 @@ export default class KuaiYan {
             let pageNum = '';
             let title = '';
             if (textArray.length === 2) { // 正常章节
-                pageNum = textArray[0].replace('第', '').replace('章', '');
+                pageNum = textArray[0];
                 title = textArray[1].trim()
             } else {
                 title = textArray[0];
-                pageNum = title;
+                pageNum = '';
             }
 
             data.push({

@@ -68,6 +68,7 @@ export default StyleSheet.create({
         paddingRight: 5,
     },
     renderFlatListBolckTitle: {
+        flex: 1,
         fontWeight: '500',
         fontSize: publicSize,
     },

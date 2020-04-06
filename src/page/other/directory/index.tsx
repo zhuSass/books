@@ -122,8 +122,8 @@ function Index(props:any) {
         return  <TouchableOpacity onPress={() => goToPage(item)}>
                 <View style={styles.renderFlatListWap}>
                     <View style={styles.renderFlatListBolck}>
-                        <Text style={styles.renderFlatListBolckCount}>第{item.number}章</Text>
-                        <Text style={styles.renderFlatListBolckTitle}>{item.title}</Text>
+                        {item.number?<Text style={styles.renderFlatListBolckCount}>{item.number}</Text>:null}
+                        <Text style={styles.renderFlatListBolckTitle} numberOfLines={1}>{item.title}</Text>
                     </View>
                 </View>
         </TouchableOpacity> 
