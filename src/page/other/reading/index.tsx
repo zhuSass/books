@@ -1,6 +1,7 @@
 import React,{useContext, useState,
     useLayoutEffect,
     useImperativeHandle,
+    useCallback,
     forwardRef,
     useRef, } from 'react';
 import { View, Text, ScrollView,
@@ -33,7 +34,7 @@ type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
 // 上下文
 type GlobalDataType = {
     pageType: 'default' | 'setting', // 页面类型
-    readType: 'upDown' | 'around', // upDown上下；around 左右
+    readType: 'default' | 'upDown' | 'around' | 'center', // default 没有操作；upDown上下；around 左右;center 中部
     bgColor: string, // 书面背景色
     readingStyle: { // 阅读样式
         type: 'default', // default 默认；
@@ -63,7 +64,7 @@ type GlobalDataType = {
 const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
-    readType: 'upDown',
+    readType: 'default',
     readingStyle: {
         type: 'default',
         titleFontSize: 27,
@@ -237,15 +238,15 @@ function Index(props:any) {
         let target:any = {};
         if (type === 'next') {
             target = globalData.articleList[globalData.articleList.length - 1];
+        }
+        if (type === 'prev') {
+            target = globalData.articleList[0];
             setGlobalData((data: GlobalDataType) => {
                 return {
                     ...data,
                     bottomLodding: true,
                 }
             });
-        }
-        if (type === 'prev') {
-            target = globalData.articleList[0];
         }
         id = target[type];
         const params:DirectoryListType[0] = {
@@ -302,13 +303,13 @@ function Index(props:any) {
         });
     }
     // 上一页跳跃跳转
-    const handleSkipPrev = function() {
+    const handleSkip = function(readType:GlobalDataType['readType']) {
         const {width, height} = windowDevice;
         const ReadingMainTagretEl = ReadingMainEl.current.flatlistEl;
-        const offsetY = height - height / 6;
+        const offsetY = height;
 
-        if (globalData.readType === 'upDown') {
-            let val = Math.floor(globalData.scrollConfig.y - offsetY);
+        if (readType === 'upDown') {
+            let val = Math.floor(globalData.scrollConfig.y - offsetY + 62);
             val = val < 0 ? 0 : val;
             if (globalData.scrollConfig.y !== val) {
                 ReadingMainTagretEl.scrollToOffset({
@@ -320,9 +321,8 @@ function Index(props:any) {
                 loadArticleHandle('prev');
             } 
         }
-        if (globalData.readType === 'around') {
-            let val = Math.floor(globalData.scrollConfig.y + height + offsetY);
-            val = val < 0 ? 0 : val;
+        if (readType === 'around') {
+            let val = Math.floor(globalData.scrollConfig.y  + offsetY - 62);
             if (globalData.scrollConfig.y !== val) {
                 ReadingMainTagretEl.scrollToOffset({
                     offset: val,
@@ -330,30 +330,42 @@ function Index(props:any) {
                 });
             }
         }
-        // debugger
-    }
-    const onResponderEndFun = function(e:GestureResponderEvent) {
+    };
+    
+    const onResponderEndFun = useCallback(function(e:GestureResponderEvent) {
         e.persist();
         const {pageY, pageX} = e.nativeEvent;
         const {width, height} = windowDevice;
-        const resulteHeight = height - 172;
+        const resulteHeight = height;
         const areaHeight = resulteHeight / 3;
         const upArea:Array<number> =  [0, areaHeight]; // 手指按上区域部分
         const centerArea =  [areaHeight, areaHeight + areaHeight]; // 手指按中区域部分
-        const bottomArea =  [areaHeight * 2, resulteHeight]; // 手指按下区域部分
+        const bottomArea =  [areaHeight * 2, height]; // 手指按下区域部分
+        let readType:GlobalDataType['readType'] = 'default';
 
         if (upArea[0] < pageY &&  upArea[1] > pageY) {
-            handleSkipPrev();
+            readType = 'upDown';
             console.log('按上')
         }
         if (centerArea[0] < pageY &&  centerArea[1] > pageY) {
+            readType = 'center';
             console.log('按中')
         }
         if (bottomArea[0] < pageY &&  bottomArea[1] > pageY) {
+            readType = 'around';
             console.log('按下')
         }
+        setGlobalData((data: GlobalDataType) => {
+            return {
+                ...data,
+                readType: readType,
+            };
+        });
+        if (readType !== 'default') {
+            handleSkip(readType);
+        }
         // console.log('坐标-------', pageY, height)
-    }
+    }, [globalData]);
 
     return (<View 
             style={[
