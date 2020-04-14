@@ -127,7 +127,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="Other"
+      initialRouteName="AppStack"
       headerMode="none"
     >
        {/* 登录验证 */}
