@@ -59,11 +59,13 @@ export function requestGetPage(apiName: string, configInfo:any = {}):Promise<str
     let url = apiName;
     console.log('6-------------', url)
 
-    return new Promise(reject => {
+    return new Promise((resolve, reject) => {
         fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
+            // Alert.alert(`请求成功：${url}`)
             const htmlObj = cheerio.load(data);
-            reject(htmlObj);
+            resolve(htmlObj);
         }).catch((err) => {
+            reject(err);
             // Alert.alert(`请求地址：${url}`,`请求失败：${JSON.stringify(err)};`)
         });
     });
