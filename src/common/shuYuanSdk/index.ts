@@ -1,4 +1,5 @@
 
+import useSWR from 'swr';
 import {requestGetPage} from '@/common/http';
 
 import KuaiYan from './kuaiYan';

@@ -14,7 +14,6 @@ import { View, Text, ScrollView,
     GestureResponderEvent,
 } from 'react-native';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
-import { StyleSheet, } from "react-native";
 
 import ShuYuanSdk,{
     DirectoryListType,
@@ -188,13 +187,13 @@ function Index(props:any) {
         initDataHandle();
     }, []);
     const initDataHandle = async function() {
-        const params:DirectoryListType[0] = {
-            "title":"高深莫测的老板",
-            "number":"002",
-            "id":"/novel/147649/read_2.html",
-            "source":"快眼看书",
-        };
-        // const params = route.params;
+        // const params:DirectoryListType[0] = {
+        //     "title":"高深莫测的老板",
+        //     "number":"002",
+        //     "id":"/novel/147649/read_2.html",
+        //     "source":"快眼看书",
+        // };
+        const params = route.params;
         setUrlParams(params);
         // 获取文章数据
         const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);

@@ -7,6 +7,10 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    btn: {
+        display: 'flex', 
+        flexDirection: 'row',
+    },
     headerLeftText: {
         paddingLeft: 15,
         fontSize: publicSize,
@@ -73,6 +77,7 @@ export default StyleSheet.create({
         fontSize: publicSize,
     },
     safeAreaView: {
-        flex: 1,
+        // flex: 1,
+        backgroundColor: 'red',
     },
 });
