@@ -11,12 +11,12 @@ import {
     Text,
     NativeScrollEvent,
 } from 'react-native';
+import useSWR from 'swr';
 import { useNavigation,NavigationProp, } from '@react-navigation/native';
 
 import Header from '@/components/header';
 import LazyLoading from '@/components/lazyLoading';
 import ShuYuanSdk,{HomeList} from '@/common/shuYuanSdk';
-import {useSdkSWR} from '@/common/http';
 
 import styles from './css'
 
@@ -250,7 +250,7 @@ function Index(props:any) {
         qualityRecommended: [],
         weekRankings: [],
     });
-    const { data, error } = useSdkSWR(async() => {
+    const { data, error } = useSWR(ShuYuanSdk.getHomePageInfoUrl(), async() => {
             return ShuYuanSdkObj.getHomePageInfo();
         });
 

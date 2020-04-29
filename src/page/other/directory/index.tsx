@@ -6,13 +6,13 @@ import { View, Text,
     TouchableOpacity,
     TouchableWithoutFeedback,
 } from 'react-native';
+import useSWR from 'swr';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
 
 import ShuYuanSdk,{
     DirectoryListType,
     GetDirectoryPageInfoType,
 } from '@/common/shuYuanSdk';
-import {useSdkSWR} from '@/common/http';
 import Header, {HeaderPropsType,
 } from '@/components/header';
 import Icon from '@/components/icon';
@@ -36,13 +36,13 @@ function Index(props:any) {
     const route = useRoute<ProfileScreenRouteProp>();
     const navigation = useNavigation();
     const flatListEl = useRef<any>(null);
-    const params:GetDirectoryPageInfoType = {
-        id: "349010", 
-        source: "快眼看书",
-        title: 'jfiojdi',
-    };
-    // const params = route.params;
-    const { data, error } = useSdkSWR(async() => {
+    // const params:GetDirectoryPageInfoType = {
+    //     id: "349010", 
+    //     source: "快眼看书",
+    //     title: '涅瓦',
+    // };
+    const params = route.params;
+    const { data, error } = useSWR(ShuYuanSdk.getDirectoryPageInfoUrl(params), async() => {
         return ShuYuanSdk.getDirectoryPageInfo(params);
     });
 
@@ -69,7 +69,7 @@ function Index(props:any) {
     };
     const initDataHandle = async function() {
         setBaseInfo(params);
-        if (data.length) {
+        if (data && data?.length) {
             const list:DirectoryListType =  data;
             setAllDataList(list);
             const sliceData = list.slice(

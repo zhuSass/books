@@ -92,6 +92,10 @@ export default class ShuYuanSdk {
     };
     /** 当前需要获取的书院源 **/
     currentShuYuanIds: CurrentShuYuanIdsType = [];
+    // 获取首页信息请求地址
+    static getHomePageInfoUrl():string {
+        return `getHomePageInfoUrl`;
+    }
     // 获取首页信息
     async getHomePageInfo():Promise<HomeList> {
         let list:HomeList = {
@@ -109,16 +113,23 @@ export default class ShuYuanSdk {
         }
         return list;
     }
+    /** 获取目录信息请求地址 **/
+    static getDirectoryPageInfoUrl(data: GetDirectoryPageInfoType):string {
+        return `${ShuYuanSdk.allShuYuanIds[data.source].directory}${data.id}.html`;
+    }
     /** 获取目录信息 **/
     static async getDirectoryPageInfo(data: GetDirectoryPageInfoType):Promise<DirectoryListType> {
-        const html:any = await requestGetPage(
-            `${ShuYuanSdk.allShuYuanIds[data.source].directory}${data.id}.html`
-            );
+        let url = ShuYuanSdk.getDirectoryPageInfoUrl(data);
+        const html:any = await requestGetPage(url);
         let handle = ShuYuanSdk.allShuYuanIds[data.source].handle;
 
         return handle.getDirectoryList(html);
-
     }
+    /** 获取文章信息请求地址 **/
+    static getArticleInfoUrl(data: DirectoryListType[0]):string {
+        return `${ShuYuanSdk.allShuYuanIds[data.source].article}${data.id}`;
+    }
+    /** 获取文章信息 **/
     static async getArticleInfo(data: DirectoryListType[0]):Promise<ArticleType> {
         const html:any = await requestGetPage(
             `${ShuYuanSdk.allShuYuanIds[data.source].article}${data.id}`

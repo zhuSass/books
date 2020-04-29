@@ -2,7 +2,6 @@ const cheerio = require('react-native-cheerio')
 
 import Config from "@/config/index";
 import { Alert } from 'react-native';
-import useSWR from 'swr';
 
 const API_LIST = {
     /*******************用户模块****************************/
@@ -49,9 +48,6 @@ export default function request(apiName: apiNameType, params:any = {}, configInf
     });
 };
 
-export function useSdkSWR(...arg:any[]) {
-    return useSWR('http://dfsdfsdfsd.com', ...arg);
-}
 // 获取网页html资源
 export function requestGetPage(apiName: string, configInfo:any = {}):Promise<string> {
     let initConfig:any = {
@@ -62,7 +58,7 @@ export function requestGetPage(apiName: string, configInfo:any = {}):Promise<str
     };
     let mergeConfig = Object.assign({}, initConfig, configInfo);
     let url = apiName;
-
+console.log('request-----', url);
     return new Promise((resolve, reject) => {
         fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
             // Alert.alert(`请求成功：${url}`)
