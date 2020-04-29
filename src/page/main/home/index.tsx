@@ -27,14 +27,34 @@ function Banner() {
     const navigation = useNavigation();
 
     let bannerList =[
-        {title: 'fds', pagSrc: 'Other', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1080c5/g5/M00/01/0F/ChMkJlbKwi-IdJtLAAQcbAvaMWcAALGkAM_YpMABByE165.jpg',},
-        {title: 'cds', pagSrc: 'Other', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IZNlnAAXcSmC9yiwAALGkANDfxcABdxi053.jpg',},
-        {title: 'dsew', pagSrc: 'Other', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IHA_bAAdtkjiuJS8AALGkANJW3kAB22q210.jpg',},
-        {title: '3dsew', pagSrc: 'Bibliotheca', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJlbKwi-IIgUYAAW-dNoy2CsAALGkANQySMABb6M328.jpg',},
-        {title: '4dsew', pagSrc: 'Bbs', src: 'https://desk-fd.zol-img.com.cn/t_s1920x1200c5/g5/M00/01/0F/ChMkJ1bKwi-IT_bXAA3D8fytBOUAALGkANZB6sADcQJ000.jpg',},
+        {
+            title: '佣兵的战争',
+            logo: 'http://qidian.qpic.cn/qidian_common/349573/9acf7a1f789604c540e80df89f80bef3/0',
+            id: '2234',
+            source: '快眼看书',
+        },
+        {
+            title: '网游之大盗贼',
+            logo: 'http://qidian.qpic.cn/qidian_common/349573/ad0e5e2954e680ff948b1e62d02b5a74/0',
+            id: '6994',
+            source: '快眼看书',
+        },
+        {
+            title: '大时代1958',
+            logo: 'http://qidian.qpic.cn/qidian_common/349573/40cdb0ab19a6e705cc271e712502b745/0',
+            id: '96769',
+            source: '快眼看书',
+        },
     ]
-    const goToPage = function(src: string) {
-        navigation.navigate(src);
+    const goToPage = function(item: any) {
+        navigation.navigate('Other', { 
+            screen: 'BookDirectory', 
+            params: {
+                id: item.id,
+                source: item.source,
+                title: item.title,
+            },
+        });
     }
 
     return <SafeAreaView style={styles.bannerWrap}>
@@ -50,9 +70,9 @@ function Banner() {
                 && styles.imgContainerMr,
             ]}>
                 <TouchableWithoutFeedback
-                    onPress={() => goToPage(item.pagSrc)}>
+                    onPress={() => goToPage(item)}>
                     <ImageBackground  
-                        source={{uri: item.src}}
+                        source={{uri: item.logo}}
                         resizeMode='cover'
                         style={[
                             styles.imgContainer,
