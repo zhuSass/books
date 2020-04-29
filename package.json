@@ -20,7 +20,6 @@
     "@react-navigation/material-bottom-tabs": "^5.1.8",
     "@react-navigation/native": "^5.1.5",
     "@react-navigation/stack": "^5.2.10",
-    "native-base": "^2.13.12",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-cheerio": "^1.0.0-rc.4",
