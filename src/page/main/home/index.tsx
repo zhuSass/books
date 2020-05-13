@@ -117,10 +117,6 @@ function NEW(props: {
                 dataLeng={dataList.length}>
                 <FlatList
                 data={dataList}
-                horizontal={true}
-                getItemLayout={(data: any, index: number) => (
-                    {length: 164, offset: 164 * index, index}
-                )}
                 renderItem={(data:{item: any, index: number}) => {
                     const {item, index} = data;
                     

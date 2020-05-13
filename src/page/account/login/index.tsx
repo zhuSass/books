@@ -12,7 +12,7 @@ import Icon from '@/components/icon';
 
 import { StackActions, } from '@react-navigation/native';
 // import Loading from 'react-native-loading-spinner-overlay';
-import Ui from '@/utils/ui';
+import {Toast} from '@/utils/ui';
 
 import style from './css'
 
@@ -74,7 +74,7 @@ export default function Index(props:any) {
     const submitForm = ():void => {
       if (!userInfo.name
         || !userInfo.password) {
-          Ui.toast({title: '请输入账户密码！'});
+          Toast({title: '请输入账户密码！'});
         } else {
           navigation.replace('App');
         }

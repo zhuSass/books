@@ -22,7 +22,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import Header from '@/components/header';
 import {IconBtn} from '@/components/icon';
-import Ui from '@/utils/ui'
+import {Toast} from '@/utils/ui'
 
 import styles from './css';
 
@@ -219,13 +219,13 @@ function Index(props:any) {
 
     const loadArticleHandle = async function(type: 'next' | 'prev') {
         if (type === 'next' && !globalData.articleBase.next) {
-            Ui.toast({
+            Toast({
                 title: '已经到底了！',
             });
             return;
         };
         if (type === 'prev' && !globalData.articleBase.prev) {
-            Ui.toast({
+            Toast({
                 title: '已经到顶了！',
                 directions: 'TOP',
                 offX: 0, 

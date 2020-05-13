@@ -18,6 +18,7 @@ import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 小说主页
 //*************************其它模块************************************//
 import ReadingScreen from '@/page/other/reading'; // 阅读
 import BookDirectoryScreen from '@/page/other/directory'; // 小说目录
+import searchScreen from '@/page/other/search'; // 小说目录
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -44,7 +45,7 @@ function BibliothecaModel() {
 function OtherModel() {
   return (
     <Stack.Navigator
-      initialRouteName="BookDirectory"
+      initialRouteName="search"
       headerMode="none"
     >
       {/* 文章详情 */}
@@ -70,6 +71,14 @@ function OtherModel() {
         component={BookDirectoryScreen}
         options={{
           title: '小说目录',
+        }}
+      />
+      {/* 小说搜索 */}
+      <Stack.Screen
+        name="search"
+        component={searchScreen}
+        options={{
+          title: '小说搜索',
         }}
       />
     </Stack.Navigator>
@@ -127,7 +136,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="App"
+      initialRouteName="Other"
       headerMode="none"
     >
        {/* 登录验证 */}
