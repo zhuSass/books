@@ -7,6 +7,10 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    indexWrap: {
+        display: 'flex',
+        flex: 1,
+    },
     header: {
         backgroundColor: '#fff',
     },
@@ -164,12 +168,11 @@ export default StyleSheet.create({
     shuYuanListTagTextAction: {
         color: 'red',
     },
-    bananaCameraScroll: {
-
+    resultListWrap: {
+        flex: 1,
     },
-    cc: {
-        height: 300,
-        backgroundColor: 'red',
+    bananaCameraScroll: {
+        flex: 1,
     },
     bananaCameraItem: {
         width: 146,

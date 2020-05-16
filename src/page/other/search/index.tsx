@@ -170,7 +170,7 @@ type DataType = Array<{
     logo?: string,
 }>;
 function ResultList(props: {
-    dataList: DataType,
+    dataList: DataType | undefined,
     error: boolean,
 }) {
     const navigation = useNavigation();
@@ -187,19 +187,18 @@ function ResultList(props: {
     };
 
     const {dataList, error,} = props;
-    return <View>
+    let data = dataList ? dataList: [];
+
+    console.log('5-----------', data);
+
+    return <View style={styles.resultListWrap}>
         <SafeAreaView style={styles.bananaCameraScroll}>
+
             <LazyLoading error={props.error} 
                 parentScreen={Index.parentScreen}
-                dataLeng={dataList.length}>
-                    <FlatList data={dataList}
-                    renderItem={(data:{item: any, index: number}) => {
-                        return <Text key={data.index}>{data.item.author}</Text>  
-                    }}
-                    keyExtractor={item => `${item.source}-${item.id}`}
-                    />
+                dataLeng={data.length}>
 
-                {/* <FlatList
+                <FlatList
                 data={dataList}
                 style={styles.cc}
                 getItemLayout={(data: any, index: number) => (
@@ -208,7 +207,6 @@ function ResultList(props: {
                 renderItem={(data:{item: any, index: number}) => {
                     const {item, index} = data;
                     return <View 
-                        key={index}
                         style={[
                             styles.bananaCameraItem,
                         ]}>
@@ -235,7 +233,7 @@ function ResultList(props: {
                     </View>
                 }}
                 keyExtractor={item => `${item.source}-${item.id}`}
-                /> */}
+                />
             </LazyLoading>
         </SafeAreaView>
     </View>
@@ -318,11 +316,10 @@ export default function Index(props:any) {
             source: actionType,
             keyword: keyword,
         };
-
     };
 
     return <View style={styles.index}>
-        <View>
+        <View style={styles.indexWrap}>
             {/* 搜索框 */}
             <Search 
                 keyword={keyword}
