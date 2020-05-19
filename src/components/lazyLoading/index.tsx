@@ -15,8 +15,10 @@ export type propsType = {
     errorLazy?: JSX.Element, // 加载失败组件
     children: JSX.Element[] | JSX.Element, 
     error: boolean, // 错误状态
+    loading: boolean, // 加载状态
     dataLeng: number, // 数据长度
     parentScreen: string, // 所属父级屏幕名字
+    reloadCall?: Function, // 重新发出请求
 }
 
 function Loadding() {
@@ -33,13 +35,16 @@ function ErrorStatus(props:propsType) {
     const route = useRoute();
 
     const goToPage = function() {
-        navigation.dispatch(StackActions.replace(props.parentScreen,
-        {
-            screen: route.name,
-            initial: false,
-            params:route.params
-        }));
-        
+        if (props.reloadCall) {
+            props.reloadCall();
+        } else {
+            navigation.dispatch(StackActions.replace(props.parentScreen,
+                {
+                    screen: route.name,
+                    initial: false,
+                    params:route.params
+                }));
+        }
     };
     return <View style={styles.errorStatus}>
         <View style={styles.errorStatusIconWrap}>
@@ -55,15 +60,22 @@ function ErrorStatus(props:propsType) {
         </TouchableOpacity>
     </View>
 }
+function NoData() {
+    return <View style={styles.keyWordRecommendContentNoData}>
+        <Text style={styles.noDataText}>~~暂时没有数据~~</Text>
+    </View>
+}
 
 export default function LazyLoading(props: propsType) {
-    const {fallback, errorLazy, error, dataLeng, children} = props;
+    const {fallback, errorLazy, error, reloadCall, children, loading, dataLeng,} = props;
+
 
     const LoaddingLazy = fallback !== undefined && React.isValidElement(fallback) ?
         <View>{fallback}</View>:<Loadding/>;    
     const ErrorStatusLazy = errorLazy !== undefined && React.isValidElement(errorLazy) ?
         <View>{errorLazy}</View>:<ErrorStatus {...props}/>;    
-    const DataLazy = dataLeng ? children : LoaddingLazy;
+    const resulte = dataLeng ? children : <NoData/>;
+    const DataLazy = loading ? LoaddingLazy : resulte;
 
     return <View style={styles.lazyLoadingWrap}>
         {error ? ErrorStatusLazy : DataLazy}

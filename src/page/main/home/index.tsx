@@ -114,7 +114,8 @@ function NEW(props: {
         <SafeAreaView style={styles.bananaCameraScroll}>
             <LazyLoading error={props.error} 
                 parentScreen={Index.parentScreen}
-                dataLeng={dataList.length}>
+                dataLeng={dataList.length}
+                loading={!!!dataList.length}>
                 <FlatList
                 data={dataList}
                 renderItem={(data:{item: any, index: number}) => {
@@ -208,7 +209,8 @@ function BananaCamera(props: {
         <SafeAreaView style={styles.bananaCameraScroll}>
                 <LazyLoading error={props.error} 
                         parentScreen={Index.parentScreen}
-                        dataLeng={bannerList.length}>
+                        dataLeng={bannerList.length}
+                        loading={!!!bannerList.length}>
                     <FlatList
                     data={bannerList}
                     horizontal={true}

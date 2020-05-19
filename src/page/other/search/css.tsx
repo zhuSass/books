@@ -173,9 +173,11 @@ export default StyleSheet.create({
     },
     bananaCameraScroll: {
         flex: 1,
+        paddingLeft: 16,
+        paddingRight: 16,
     },
     bananaCameraItem: {
-        width: 146,
+        width: 160,
         marginBottom: 6,
         backgroundColor: '#fff',
         overflow: 'hidden',
@@ -195,8 +197,9 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(000,000,000,0)',
     },
     bananaCameraImg: {
-        width: '100%',
-        height: '100%',
+        flex: 1,
+        resizeMode: "cover",
+        justifyContent: "center",
     },
     bananaCameraCoverType: {
         position: 'absolute',

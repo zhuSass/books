@@ -16,6 +16,8 @@ type CurrentShuYuanIdsProps = {
         directory: string, 
         /** 小说文章网址 **/ 
         article: string, 
+        /** 小说搜索网址 **/ 
+        search: string, 
     }
 };
 /** 首页数据类型 **/
@@ -57,7 +59,6 @@ export type ArticleType = {
     /** 文章标题 **/
     title: string,
 };
-
 /** 获取目录方法参数类型 **/
 export type GetDirectoryPageInfoType = {
     /** 小说标识 **/
@@ -66,7 +67,21 @@ export type GetDirectoryPageInfoType = {
     title: string, 
     /** 平台标识 **/
     source: AllShuYuanIdsKey, 
-}
+};
+/** 获取搜索方法参数类型 **/
+export type SearchListType = Array<{
+    source: AllShuYuanIdsKey,
+    id: number,
+    author: string,
+    title: string,
+    newSection?: string,
+    logo?: string,
+}>;
+/** 获取搜索条件参数类型 **/
+export type SearchConditionType = {
+    source: AllShuYuanIdsKey,
+    keyword: string,
+};
 
 export default class ShuYuanSdk {
     constructor(shuYuanList: CurrentShuYuanIdsType) {
@@ -82,12 +97,14 @@ export default class ShuYuanSdk {
             home: 'https://www.07zw.com',
             directory: '', 
             article: '',
+            search: '',
         },
         '快眼看书': {
             handle: KuaiYan, // 处理方法
             home: 'http://m.booksky.cc',
             directory: 'http://www.booksky.cc/', // http://www.booksky.cc/355476.html 
             article: 'http://www.booksky.cc/',
+            search: 'http://www.booksky.cc/modules/article/search.php?searchkey=',
         },
     };
     /** 当前需要获取的书院源 **/
@@ -144,5 +161,20 @@ export default class ShuYuanSdk {
         let homeListObj:HomeList = handle.getHomeClassifyList(html);
 
         return homeListObj;
+    }
+    /** 获取搜索结果信息 **/
+    static async getSearchInfo(data: {
+        source: AllShuYuanIdsKey,
+        keyword: string,
+    }):Promise<SearchListType> {
+        let url = ShuYuanSdk.getSearchInfoUrl(data);
+        const html:any = await requestGetPage(url);
+        let handle = ShuYuanSdk.allShuYuanIds[data.source].handle;
+
+        return handle.getSearchList(html);
+    }
+    /** 获取搜索结果请求地址 **/
+    static getSearchInfoUrl(data: SearchConditionType):string {
+        return `${ShuYuanSdk.allShuYuanIds[data.source].search}${data.keyword}`;
     }
 }

@@ -16,6 +16,7 @@ import { View, Text, ScrollView,
     GestureResponderEvent,
     TouchableWithoutFeedback,
     ImageBackground,
+    useWindowDimensions,
 } from 'react-native';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
 
@@ -23,13 +24,15 @@ import ShuYuanSdk,{
     DirectoryListType,
     ArticleType,
     AllShuYuanIdsKey,
+    SearchListType,
+    SearchConditionType,
 } from '@/common/shuYuanSdk';
 import {IconBtn} from '@/components/icon';
 import LazyLoading from '@/components/lazyLoading';
 import {AsyncStorage} from '@/utils/ui'
 
 import styles from './css';
-
+// 书名推荐
 function KeyWordRecommend(props: {
     type: string,
     keyWords: string[],
@@ -67,7 +70,7 @@ function KeyWordRecommend(props: {
             </View>}
     </View>
 }
-
+// 搜索框
 function Search(props: {
     addKeyWords: Function,
     keyword: string,
@@ -125,7 +128,7 @@ function Search(props: {
         </View>
     </View> 
 }
-
+// 书源类别
 function ShuYuanList(props: {
     actionType: string,
     setActionType: Function,
@@ -160,20 +163,15 @@ function ShuYuanList(props: {
         />
     </View>
 };
-
-type DataType = Array<{
-    source: AllShuYuanIdsKey,
-    id: number,
-    author: string,
-    title: string,
-    newSection?: string,
-    logo?: string,
-}>;
+// 搜索出的数据
 function ResultList(props: {
-    dataList: DataType | undefined,
+    dataList: SearchListType,
     error: boolean,
+    sendStatus: boolean,
+    searchHandle: Function,
 }) {
     const navigation = useNavigation();
+    const window = useWindowDimensions();
 
     const goToPage = function(item: any) {
         navigation.navigate('Other', { 
@@ -189,21 +187,22 @@ function ResultList(props: {
     const {dataList, error,} = props;
     let data = dataList ? dataList: [];
 
-    console.log('5-----------', data);
+    const colNum = Math.floor((window.width - 16 * 2 -5) / 165);
 
     return <View style={styles.resultListWrap}>
         <SafeAreaView style={styles.bananaCameraScroll}>
-
             <LazyLoading error={props.error} 
-                parentScreen={Index.parentScreen}
-                dataLeng={data.length}>
-
+                loading={props.sendStatus}
+                dataLeng={dataList.length}
+                reloadCall={props.searchHandle}
+                parentScreen={Index.parentScreen}>
                 <FlatList
                 data={dataList}
-                style={styles.cc}
-                getItemLayout={(data: any, index: number) => (
-                    {length: 164, offset: 164 * index, index}
-                )}
+                columnWrapperStyle={{
+                    marginBottom: 5,
+                    justifyContent: 'space-between',
+                }}
+                numColumns={colNum}
                 renderItem={(data:{item: any, index: number}) => {
                     const {item, index} = data;
                     return <View 
@@ -226,7 +225,7 @@ function ResultList(props: {
                                     </View> 
                                     <View style={styles.bananaCameraCoverInfo}>
                                         <Text style={styles.bananaCameraCoverTitle} numberOfLines={1}>{item.title}</Text>        
-                                        <Text style={styles.bananaCameraCoverSubTitle} numberOfLines={2}>{item.desc || '--'}</Text>        
+                                        <Text style={styles.bananaCameraCoverSubTitle} numberOfLines={2}>{item.newSection || '--'}</Text>        
                                     </View>   
                                 </View>
                         </TouchableWithoutFeedback>
@@ -240,34 +239,36 @@ function ResultList(props: {
 }
 
 export default function Index(props:any) {
-    const [ keyword, setKeyword] = useState('诡秘之主');
-    const [ actionType, setActionType] = useState('快眼看书');
-    const [ dataList, setDataList] = useState<DataType>([
-        {
-            source: '快眼看书',
-            id: 256130,
-            author: '公子珏',
-            title: '大明尊',
-            newSection: '新书发布求一切',
-            logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
-        },
-        {
-            source: '快眼看书',
-            id: 345180,
-            author: '公子珏',
-            title: '明尊',
-            newSection: '新书发布求一切',
-            logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
-        },
-        {
-            source: '快眼看书',
-            id: 345320,
-            author: '公子珏',
-            title: '明尊',
-            newSection: '新书发布求一切',
-            logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
-        },
+    const [ keyword, setKeyword] = useState('');
+    const [ actionType, setActionType] = useState<AllShuYuanIdsKey>('快眼看书');
+    const [ dataList, setDataList] = useState<SearchListType>([
+        // {
+        //     source: '快眼看书',
+        //     id: 256130,
+        //     author: '公子珏',
+        //     title: '大明尊',
+        //     newSection: '新书发布求一切',
+        //     logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
+        // },
+        // {
+        //     source: '快眼看书',
+        //     id: 345180,
+        //     author: '公子珏',
+        //     title: '明尊',
+        //     newSection: '新书发布求一切',
+        //     logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
+        // },
+        // {
+        //     source: '快眼看书',
+        //     id: 345320,
+        //     author: '公子珏',
+        //     title: '明尊',
+        //     newSection: '新书发布求一切',
+        //     logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
+        // },
     ]);
+    const [error, setError] = useState(false);
+    const [sendStatus, setSendStatus] = useState(false);
     const [keyWords, setKeywords] = useState<string[]>([]);
     // 大家都在搜
     const recommendList = [
@@ -291,7 +292,7 @@ export default function Index(props:any) {
             }
         });
     }, []);
-    const addKeyWords = useCallback(function(str: string) {
+    const addKeyWords = function(str: string) {
         if (keyWords.indexOf(str) == -1 && str.replace(/\s+/g, '')) {
             setKeywords((old) => {
                 return [
@@ -302,21 +303,35 @@ export default function Index(props:any) {
             AsyncStorage.setItem('searchWrap_keyWords', JSON.stringify(keyWords));
             searchHandle();
         }
-    }, [keyWords]);
+    };
     const delKeyWords = function(str: string) {
         setKeywords([]);
         AsyncStorage.removeItem('searchWrap_keyWords');
     };
-    const clickKeyWordTags = function(str: string) {
+    const clickKeyWordTags = useCallback(function(str: string) {
         setKeyword(str);
         addKeyWords(str);
-    };
-    const searchHandle = function() {
-        const params = {
+        console.log('2------------', keyword)
+    }, [keyword]);
+    const searchHandle = useCallback(async function() {
+        const params:SearchConditionType = {
             source: actionType,
             keyword: keyword,
         };
-    };
+        setError(false);
+        setSendStatus(true);
+        setDataList([]);
+        try {
+            const data = await ShuYuanSdk.getSearchInfo(params);
+            setDataList(data);
+            setError(false);
+        } catch(e) {
+            setError(true);
+        }
+        setSendStatus(false);
+        // console.log('searchHandle--------', keyword);
+
+    }, [actionType, sendStatus, keyword, dataList]);
 
     return <View style={styles.index}>
         <View style={styles.indexWrap}>
@@ -343,7 +358,9 @@ export default function Index(props:any) {
                         setActionType={setActionType}/>
                     {/* 搜索结果 */}
                     <ResultList 
-                        error={false}
+                        error={error}
+                        searchHandle={searchHandle}
+                        sendStatus={sendStatus}
                         dataList={dataList}/>
                </>} 
         </View>

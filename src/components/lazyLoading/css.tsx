@@ -41,4 +41,16 @@ export default StyleSheet.create({
         fontSize: 32,
         color: 'rgba(000, 000, 000, 0.3)',
     },
+    keyWordRecommendContentNoData: {
+        display: 'flex',
+        alignItems: 'center',
+        textAlign: 'center',
+        justifyContent: 'center',
+        paddingTop: 20,
+        paddingBottom: 20,
+    },
+    noDataText: {
+        fontSize: 13,
+        color: '#969ba3',
+    },
 });

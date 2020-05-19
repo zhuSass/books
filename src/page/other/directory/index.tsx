@@ -37,7 +37,7 @@ function Index(props:any) {
     const navigation = useNavigation();
     const flatListEl = useRef<any>(null);
     // const params:GetDirectoryPageInfoType = {
-    //     id: "349010", 
+    //     id: "256130", 
     //     source: "快眼看书",
     //     title: '涅瓦',
     // };
@@ -154,7 +154,8 @@ function Index(props:any) {
             </View>
             <LazyLoading error={error} 
                     parentScreen={Index.parentScreen}
-                    dataLeng={dataList.length}>
+                    dataLeng={dataList.length}
+                    loading={!!!dataList.length}>
                 <View style={styles.baseInfo}>
                     <Text style={styles.baseInfoTotalNumber}>共{allDataList.length}章</Text>
                     <TouchableOpacity style={styles.btn} onPress={toggleOrderHandle}>

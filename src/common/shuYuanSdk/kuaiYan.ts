@@ -1,8 +1,9 @@
 
-import {HomeList,
+import ShuYuanSdk,{HomeList,
         DirectoryListType,
         AllShuYuanIdsKey,
         ArticleType,
+        SearchListType,
      } from './index';
 
 export default class KuaiYan {
@@ -69,9 +70,9 @@ export default class KuaiYan {
             const textArray = center.split(/\s+/);
             let pageNum = '';
             let title = '';
-            if (textArray.length === 2) { // 正常章节
+            if (textArray.length >= 2) { // 正常章节
                 pageNum = textArray[0];
-                title = textArray[1].trim()
+                title = textArray.slice(1).join(' ');
             } else {
                 title = textArray[0];
                 pageNum = '';
@@ -103,5 +104,30 @@ export default class KuaiYan {
             prev,
             next,
         }
+    }
+    // 获取搜索信息
+    static getSearchList($:any):SearchListType {
+        const operateDom = $('.librarylist').find('li');
+        const dataList:SearchListType = [];
+        operateDom.each((index:number,element:any) => {
+            try {
+                const logo = $(element).find('img').attr('src');
+                const id = $(element).find('.pt-ll-l a').attr('href').replace('/', '').replace('.html', '');
+                const title = $(element).find('a').attr('title');
+                const author = $(element).find('.info').children().last().text().replace('作者：', '');
+                const newSection = $(element).find('.last').text().trim();
+                dataList.push({
+                    source: KuaiYan.sourceName,
+                    id: id,
+                    author: author,
+                    title: title,
+                    newSection: newSection,
+                    logo: ShuYuanSdk.allShuYuanIds[KuaiYan.sourceName].home + logo,
+                });
+            } catch(e) {
+                console.log('error:', e)
+            }
+        });
+        return dataList;
     }
 };
