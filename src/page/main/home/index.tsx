@@ -117,6 +117,8 @@ function NEW(props: {
                 dataLeng={dataList.length}
                 loading={!!!dataList.length}>
                 <FlatList
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
                 data={dataList}
                 renderItem={(data:{item: any, index: number}) => {
                     const {item, index} = data;
@@ -214,6 +216,7 @@ function BananaCamera(props: {
                     <FlatList
                     data={bannerList}
                     horizontal={true}
+                    showsHorizontalScrollIndicator={false}
                     getItemLayout={(data: any, index: number) => (
                         {length: 164, offset: 164 * index, index}
                     )}
@@ -264,6 +267,7 @@ function BananaCamera(props: {
     </View> 
 }
 function Index(props:any) {
+    const navigation = useNavigation();
     const [homeData, setHomeData] = useState<HomeList>({
         qualityRecommended: [],
         weekRankings: [],
@@ -271,13 +275,21 @@ function Index(props:any) {
     const { data, error } = useSWR(ShuYuanSdk.getHomePageInfoUrl(), async() => {
             return ShuYuanSdkObj.getHomePageInfo();
         });
+    const gotoPage = function() {
+        navigation.navigate('Other', { 
+            screen: 'search', 
+        });
+    };
 
     return (<View>
         {/* 头部 */}
         <Header 
             headerCenter='阅读空间' 
             headerLeft={false}
-            functionList={['search',]}
+            functionList={[{
+                name: 'search',
+                function: gotoPage,
+            }]}
             />
         <ScrollView
             style={styles.main}>

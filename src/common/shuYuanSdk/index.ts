@@ -8,6 +8,8 @@ export type AllShuYuanIdsKey = '零七中文网' | '快眼看书';
 type CurrentShuYuanIdsType = Array<AllShuYuanIdsKey>;
 type CurrentShuYuanIdsProps = {
     [key in AllShuYuanIdsKey]: {
+        /** 别名 **/ 
+        label: string,
         /** 处理方法 **/ 
         handle: any, 
         /** 首页网址 **/ 
@@ -93,6 +95,7 @@ export default class ShuYuanSdk {
     /** 全部书源标识 **/
     static allShuYuanIds:CurrentShuYuanIdsProps = {
         '零七中文网': {
+            label: '神圣天堂',
             handle: KuaiYan,
             home: 'https://www.07zw.com',
             directory: '', 
@@ -100,6 +103,7 @@ export default class ShuYuanSdk {
             search: '',
         },
         '快眼看书': {
+            label: '乌托邦',
             handle: KuaiYan, // 处理方法
             home: 'http://m.booksky.cc',
             directory: 'http://www.booksky.cc/', // http://www.booksky.cc/355476.html 

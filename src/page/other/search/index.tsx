@@ -76,8 +76,14 @@ function Search(props: {
     keyword: string,
     setKeyword: Function,
 }) {
+    const navigation = useNavigation();
+    const inputEl = useRef<TextInput>(null);
     const {keyword, setKeyword, addKeyWords} = props;
     const [ focusStatus, setFocusStatus] = useState(false);
+
+    useEffect(() => {
+        inputEl.current?.focus(); 
+    }, [inputEl.current]);
 
     const changeKeyWord = function(str:string) {
         setKeyword(str);
@@ -90,6 +96,9 @@ function Search(props: {
     }; 
     const clearHandle = function() {
         setKeyword('');
+    }
+    const gotoPage = function() {
+        navigation.goBack();
     }
     return <View>
         <View style={styles.header}>
@@ -106,6 +115,7 @@ function Search(props: {
                         /> 
                     <View style={styles.headerInputTargetView}>
                         <TextInput 
+                            ref={inputEl} 
                             style={styles.headerInputTarget}
                             placeholder={`请输入书名`}
                             clearButtonMode='while-editing'
@@ -122,7 +132,11 @@ function Search(props: {
                         name='clear'
                         /> 
                 </View>
-                <Text style={styles.headerCancel}>取消</Text>
+                <TouchableOpacity 
+                    onPress={gotoPage}
+                    style={styles.keyWordRecommendTitleClear}>
+                    <Text style={styles.headerCancel}>取消</Text>
+                </TouchableOpacity>
             </View>
             
         </View>
@@ -134,10 +148,18 @@ function ShuYuanList(props: {
     setActionType: Function,
     searchHandle: Function,
 }) {
-    const list = Object.keys(ShuYuanSdk.allShuYuanIds);
-    const clickAction = function(item:string) {
-        props.setActionType(item);
-        props.searchHandle();
+    const list:{
+        label: string,
+        name: string,
+    }[] = [];
+    Object.keys(ShuYuanSdk.allShuYuanIds).forEach(key => {
+        list.push({
+            label: ShuYuanSdk.allShuYuanIds[key as AllShuYuanIdsKey].label,
+            name: key,
+        })
+    });
+    const clickAction = function(item:any) {
+        props.setActionType(item.name);
     }
     
     return <View style={styles.shuYuanList}>
@@ -145,21 +167,21 @@ function ShuYuanList(props: {
                 data={list}
                 horizontal={true}
                 showsHorizontalScrollIndicator = {false}
-                renderItem={(data:{item: string, index: number}) => {
+                renderItem={(data:{item: any, index: number}) => {
                     return <TouchableOpacity 
                         activeOpacity={1}
                         onPress={() => clickAction(data.item)} 
                         style={[
                             styles.shuYuanListTag,
-                            data.item === props.actionType && styles.shuYuanListTagAction,
+                            data.item.name === props.actionType && styles.shuYuanListTagAction,
                         ]}>
                         <Text style={[
                             styles.shuYuanListTagText,
                             data.item === props.actionType && styles.shuYuanListTagTextAction,
-                        ]}>{data.item}</Text>
+                        ]}>{data.item.label}</Text>
                     </TouchableOpacity>
                 }}
-        keyExtractor={item => item}
+        keyExtractor={item => item.name}
         />
     </View>
 };
@@ -200,9 +222,12 @@ function ResultList(props: {
                 data={dataList}
                 columnWrapperStyle={{
                     marginBottom: 5,
+                    marginLeft: 10,
+                    marginRight: 10,
                     justifyContent: 'space-between',
                 }}
                 numColumns={colNum}
+                showsVerticalScrollIndicator={false}
                 renderItem={(data:{item: any, index: number}) => {
                     const {item, index} = data;
                     return <View 
@@ -237,36 +262,10 @@ function ResultList(props: {
         </SafeAreaView>
     </View>
 }
-
 export default function Index(props:any) {
     const [ keyword, setKeyword] = useState('');
     const [ actionType, setActionType] = useState<AllShuYuanIdsKey>('快眼看书');
-    const [ dataList, setDataList] = useState<SearchListType>([
-        // {
-        //     source: '快眼看书',
-        //     id: 256130,
-        //     author: '公子珏',
-        //     title: '大明尊',
-        //     newSection: '新书发布求一切',
-        //     logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
-        // },
-        // {
-        //     source: '快眼看书',
-        //     id: 345180,
-        //     author: '公子珏',
-        //     title: '明尊',
-        //     newSection: '新书发布求一切',
-        //     logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
-        // },
-        // {
-        //     source: '快眼看书',
-        //     id: 345320,
-        //     author: '公子珏',
-        //     title: '明尊',
-        //     newSection: '新书发布求一切',
-        //     logo: 'http://www.booksky.cc//public/cover/da/f7/e6/daf7e6d7d575666c4186e8d7d5249457.jpg',
-        // },
-    ]);
+    const [ dataList, setDataList] = useState<SearchListType>([]);
     const [error, setError] = useState(false);
     const [sendStatus, setSendStatus] = useState(false);
     const [keyWords, setKeywords] = useState<string[]>([]);
@@ -292,6 +291,9 @@ export default function Index(props:any) {
             }
         });
     }, []);
+    useEffect(() => {
+        searchHandle();
+    }, [actionType, keyword]);
     const addKeyWords = function(str: string) {
         if (keyWords.indexOf(str) == -1 && str.replace(/\s+/g, '')) {
             setKeywords((old) => {
@@ -308,12 +310,12 @@ export default function Index(props:any) {
         setKeywords([]);
         AsyncStorage.removeItem('searchWrap_keyWords');
     };
-    const clickKeyWordTags = useCallback(function(str: string) {
+    const clickKeyWordTags = function(str: string) {
         setKeyword(str);
         addKeyWords(str);
         console.log('2------------', keyword)
-    }, [keyword]);
-    const searchHandle = useCallback(async function() {
+    };
+    const searchHandle = async function() {
         const params:SearchConditionType = {
             source: actionType,
             keyword: keyword,
@@ -329,9 +331,8 @@ export default function Index(props:any) {
             setError(true);
         }
         setSendStatus(false);
-        // console.log('searchHandle--------', keyword);
-
-    }, [actionType, sendStatus, keyword, dataList]);
+        console.log('searchHandle--------', params);
+    };
 
     return <View style={styles.index}>
         <View style={styles.indexWrap}>

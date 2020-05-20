@@ -3,6 +3,7 @@ import React, { ReactNode, useContext,
 } from 'react';
 import { 
     View, Text,     
+    TouchableWithoutFeedback,
 } from 'react-native';
 import { useNavigation, } from '@react-navigation/native';
 
@@ -17,9 +18,10 @@ export type HeaderPropsType = {
     headerLeft?: ReactNode | Boolean, // 左边显示组件,传组件则代表自定义，Boolean则默认的显示/隐藏
     headerCenter?: ReactNode | string, // 中间显示组件,传组件则代表自定义，Boolean则默认的显示/隐藏
     headerRight?: (() => ReactNode) | ReactNode, // 右边显示组件,传组件则代表自定义
-    functionList?: Array< // 功能列表
-        functionEnum | ReactNode
-    >,
+    functionList?: { // 功能列表
+        name: functionEnum | ReactNode,
+        function?: Function,
+    }[],
     headerLeftClick?: () => void,
     searchParameter?: { // 搜索组件参数
     },
@@ -66,8 +68,11 @@ export default function Header(props: HeaderPropsType,) {
                 {props?.functionList?.length ? <View style={styles.headerFun}>
                     {props.functionList.map((item, index) => {
                         // 搜索组件 start
-                        if (item === 'search') {
-                            return <View key={index} style={styles.headerSearch}>
+                        if (item.name === 'search') {
+                            return <TouchableWithoutFeedback key={index} 
+                                    onPress={() => {item.function && item.function(item)}}>
+                                <View key={index} 
+                                    style={styles.headerSearch}>
                                     <Icon 
                                         style={[
                                             styles.headerSearchFont,
@@ -76,12 +81,14 @@ export default function Header(props: HeaderPropsType,) {
                                         fontFileName='EvilIcons'
                                         name='search'
                                         />
-                                    <View style={styles.headerSearchText}>
+                                    <View 
+                                        style={styles.headerSearchText}>
                                         <Text style={styles.headerSearchFont}>
                                             搜索书名、作者、出版社
                                         </Text>
                                     </View>
                                 </View>
+                            </TouchableWithoutFeedback> 
                         }
                         // 自定义组件
                         if (React.isValidElement(item)) {
