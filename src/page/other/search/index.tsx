@@ -71,27 +71,39 @@ function KeyWordRecommend(props: {
     </View>
 }
 // 搜索框
-function Search(props: {
+const Search = forwardRef(function Search(props: {
     addKeyWords: Function,
     keyword: string,
     setKeyword: Function,
-}) {
+    focusStatus: boolean,
+    setFocusStatus: Function,
+    searchHandle: Function,
+}, ref) {
     const navigation = useNavigation();
     const inputEl = useRef<TextInput>(null);
-    const {keyword, setKeyword, addKeyWords} = props;
-    const [ focusStatus, setFocusStatus] = useState(false);
+    const {keyword, focusStatus, setFocusStatus,searchHandle,
+         setKeyword, addKeyWords} = props;
 
     useEffect(() => {
-        inputEl.current?.focus(); 
+        if (inputEl.current) {
+            inputEl.current.focus(); 
+        }
     }, [inputEl.current]);
+    useImperativeHandle(ref, () => ({
+        inputDom: inputEl.current,
+      }), [inputEl.current]);
 
     const changeKeyWord = function(str:string) {
         setKeyword(str);
     }
     const toggleInputStatus = function(val: boolean) {
+        if (val === false) {
+            searchHandle();
+        }
         setFocusStatus(val)
     }
-    const searchHandle = function() {
+    const handleClick = function() {
+        inputEl.current?.blur(); 
         addKeyWords(keyword);
     }; 
     const clearHandle = function() {
@@ -108,7 +120,7 @@ function Search(props: {
                     focusStatus && styles.headerInputFocus,
                 ]}>
                     <IconBtn 
-                        onPress={()=>searchHandle()}
+                        onPress={()=>handleClick()}
                         style={styles.headerInputIcon}
                         fontFileName='AntDesign'
                         name='search1'
@@ -125,12 +137,12 @@ function Search(props: {
                             value={keyword}
                         />
                     </View>
-                    <IconBtn 
+                    {keyword ? <IconBtn 
                         onPress={()=>clearHandle()}
                         style={styles.headerInputClearIcon}
                         fontFileName='MaterialIcons'
                         name='clear'
-                        /> 
+                        /> : null}
                 </View>
                 <TouchableOpacity 
                     onPress={gotoPage}
@@ -141,7 +153,7 @@ function Search(props: {
             
         </View>
     </View> 
-}
+})
 // 书源类别
 function ShuYuanList(props: {
     actionType: string,
@@ -263,7 +275,11 @@ function ResultList(props: {
     </View>
 }
 export default function Index(props:any) {
+    const searchRef = useRef<{
+        inputDom: TextInput | any,
+    }>({inputDom: null})
     const [ keyword, setKeyword] = useState('');
+    const [ focusStatus, setFocusStatus] = useState(false);
     const [ actionType, setActionType] = useState<AllShuYuanIdsKey>('快眼看书');
     const [ dataList, setDataList] = useState<SearchListType>([]);
     const [error, setError] = useState(false);
@@ -292,7 +308,9 @@ export default function Index(props:any) {
         });
     }, []);
     useEffect(() => {
-        searchHandle();
+        if (!focusStatus) {
+            searchHandle();
+        }
     }, [actionType, keyword]);
     const addKeyWords = function(str: string) {
         if (keyWords.indexOf(str) == -1 && str.replace(/\s+/g, '')) {
@@ -311,15 +329,17 @@ export default function Index(props:any) {
         AsyncStorage.removeItem('searchWrap_keyWords');
     };
     const clickKeyWordTags = function(str: string) {
+        searchRef.current.inputDom.blur(); 
         setKeyword(str);
         addKeyWords(str);
-        console.log('2------------', keyword)
     };
     const searchHandle = async function() {
+        if (!keyword) return;
         const params:SearchConditionType = {
             source: actionType,
             keyword: keyword,
         };
+        console.log('searchHandle--------', params);
         setError(false);
         setSendStatus(true);
         setDataList([]);
@@ -331,14 +351,17 @@ export default function Index(props:any) {
             setError(true);
         }
         setSendStatus(false);
-        console.log('searchHandle--------', params);
     };
 
     return <View style={styles.index}>
         <View style={styles.indexWrap}>
             {/* 搜索框 */}
             <Search 
+                ref={searchRef} 
                 keyword={keyword}
+                focusStatus={focusStatus}
+                searchHandle={searchHandle}
+                setFocusStatus={setFocusStatus}
                 setKeyword={setKeyword}
                 addKeyWords={addKeyWords}/>
                {!keyword ? <>
@@ -352,7 +375,7 @@ export default function Index(props:any) {
                         delKeyWords={delKeyWords}
                         clickKeyWordTags={clickKeyWordTags}
                         keyWords={keyWords}/>
-               </>:<>
+               </>:focusStatus ? null :<>
                     {/* 书源类别 */}
                     <ShuYuanList actionType={actionType}
                         searchHandle={searchHandle}
