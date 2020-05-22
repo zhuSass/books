@@ -4,7 +4,7 @@ import {requestGetPage} from '@/common/http';
 
 import KuaiYan from './kuaiYan';
 
-export type AllShuYuanIdsKey = '零七中文网' | '快眼看书';
+export type AllShuYuanIdsKey = '快眼看书';
 type CurrentShuYuanIdsType = Array<AllShuYuanIdsKey>;
 type CurrentShuYuanIdsProps = {
     [key in AllShuYuanIdsKey]: {
@@ -14,12 +14,16 @@ type CurrentShuYuanIdsProps = {
         handle: any, 
         /** 首页网址 **/ 
         home: string, 
+        /** PC首页网址 **/ 
+        homePc: string,
         /** 小说目录网址 **/ 
         directory: string, 
         /** 小说文章网址 **/ 
         article: string, 
         /** 小说搜索网址 **/ 
         search: string, 
+        /** 小说分类 **/ 
+        fictionClassification: string,
     }
 };
 /** 首页数据类型 **/
@@ -84,6 +88,20 @@ export type SearchConditionType = {
     source: AllShuYuanIdsKey,
     keyword: string,
 };
+/** 获取小说分类列表类型 **/
+export type BibliothecaLabelListType = {
+    label: string,
+    name: string,
+}[];
+/** 获取小说分类搜索出来的小说列表类型 **/
+export type BibliothecaFictionListType = {
+    source: AllShuYuanIdsKey,
+    id: number,
+    author: string,
+    title: string,
+    introduce: string,
+    logo: string,
+}[];
 
 export default class ShuYuanSdk {
     constructor(shuYuanList: CurrentShuYuanIdsType) {
@@ -94,21 +112,24 @@ export default class ShuYuanSdk {
     }
     /** 全部书源标识 **/
     static allShuYuanIds:CurrentShuYuanIdsProps = {
-        '零七中文网': {
-            label: '神圣天堂',
-            handle: KuaiYan,
-            home: 'https://www.07zw.com',
-            directory: '', 
-            article: '',
-            search: '',
-        },
+        // '零七中文网': {
+        //     label: '神圣天堂',
+        //     handle: KuaiYan,
+        //     home: 'https://www.07zw.com',
+        //     directory: '', 
+        //     article: '',
+        //     search: '',
+        //     fictionClassification: '',
+        // },
         '快眼看书': {
             label: '乌托邦',
             handle: KuaiYan, // 处理方法
             home: 'http://m.booksky.cc',
+            homePc: 'http://www.booksky.cc',
             directory: 'http://www.booksky.cc/', // http://www.booksky.cc/355476.html 
             article: 'http://www.booksky.cc/',
             search: 'http://www.booksky.cc/modules/article/search.php?searchkey=',
+            fictionClassification: 'http://www.booksky.cc/category/all/',
         },
     };
     /** 当前需要获取的书院源 **/
@@ -180,5 +201,25 @@ export default class ShuYuanSdk {
     /** 获取搜索结果请求地址 **/
     static getSearchInfoUrl(data: SearchConditionType):string {
         return `${ShuYuanSdk.allShuYuanIds[data.source].search}${data.keyword}`;
+    }
+    /** 获取书库小说分类标签信息 **/
+    static async getBibliothecaLabelList(source: AllShuYuanIdsKey):Promise<BibliothecaLabelListType> {
+        let url = ShuYuanSdk.getBibliothecaListUrl(source);
+        const html:any = await requestGetPage(url);
+        let handle = ShuYuanSdk.allShuYuanIds[source].handle;
+        return handle.getBibliothecaList(html);
+    }
+    /** 获取书库小说分类标签信息地址 **/
+    static getBibliothecaListUrl(source: AllShuYuanIdsKey):string {
+        return `${ShuYuanSdk.allShuYuanIds[source].fictionClassification}`;
+    }
+    /** 获取书库小说分类小说信息 **/
+    static async getBibliothecaFictionList(data: {
+        source: AllShuYuanIdsKey,
+        url: string,
+    }):Promise<BibliothecaFictionListType> {
+        const html:any = await requestGetPage(data.url);
+        let handle = ShuYuanSdk.allShuYuanIds[data.source].handle;
+        return handle.getBibliothecaFictionList(html);
     }
 }

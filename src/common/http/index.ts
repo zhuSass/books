@@ -62,6 +62,7 @@ console.log('request-----', url);
     return new Promise((resolve, reject) => {
         fetch(url, mergeConfig).then((response:any) => response.text()).then(data => {
             // Alert.alert(`请求成功：${url}`)
+            // console.log('n----------', data)
             const htmlObj = cheerio.load(data);
 //             try {
 // fsdfsdf

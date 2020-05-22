@@ -1009,41 +1009,48 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/masked-view/download/@react-native-community/masked-view-0.1.8.tgz#05c9c800f258274a34abd584596464b86fbd92dc"
   integrity sha1-BcnIAPJYJ0o0q9WEWWRkuG+9ktw=
 
-"@react-navigation/core@^5.3.3":
-  version "5.3.3"
-  resolved "https://registry.npm.taobao.org/@react-navigation/core/download/@react-navigation/core-5.3.3.tgz?cache=0&sync_timestamp=1586341150949&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40react-navigation%2Fcore%2Fdownload%2F%40react-navigation%2Fcore-5.3.3.tgz#0e8f174193ac10a163b74c68a5ea83a507908db9"
-  integrity sha1-Do8XQZOsEKFjt0xopeqDpQeQjbk=
+"@react-navigation/core@^5.8.1":
+  version "5.8.1"
+  resolved "https://registry.npm.taobao.org/@react-navigation/core/download/@react-navigation/core-5.8.1.tgz#4f0d744a10eec7dc8bfad2901eec5fb9623b0972"
+  integrity sha1-Tw10ShDux9yL+tKQHuxfuWI7CXI=
   dependencies:
-    "@react-navigation/routers" "^5.3.0"
-    escape-string-regexp "^2.0.0"
-    nanoid "^3.0.2"
-    query-string "^6.12.0"
+    "@react-navigation/routers" "^5.4.6"
+    escape-string-regexp "^4.0.0"
+    nanoid "^3.1.5"
+    query-string "^6.12.1"
     react-is "^16.13.0"
     use-subscription "^1.4.0"
 
-"@react-navigation/material-bottom-tabs@^5.1.8":
-  version "5.1.8"
-  resolved "https://registry.npm.taobao.org/@react-navigation/material-bottom-tabs/download/@react-navigation/material-bottom-tabs-5.1.8.tgz#1d36bc2087c9686bf283ffa8ebeb8551749cf297"
-  integrity sha1-HTa8IIfJaGvyg/+o6+uFUXSc8pc=
+"@react-navigation/material-bottom-tabs@5.2.7":
+  version "5.2.7"
+  resolved "https://registry.npm.taobao.org/@react-navigation/material-bottom-tabs/download/@react-navigation/material-bottom-tabs-5.2.7.tgz#64dfbb3dd7b9e8ccfda993121b34e5f911e730a5"
+  integrity sha1-ZN+7Pde56Mz9qZMSGzTl+RHnMKU=
 
-"@react-navigation/native@^5.1.5":
-  version "5.1.5"
-  resolved "https://registry.npm.taobao.org/@react-navigation/native/download/@react-navigation/native-5.1.5.tgz?cache=0&sync_timestamp=1586341150903&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40react-navigation%2Fnative%2Fdownload%2F%40react-navigation%2Fnative-5.1.5.tgz#d07c461c583f98bdc94769f58bdcacfa28e11032"
-  integrity sha1-0HxGHFg/mL3JR2n1i9ys+ijhEDI=
+"@react-navigation/material-top-tabs@^5.2.7":
+  version "5.2.7"
+  resolved "https://registry.npm.taobao.org/@react-navigation/material-top-tabs/download/@react-navigation/material-top-tabs-5.2.7.tgz#1a47ae7d7987962f507b810180204303d1ae8240"
+  integrity sha1-GkeufXmHli9Qe4EBgCBDA9GugkA=
   dependencies:
-    "@react-navigation/core" "^5.3.3"
+    color "^3.1.2"
 
-"@react-navigation/routers@^5.3.0":
-  version "5.3.0"
-  resolved "https://registry.npm.taobao.org/@react-navigation/routers/download/@react-navigation/routers-5.3.0.tgz#c32cff9f74e26b127b70086b70744ffe9cd658fd"
-  integrity sha1-wyz/n3TiaxJ7cAhrcHRP/pzWWP0=
+"@react-navigation/native@5.4.2":
+  version "5.4.2"
+  resolved "https://registry.npm.taobao.org/@react-navigation/native/download/@react-navigation/native-5.4.2.tgz#256d4f67aa97083de9c8ff52cdc77ac039b66350"
+  integrity sha1-JW1PZ6qXCD3pyP9Szcd6wDm2Y1A=
   dependencies:
-    nanoid "^3.0.2"
+    "@react-navigation/core" "^5.8.1"
 
-"@react-navigation/stack@^5.2.10":
-  version "5.2.10"
-  resolved "https://registry.npm.taobao.org/@react-navigation/stack/download/@react-navigation/stack-5.2.10.tgz#a2c8ff7f2da8f0d5cb04351379106ee9b8ef7dd8"
-  integrity sha1-osj/fy2o8NXLBDUTeRBu6bjvfdg=
+"@react-navigation/routers@^5.4.6":
+  version "5.4.6"
+  resolved "https://registry.npm.taobao.org/@react-navigation/routers/download/@react-navigation/routers-5.4.6.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40react-navigation%2Frouters%2Fdownload%2F%40react-navigation%2Frouters-5.4.6.tgz#7d0d6209f7e40fc36e4fecb5e34f20d866272a32"
+  integrity sha1-fQ1iCffkD8NuT+y1408g2GYnKjI=
+  dependencies:
+    nanoid "^3.1.5"
+
+"@react-navigation/stack@5.3.9":
+  version "5.3.9"
+  resolved "https://registry.npm.taobao.org/@react-navigation/stack/download/@react-navigation/stack-5.3.9.tgz#0122e1f231ed16caac18479637c0a806e37c3048"
+  integrity sha1-ASLh8jHtFsqsGEeWN8CoBuN8MEg=
   dependencies:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
@@ -2459,10 +2466,10 @@ escape-string-regexp@^1.0.5:
   resolved "https://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-1.0.5.tgz?cache=0&sync_timestamp=1586278520081&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fescape-string-regexp%2Fdownload%2Fescape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
-escape-string-regexp@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-2.0.0.tgz?cache=0&sync_timestamp=1586278520081&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fescape-string-regexp%2Fdownload%2Fescape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
-  integrity sha1-owME6Z2qMuI7L9IPUbq9B8/8o0Q=
+escape-string-regexp@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
+  integrity sha1-FLqDpdNz49MR5a/KKc9b+tllvzQ=
 
 escodegen@^1.9.1:
   version "1.14.1"
@@ -4710,10 +4717,10 @@ nan@^2.12.1:
   resolved "https://registry.npm.taobao.org/nan/download/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha1-eBj3IgJ7JFmobwKV1DTR/CM2xSw=
 
-nanoid@^3.0.2:
-  version "3.1.3"
-  resolved "https://registry.npm.taobao.org/nanoid/download/nanoid-3.1.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnanoid%2Fdownload%2Fnanoid-3.1.3.tgz#b2bcfcfda4b4d6838bc22a0c8dd3c0a17a204c20"
-  integrity sha1-srz8/aS01oOLwioMjdPAoXogTCA=
+nanoid@^3.1.5:
+  version "3.1.9"
+  resolved "https://registry.npm.taobao.org/nanoid/download/nanoid-3.1.9.tgz#1f148669c70bb2072dc5af0666e46edb6cd31fb2"
+  integrity sha1-HxSGaccLsgctxa8GZuRu22zTH7I=
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -5294,7 +5301,7 @@ qs@~6.5.2:
   resolved "https://registry.npm.taobao.org/qs/download/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha1-yzroBuh0BERYTvFUzo7pjUA/PjY=
 
-query-string@^6.12.0:
+query-string@^6.12.1:
   version "6.12.1"
   resolved "https://registry.npm.taobao.org/query-string/download/query-string-6.12.1.tgz#2ae4d272db4fba267141665374e49a1de09e8a7c"
   integrity sha1-KuTScttPuiZxQWZTdOSaHeCeinw=
@@ -5403,6 +5410,11 @@ react-native-stream@^0.1.0:
   dependencies:
     base64-js "^1.2.0"
     ieee754 "^1.1.8"
+
+react-native-tab-view@^2.14.1:
+  version "2.14.1"
+  resolved "https://registry.npm.taobao.org/react-native-tab-view/download/react-native-tab-view-2.14.1.tgz#efa9c2e96f70d43ef6539d65a2e6e685d50fe31b"
+  integrity sha1-76nC6W9w1D72U51loubmhdUP4xs=
 
 react-native-vector-icons@^6.6.0:
   version "6.6.0"

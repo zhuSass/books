@@ -8,7 +8,7 @@ import {
 import { useNavigation, } from '@react-navigation/native';
 
 import Icon, {IconBtn} from '@/components/icon';
-import styles from './css'
+import styles from './css';
 
 enum functionEnum {
     search = 'search', // 搜索

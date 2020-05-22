@@ -2,6 +2,7 @@ import * as React from 'react';
 import { 
     createStackNavigator,
   } from "@react-navigation/stack";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import {tabBarIcon,} from '@/components/icon';
@@ -19,26 +20,67 @@ import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 小说主页
 import ReadingScreen from '@/page/other/reading'; // 阅读
 import BookDirectoryScreen from '@/page/other/directory'; // 小说目录
 import searchScreen from '@/page/other/search'; // 小说目录
+import ShuYuanSdk,{
+  AllShuYuanIdsKey,
+} from '@/common/shuYuanSdk';
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 // 书库模块
 function BibliothecaModel() {
+  type listItemType = {
+    label: string,
+    name: string,
+  }
+  let list:listItemType[] = [];
+  Object.keys(ShuYuanSdk.allShuYuanIds).forEach(key => {
+    list.push({
+        label: ShuYuanSdk.allShuYuanIds[key as AllShuYuanIdsKey].label,
+        name: key,
+    })
+  });
+  // list = [
+  //   {label: '神圣天堂', name: '零七中文网'},
+  //   {label: '乌托邦', name: '快眼看书'},
+  //   {label: '神圣天堂1', name: '零七中文网1'},
+  //   {label: '神圣天堂2', name: '零七中文网3'},
+  //   {label: '神圣天堂4', name: '零七中文网4'},
+  //   {label: '神圣天堂5', name: '零七中文网5'},
+  //   {label: '神圣天堂6', name: '零七中文网6'},
+  // ]
+  
   return (
-    <Stack.Navigator
-      initialRouteName="BibliothecaMain"
-      headerMode="none"
+    <TopTab.Navigator
+      initialRouteName="快眼看书"
+      tabBarOptions={{
+        scrollEnabled: true,
+        labelStyle: { fontSize: 14, },
+        inactiveTintColor: '#505050',
+        activeTintColor: '#f85959',
+        indicatorStyle: {backgroundColor: '#f85959',},
+        style: { 
+          backgroundColor: '#f4f5f6',
+        },
+        tabStyle: {
+          width: 'auto',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+      }}
     >
-      {/* 主界面-tab */}
-      <Stack.Screen
-        name="BibliothecaMain"
-        component={BibliothecaScreen}
-        options={{
-          title: '书库',
-        }}
-      />
-    </Stack.Navigator>
+      {list.map((item: listItemType, i:number) => {
+        return <TopTab.Screen
+                key={i}
+                name={item.name}
+                component={BibliothecaScreen}
+                options={{ tabBarLabel: item.label,tabBarTestID: item.name, }}
+              />
+      })}
+    </TopTab.Navigator>
   );
 }
 // 其它模块
@@ -88,7 +130,7 @@ function OtherModel() {
 function AppStack() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Bibliotheca"
       activeColor="#3F9CD6"
       inactiveColor="#D2D2D2"
       barStyle={{

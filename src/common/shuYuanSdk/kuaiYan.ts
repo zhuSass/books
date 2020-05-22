@@ -4,6 +4,8 @@ import ShuYuanSdk,{HomeList,
         AllShuYuanIdsKey,
         ArticleType,
         SearchListType,
+        BibliothecaLabelListType,
+        BibliothecaFictionListType,
      } from './index';
 
 export default class KuaiYan {
@@ -123,6 +125,47 @@ export default class KuaiYan {
                     title: title,
                     newSection: newSection,
                     logo: ShuYuanSdk.allShuYuanIds[KuaiYan.sourceName].home + logo,
+                });
+            } catch(e) {
+                console.log('error:', e)
+            }
+        });
+        return dataList;
+    }
+    // 获取小说分类信息
+    static getBibliothecaList($:any):BibliothecaLabelListType {
+        const operateDom = $('.novelselectlist').find('a');
+        const dataList:BibliothecaLabelListType = [];
+        operateDom.each((index:number,element:any) => {
+            const name = ShuYuanSdk.allShuYuanIds[KuaiYan.sourceName].homePc + $(element).attr('href');
+            const label = $(element).attr('title');
+            dataList.push({
+                name,
+                label,
+            })
+        });
+        return dataList;
+    }
+    // 获取小说分类搜索出来的小说列表
+    static getBibliothecaFictionList($:any):BibliothecaFictionListType {
+        const operateDom = $('.librarylist').find('li');
+        const dataList:BibliothecaFictionListType = [];
+        // console.log('1---------', $('.librarylist'))
+        operateDom.each((index:number,element:any) => {
+            try {
+                const logo = $(element).find('img').attr('src');
+                const dom = $(element).find('a').first();
+                const id = dom.attr('href').replace('/', '').replace('.html', '');
+                const title = dom.attr('title');
+                const author = $(element).find('.info').children().last().text().replace('作者：', '');
+                const introduce = $(element).find('.intro').text().trim();
+                dataList.push({
+                    source: KuaiYan.sourceName,
+                    id: id,
+                    author: author,
+                    title: title,
+                    introduce: introduce,
+                    logo: logo,
                 });
             } catch(e) {
                 console.log('error:', e)

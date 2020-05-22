@@ -29,6 +29,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import {IconBtn} from '@/components/icon';
 import LazyLoading from '@/components/lazyLoading';
+import LabelList from '@/components/labelList';
 import {AsyncStorage} from '@/utils/ui'
 
 import styles from './css';
@@ -170,32 +171,18 @@ function ShuYuanList(props: {
             name: key,
         })
     });
-    const clickAction = function(item:any) {
+    const clickAction = function(item:{
+        label: string,
+        name: string,
+    }) {
         props.setActionType(item.name);
     }
     
-    return <View style={styles.shuYuanList}>
-        <FlatList
-                data={list}
-                horizontal={true}
-                showsHorizontalScrollIndicator = {false}
-                renderItem={(data:{item: any, index: number}) => {
-                    return <TouchableOpacity 
-                        activeOpacity={1}
-                        onPress={() => clickAction(data.item)} 
-                        style={[
-                            styles.shuYuanListTag,
-                            data.item.name === props.actionType && styles.shuYuanListTagAction,
-                        ]}>
-                        <Text style={[
-                            styles.shuYuanListTagText,
-                            data.item === props.actionType && styles.shuYuanListTagTextAction,
-                        ]}>{data.item.label}</Text>
-                    </TouchableOpacity>
-                }}
-        keyExtractor={item => item.name}
-        />
-    </View>
+    return <LabelList
+        list={list}
+        clickAction={clickAction}
+        actionType={props.actionType}
+    />
 };
 // 搜索出的数据
 function ResultList(props: {
