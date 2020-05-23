@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev_android": "set ENVFILE=./config/.env.dev && react-native run-android",
+    "dev_ios": "set ENVFILE=./config/.env.dev && react-native run-ios",
     "stag_android": "set ENVFILE=./config/.env.staging && react-native run-android",
     "prod_android": "cd android && set ENVFILE=./config/.env.production  && gradlew assembleRelease",
     "prod_android_mac": "cd android && set ENVFILE=./config/.env.production  && ./gradlew assembleRelease",
+    "prod_ios": "cd android && set ENVFILE=./config/.env.production  && react-native run-ios --configuration Release",
     "test_prod_android": "set ENVFILE=./config/.env.dev && react-native run-android --variant=release",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
