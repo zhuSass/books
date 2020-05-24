@@ -9,15 +9,23 @@
  */
 import * as React from 'react';
 import 'react-native-gesture-handler';
+import {
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
 import MinRouter from './router';
 
 const AppContainer = function() {
-  return (
-    <NavigationContainer>
-      <MinRouter/>
-    </NavigationContainer>
+  return (<>
+            <StatusBar barStyle="dark-content" />
+            <SafeAreaView style={{flex: 1, }}> 
+              <NavigationContainer>
+                <MinRouter/>
+              </NavigationContainer>
+            </SafeAreaView>
+    </>
   )
 };
 
