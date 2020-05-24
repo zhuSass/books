@@ -56,7 +56,7 @@ function BibliothecaModel() {
       initialRouteName="快眼看书"
       tabBarOptions={{
         scrollEnabled: true,
-        labelStyle: { fontSize: 14, },
+        labelStyle: { fontSize: 16, },
         inactiveTintColor: '#505050',
         activeTintColor: '#f85959',
         indicatorStyle: {backgroundColor: '#f85959',},

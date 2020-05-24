@@ -12,15 +12,16 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         fontSize: 13,
-        height: 20,
         borderColor: 'transparent',
         borderRadius: 99,
         borderWidth: 1,
         paddingLeft: 10,
         paddingRight: 10,
+        paddingTop: 4,
+        paddingBottom: 4,
     },
     shuYuanListTagText: {
-        fontSize: 13,
+        fontSize: 14,
         color: '#969ba3',
     },
     shuYuanListTagAction: {
