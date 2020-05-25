@@ -22,7 +22,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import Header from '@/components/header';
 import {IconBtn} from '@/components/icon';
-import {Toast} from '@/utils/ui'
+import {Toast} from '@/utils/ui';
 
 import styles from './css';
 

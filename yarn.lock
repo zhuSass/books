@@ -1009,6 +1009,14 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/masked-view/download/@react-native-community/masked-view-0.1.8.tgz#05c9c800f258274a34abd584596464b86fbd92dc"
   integrity sha1-BcnIAPJYJ0o0q9WEWWRkuG+9ktw=
 
+"@react-navigation/bottom-tabs@^5.5.0":
+  version "5.5.0"
+  resolved "https://registry.npm.taobao.org/@react-navigation/bottom-tabs/download/@react-navigation/bottom-tabs-5.5.0.tgz#b8b5b8909d6155048abaefe504ccad2b3c91230a"
+  integrity sha1-uLW4kJ1hVQSKuu/lBMytKzyRIwo=
+  dependencies:
+    color "^3.1.2"
+    react-native-iphone-x-helper "^1.2.1"
+
 "@react-navigation/core@^5.8.1":
   version "5.8.1"
   resolved "https://registry.npm.taobao.org/@react-navigation/core/download/@react-navigation/core-5.8.1.tgz#4f0d744a10eec7dc8bfad2901eec5fb9623b0972"
@@ -1020,11 +1028,6 @@
     query-string "^6.12.1"
     react-is "^16.13.0"
     use-subscription "^1.4.0"
-
-"@react-navigation/material-bottom-tabs@5.2.7":
-  version "5.2.7"
-  resolved "https://registry.npm.taobao.org/@react-navigation/material-bottom-tabs/download/@react-navigation/material-bottom-tabs-5.2.7.tgz#64dfbb3dd7b9e8ccfda993121b34e5f911e730a5"
-  integrity sha1-ZN+7Pde56Mz9qZMSGzTl+RHnMKU=
 
 "@react-navigation/material-top-tabs@^5.2.7":
   version "5.2.7"

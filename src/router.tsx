@@ -3,7 +3,7 @@ import {
     createStackNavigator,
   } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import {tabBarIcon,} from '@/components/icon';
 //*************************账户************************************//
@@ -12,7 +12,7 @@ import LoginAuthScreen from '@/page/account/loginAuth'; // 登录状态验证
 //*************************主界面************************************//
 import HomeScreen from '@/page/main/home'; // 首页
 import BibliothecaScreen from '@/page/main/bibliotheca'; // 书库
-import BbsScreen from '@/page/main/bbs'; // 社区中心
+import FavoritesScreen from '@/page/main/favorites'; // 收藏夹
 import MyCenterScreen from '@/page/main/myCenter'; // 个人中心
 //*************************书库模块************************************//
 import BookDetailsScreen from '@/page/bibliothecas/bookDetails'; // 小说主页
@@ -25,7 +25,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 
 const Stack = createStackNavigator();
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 
 // 书库模块
@@ -131,12 +131,9 @@ function AppStack() {
   return (
     <Tab.Navigator
       initialRouteName="Bibliotheca"
-      activeColor="#3F9CD6"
-      inactiveColor="#D2D2D2"
-      barStyle={{
-        backgroundColor: '#FFFFFF',
-        borderTopColor: '#EDEDED',
-        borderTopWidth: 1,
+      tabBarOptions={{
+        activeTintColor: '#3F9CD6',
+        inactiveTintColor: '#595959',
       }}
     >
       <Tab.Screen 
@@ -151,16 +148,16 @@ function AppStack() {
         name="Bibliotheca" 
         component={BibliothecaModel} 
         options={{
-          title: '书库',
+          tabBarLabel: '书库',
           tabBarIcon: ({color}:any) => tabBarIcon('library', 'MaterialCommunityIcons', color),
         }}
        />
        <Tab.Screen 
         name="Bbs" 
-        component={BbsScreen} 
+        component={FavoritesScreen} 
         options={{
-          title: '社区',
-          tabBarIcon: ({color}:any) => tabBarIcon('message1', 'AntDesign', color),
+          title: '收藏夹',
+          tabBarIcon: ({color}:any) => tabBarIcon('collections-bookmark', 'MaterialIcons', color),
         }}
        />
        <Tab.Screen 

@@ -12,6 +12,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 type IconListFace = {
     Entypo: typeof Entypo,
@@ -22,6 +23,7 @@ type IconListFace = {
     Feather: typeof Feather,
     Ionicons: typeof Ionicons,
     MaterialIcons: typeof MaterialIcons,
+    FontAwesome: typeof FontAwesome,
 };
 const IconList:IconListFace = {
     Entypo: Entypo,
@@ -32,6 +34,7 @@ const IconList:IconListFace = {
     Feather: Feather,
     Ionicons: Ionicons,
     MaterialIcons: MaterialIcons,
+    FontAwesome: FontAwesome,
 }
 
 export const tabBarIcon = (
