@@ -44,11 +44,11 @@ function BibliothecaModel() {
   // list = [
   //   {label: '神圣天堂', name: '零七中文网'},
   //   {label: '乌托邦', name: '快眼看书'},
-  //   {label: '神圣天堂1', name: '零七中文网1'},
-  //   {label: '神圣天堂2', name: '零七中文网3'},
-  //   {label: '神圣天堂4', name: '零七中文网4'},
-  //   {label: '神圣天堂5', name: '零七中文网5'},
-  //   {label: '神圣天堂6', name: '零七中文网6'},
+  //   {label: '乌托邦', name: '快眼看书'},
+  //   {label: '乌托邦', name: '快眼看书'},
+  //   {label: '乌托邦', name: '快眼看书'},
+  //   {label: '乌托邦', name: '快眼看书'},
+  //   {label: '乌托邦', name: '快眼看书'},
   // ]
   
   return (
@@ -58,8 +58,8 @@ function BibliothecaModel() {
         scrollEnabled: true,
         labelStyle: { fontSize: 16, },
         inactiveTintColor: '#505050',
-        activeTintColor: '#f85959',
-        indicatorStyle: {backgroundColor: '#f85959',},
+        activeTintColor: '#484848',
+        indicatorStyle: {backgroundColor: '#484848',},
         style: { 
           backgroundColor: '#f4f5f6',
         },
@@ -130,7 +130,7 @@ function OtherModel() {
 function AppStack() {
   return (
     <Tab.Navigator
-      initialRouteName="Bibliotheca"
+      initialRouteName="Favorites"
       tabBarOptions={{
         activeTintColor: '#3F9CD6',
         inactiveTintColor: '#595959',
@@ -153,7 +153,7 @@ function AppStack() {
         }}
        />
        <Tab.Screen 
-        name="Bbs" 
+        name="Favorites" 
         component={FavoritesScreen} 
         options={{
           title: '收藏夹',

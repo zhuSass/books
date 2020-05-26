@@ -85,11 +85,6 @@ const Search = forwardRef(function Search(props: {
     const {keyword, focusStatus, setFocusStatus,searchHandle,
          setKeyword, addKeyWords} = props;
 
-    useEffect(() => {
-        if (inputEl.current) {
-            inputEl.current.focus(); 
-        }
-    }, [inputEl.current]);
     useImperativeHandle(ref, () => ({
         inputDom: inputEl.current,
       }), [inputEl.current]);
@@ -129,6 +124,7 @@ const Search = forwardRef(function Search(props: {
                     <View style={styles.headerInputTargetView}>
                         <TextInput 
                             ref={inputEl} 
+                            autoFocus={true}
                             style={styles.headerInputTarget}
                             placeholder={`请输入书名`}
                             clearButtonMode='while-editing'

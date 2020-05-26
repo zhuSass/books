@@ -17,17 +17,17 @@ export default StyleSheet.create({
         borderWidth: 1,
         paddingLeft: 10,
         paddingRight: 10,
-        paddingTop: 4,
-        paddingBottom: 4,
+        paddingTop: 1,
+        paddingBottom: 1,
     },
     shuYuanListTagText: {
         fontSize: 14,
         color: '#969ba3',
     },
     shuYuanListTagAction: {
-        borderColor: 'red',
+        borderColor: '#595959',
     },
     shuYuanListTagTextAction: {
-        color: 'red',
+        color: '#595959',
     },
 });

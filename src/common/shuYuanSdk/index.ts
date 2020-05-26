@@ -102,6 +102,14 @@ export type BibliothecaFictionListType = {
     introduce: string,
     logo: string,
 }[];
+/** 获取小说收藏出来的小说列表类型 **/
+export type FavoritesListType = {
+    source: AllShuYuanIdsKey,
+    id: number,
+    author: string,
+    title: string,
+    logo: string,
+}[];
 
 export default class ShuYuanSdk {
     constructor(shuYuanList: CurrentShuYuanIdsType) {
