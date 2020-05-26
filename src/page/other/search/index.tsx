@@ -30,7 +30,7 @@ import ShuYuanSdk,{
 import {IconBtn} from '@/components/icon';
 import LazyLoading from '@/components/lazyLoading';
 import LabelList from '@/components/labelList';
-import {AsyncStorage} from '@/utils/ui'
+import AsyncStorage from '@react-native-community/async-storage';
 
 import styles from './css';
 // 书名推荐

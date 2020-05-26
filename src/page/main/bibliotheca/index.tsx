@@ -31,7 +31,6 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import Icon from '@/components/icon';
 import LazyLoading from '@/components/lazyLoading';
-import {AsyncStorage} from '@/utils/ui';
 import LabelList from '@/components/labelList';
 
 import styles from './css';

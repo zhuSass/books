@@ -23,6 +23,7 @@ module.exports = {
       '@/static': path.resolve(__dirname, './src/static'),
       '@/config': path.resolve(__dirname, './src/config'),
       '@/utils': path.resolve(__dirname, './src/utils'),
+      '@/db': path.resolve(__dirname, './src/db'),
     },
   },
 };

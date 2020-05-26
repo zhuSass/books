@@ -2,7 +2,6 @@ import {
     ToastAndroid,
     Dimensions,
  } from "react-native";
- import asyncStorage from '@react-native-community/async-storage';
 
 export type toastDirection = 'SHORT' | 'LONG' | 'TOP' | 'BOTTOM' | 'CENTER';
 type ParamsType = {
@@ -39,5 +38,4 @@ export function Toast(params: ParamsType) {
         merge.offY,
     );
 }
-export const AsyncStorage = asyncStorage;
 

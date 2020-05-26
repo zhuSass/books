@@ -20,7 +20,7 @@ import Header from '@/components/header';
 import LazyLoading from '@/components/lazyLoading';
 import Icon from '@/components/icon';
 import ShuYuanSdk,{FavoritesListType} from '@/common/shuYuanSdk';
-import {Toast, toastDirection} from '@/utils/ui';
+import {Toast} from '@/utils/ui';
 
 import styles from './css';
 
@@ -79,7 +79,6 @@ function ListData() {
                                             name='user'/>
                                         <Text style={styles.author}>{item.author}</Text>
                                     </View>
-            
                                 </View>
                             </View>
                         </TouchableOpacity>
