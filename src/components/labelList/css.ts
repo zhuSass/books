@@ -21,13 +21,13 @@ export default StyleSheet.create({
         paddingBottom: 1,
     },
     shuYuanListTagText: {
-        fontSize: 14,
+        fontSize: 15,
         color: '#969ba3',
     },
     shuYuanListTagAction: {
-        borderColor: '#595959',
+        borderColor: '#484848',
     },
     shuYuanListTagTextAction: {
-        color: '#595959',
+        color: '#484848',
     },
 });

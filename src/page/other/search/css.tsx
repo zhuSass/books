@@ -208,8 +208,9 @@ export default StyleSheet.create({
     bananaCameraCoverTitle: {
         textAlign: 'center',
         color: '#343434',
-        fontSize: 16,
+        fontSize: 17,
         lineHeight: 16 * 1.2,
+        fontWeight: 'bold',
     },
     bananaCameraCoverSubTitle: {
         fontSize: 12,

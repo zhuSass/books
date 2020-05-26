@@ -108,7 +108,7 @@ function Index(props:any) {
                                     onPress={() => goToPage(item)} >
                                     <ImageBackground  
                                         source={{uri: item.logo}}
-                                        resizeMode='cover'
+                                        resizeMode='contain'
                                         style={styles.bananaCameraImg}/>
                                     <View style={styles.fictionListInfo}>
                                         <Text style={styles.title} numberOfLines={1}>{item.title}</Text>

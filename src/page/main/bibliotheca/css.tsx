@@ -24,8 +24,8 @@ export default StyleSheet.create({
         borderBottomWidth: 1,
     },
     bananaCameraImg: {
-        width: 66,
-        height: 68,
+        width: 76,
+        height: 78,
         marginRight: 8,
     },
     fictionListInfo: {
@@ -36,11 +36,12 @@ export default StyleSheet.create({
     title: {
         paddingBottom: 5,
         color: '#33373d',
-        fontSize: 16,
+        fontSize: 17,
+        fontWeight: 'bold',
     },
     content: {
         color: '#969ba3',
-        fontSize: 14,
+        fontSize: 12,
     },
     label: {
         marginTop: 5,
@@ -51,7 +52,7 @@ export default StyleSheet.create({
         position: 'relative',
         top: -2,
         color: '#969ba3',
-        fontSize: 13,
+        fontSize: 12,
     },
     user: {
         display: 'flex',
@@ -60,7 +61,6 @@ export default StyleSheet.create({
         alignContent: 'center'
     },
     userIcon: {
-
         marginRight: 5,
     }
 });
