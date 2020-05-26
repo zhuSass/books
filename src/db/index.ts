@@ -1,34 +1,34 @@
 import Realm from 'realm';
 
-class RealmObj {
-    db: Realm | null;
-    constructor() {
-        this.db = null;
+class Realms {
+    static db: Realm;
+    static run() {
+        Realms.init();
+        return Realms.db;
     }
-    async getDbInstance() {
-        await this.init();
-        return this.db;
+    static async init() {
+        await Realms.getDbInstance();
+        return Realms.db;
     }
-    init() {
+    static getDbInstance() {
         return new Promise((resolve, reject) => {
             Realm.open({
                 schema: [{name: 'Dog', properties: {name: 'string'}}]
             }).then(realm => {
-                this.db = realm;
+                console.log('数据库初始化成功')
+                Realms.db = realm;
                 resolve();
             }).catch(err => {
                 reject(err);
             });
         });
     }
-    close() {
-        if (this.db && !this.db.isClosed) { 
-            this.db.close();
+    static close() {
+        if (Realms.db && !Realms.db.isClosed) { 
+            Realms.db.close();
         }
     }
 }
-const RealmObjInstance = new RealmObj();
-const Db =  RealmObjInstance.getDbInstance();
+Realms.run();
 
-export default RealmObjInstance;
-export RealmObjInstance;
+export default Realms;
