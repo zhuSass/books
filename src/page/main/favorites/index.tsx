@@ -9,6 +9,7 @@ import {
     NativeScrollEvent,
     TouchableOpacity,
     ToastAndroid,
+    Button,
 } from 'react-native';
 import withObservables from '@nozbe/with-observables';
 import { useDatabase } from '@nozbe/watermelondb/hooks';
@@ -104,22 +105,28 @@ function Index(props:any) {
         init();
     }, []);
     const init = async function init() {
-        await database.action(async () => {
+        database.action(async () => {
+            const allPosts = await postsCollection.query().fetch();
+            setList(allPosts);
+            console.log('3----------', allPosts)
+        });
+    }
+    const addPosts = function() {
+        database.action(async () => {
             const newPost = await postsCollection.create((post) => {
               post.title = 'New post'
               post.body = 'Lorem ipsum...'
             });
-            const allPosts = await postsCollection.query().fetch();
-            setList(allPosts);
-            console.log('3----------', allPosts)
-          });
-    }
+        });
+    };
 
     return (<View style={styles.indexWrap}>
         <HeaderBg/>
         {list.map((item: any, index) => {
-            return <Text key={index}>{item.title}---{item.body}</Text>
+            return <Text key={index}>
+                {item._raw.id}-{item.title}---{item.body}</Text>
         })}
+        <Button onPress={addPosts} title="添加"></Button>
         {/* <ListData/> */}
     </View>)
 }

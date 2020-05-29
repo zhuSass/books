@@ -39,7 +39,7 @@ export default function Index(props: PropsType) {
                     ]}>
                     <Text style={[
                         styles.shuYuanListTagText,
-                        data.item === props.actionType && styles.shuYuanListTagTextAction,
+                        data.item.name === props.actionType && styles.shuYuanListTagTextAction,
                     ]}>{data.item.label}</Text>
                 </TouchableOpacity>
             }}

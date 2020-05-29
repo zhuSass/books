@@ -9,7 +9,7 @@ import {
 } from './models';
 
 const adapter = new SQLiteAdapter({
-  dbName: 'WatermelonDemo',
+  dbName: 'books',
   schema: schema,
 });
 

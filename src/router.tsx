@@ -43,12 +43,7 @@ function BibliothecaModel() {
   });
   // list = [
   //   {label: '神圣天堂', name: '零七中文网'},
-  //   {label: '乌托邦', name: '快眼看书'},
-  //   {label: '乌托邦', name: '快眼看书'},
-  //   {label: '乌托邦', name: '快眼看书'},
-  //   {label: '乌托邦', name: '快眼看书'},
-  //   {label: '乌托邦', name: '快眼看书'},
-  //   {label: '乌托邦', name: '快眼看书'},
+  //   {label: '神圣天堂', name: '零七中文网'},
   // ]
   
   return (
@@ -57,7 +52,7 @@ function BibliothecaModel() {
       tabBarOptions={{
         scrollEnabled: true,
         labelStyle: { fontSize: 17,},
-        inactiveTintColor: '#505050',
+        inactiveTintColor: '#7E7E7E',
         activeTintColor: '#484848',
         indicatorStyle: {backgroundColor: '#484848',},
         style: { 
