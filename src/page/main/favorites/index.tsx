@@ -10,6 +10,9 @@ import {
     TouchableOpacity,
     ToastAndroid,
 } from 'react-native';
+import withObservables from '@nozbe/with-observables';
+import { useDatabase } from '@nozbe/watermelondb/hooks';
+import { withDatabase } from '@nozbe/watermelondb/DatabaseProvider';
 import useSWR from 'swr';
 import { useRoute ,useNavigation,
     RouteProp,
@@ -21,6 +24,7 @@ import LazyLoading from '@/components/lazyLoading';
 import Icon from '@/components/icon';
 import ShuYuanSdk,{FavoritesListType} from '@/common/shuYuanSdk';
 import {Toast} from '@/utils/ui';
+import post from '@/db/models/post';
 
 import styles from './css';
 
@@ -91,9 +95,32 @@ function ListData() {
 }
 
 function Index(props:any) {
+    const [list, setList] = useState<post[]>([]);
+
+    const database = useDatabase();
+    const postsCollection = database.collections.get<post>('posts')
+
+    useEffect(() => {
+        init();
+    }, []);
+    const init = async function init() {
+        await database.action(async () => {
+            const newPost = await postsCollection.create((post) => {
+              post.title = 'New post'
+              post.body = 'Lorem ipsum...'
+            });
+            const allPosts = await postsCollection.query().fetch();
+            setList(allPosts);
+            console.log('3----------', allPosts)
+          });
+    }
+
     return (<View style={styles.indexWrap}>
         <HeaderBg/>
-        <ListData/>
+        {list.map((item: any, index) => {
+            return <Text key={index}>{item.title}---{item.body}</Text>
+        })}
+        {/* <ListData/> */}
     </View>)
 }
 Index.parentScreen = 'favorites';

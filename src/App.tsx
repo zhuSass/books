@@ -16,26 +16,19 @@ import {
   StatusBar,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider'
+import { Alert } from 'react-native';
+import {database} from '@/db/index';
 
-import Realms from '@/db/index';
 import MinRouter from './router';
 
 const AppContainer = function() {
-
   useEffect(() => {
-    Realms.db.write(() => {
-      const myCar = Realms.db.create('Dog', {name: 'Rex'});
-    });
-    const Dog = Realms.db.objects<{name: string}>('Dog');
-    for (let p of Dog) {
-      console.log(`  ${p.name}`);
-  }
-    return () => {
-      Realms.close();
-    };
+
   }, []);
 
-  return (<>
+  return (<DatabaseProvider database={database}>
+    <>
             <StatusBar barStyle="dark-content" />
             <SafeAreaView style={{flex: 1, }}> 
               <NavigationContainer>
@@ -43,6 +36,8 @@ const AppContainer = function() {
               </NavigationContainer>
             </SafeAreaView>
     </>
+            
+    </DatabaseProvider>
   )
 };
 
