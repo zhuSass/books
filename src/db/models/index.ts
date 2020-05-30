@@ -1,14 +1,14 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb';
 
-import Post from './post';
+import CollectBooks from './collectBooks';
 import Comment from './comment';
 
 export const schema = appSchema({
   version: 2,
   tables: [
     tableSchema({
-      name: Post.table,
-      columns: Post.columns,
+      name: CollectBooks.table,
+      columns: CollectBooks.columns,
     }),
     tableSchema({
       name: Comment.table,
@@ -17,6 +17,6 @@ export const schema = appSchema({
   ],
 });
 export const models = [
-  Post,
+  CollectBooks,
   Comment,
 ];

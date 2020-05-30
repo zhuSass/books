@@ -12,6 +12,10 @@ export default StyleSheet.create({
         width: '100%',
         height: 170,
     },
+    HeaderBgContainer: {
+        width: '100%',
+        height: 170,
+    },
     container: {
         flex: 1,
     },

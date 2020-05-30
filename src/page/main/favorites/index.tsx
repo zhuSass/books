@@ -117,17 +117,20 @@ function Index(props:any) {
               post.title = 'New post'
               post.body = 'Lorem ipsum...'
             });
+            init();
         });
     };
 
     return (<View style={styles.indexWrap}>
-        <HeaderBg/>
+        <View style={styles.HeaderBgContainer}>
+            <HeaderBg/>
+            <Button onPress={addPosts} title="添加"></Button>
+        </View>
         {list.map((item: any, index) => {
             return <Text key={index}>
                 {item._raw.id}-{item.title}---{item.body}</Text>
         })}
-        <Button onPress={addPosts} title="添加"></Button>
-        {/* <ListData/> */}
+        <ListData/>
     </View>)
 }
 Index.parentScreen = 'favorites';
