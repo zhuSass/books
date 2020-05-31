@@ -1,22 +1,25 @@
-import { appSchema, tableSchema } from '@nozbe/watermelondb';
+import { appSchema, ColumnSchema, 
+  TableSchema, tableSchema,
+} from '@nozbe/watermelondb';
 
-import CollectBooks from './collectBooks';
-import Comment from './comment';
+import Collect from './book/collect';
+import Comment from './book/catalogue';
+import Article from './book/article';
+
+export const models = [
+  Collect,
+  Comment,
+  Article,
+];
+const tables:TableSchema[] = [];
+for (let item of models) {
+  tables.push(tableSchema({
+    name: item.table,
+    columns: item.columns,
+  }));
+}
 
 export const schema = appSchema({
   version: 2,
-  tables: [
-    tableSchema({
-      name: CollectBooks.table,
-      columns: CollectBooks.columns,
-    }),
-    tableSchema({
-      name: Comment.table,
-      columns: Comment.columns,
-    }),
-  ],
+  tables: tables,
 });
-export const models = [
-  CollectBooks,
-  Comment,
-];

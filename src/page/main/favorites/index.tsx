@@ -12,6 +12,7 @@ import {
     Button,
 } from 'react-native';
 import withObservables from '@nozbe/with-observables';
+import { Q } from '@nozbe/watermelondb'
 import { useDatabase } from '@nozbe/watermelondb/hooks';
 import { withDatabase } from '@nozbe/watermelondb/DatabaseProvider';
 import useSWR from 'swr';
@@ -25,7 +26,7 @@ import LazyLoading from '@/components/lazyLoading';
 import Icon from '@/components/icon';
 import ShuYuanSdk,{FavoritesListType} from '@/common/shuYuanSdk';
 import {Toast} from '@/utils/ui';
-import post from '@/db/models/post';
+import Collect from '@/db/models/book/collect';
 
 import styles from './css';
 
@@ -37,11 +38,14 @@ function HeaderBg() {
             style={styles.headerBg}>
     </ImageBackground>
 }
-function ListData() {
+
+type ListDataTypes = {
+    dataList: Collect[],
+    dataListError: boolean,
+    dataListLoad: boolean,
+}
+function ListData(props: ListDataTypes) {
     const navigation = useNavigation();
-    const [dataListError, setDataListError] = useState(false);
-    const [dataListLoad, setDataListLoad] = useState(false);
-    const [dataList, setDataList] = useState<FavoritesListType>([]);
 
     const goToPage = function(item: any) {
         navigation.navigate('Other', { 
@@ -56,6 +60,11 @@ function ListData() {
     const getFictionList = function() {
 
     };
+    const {
+        dataList,
+        dataListError,
+        dataListLoad,
+    } = props;
 
     return <SafeAreaView style={styles.container}>
     <ScrollView style={styles.fictionScroll}>
@@ -65,7 +74,7 @@ function ListData() {
             reloadCall={getFictionList}
             parentScreen={Index.parentScreen}>
                 <View>
-                {dataList.map((item:FavoritesListType[0], index:number) => {
+                {dataList.map((item:Collect, index:number) => {
                     return <TouchableOpacity 
                             key={index} style={styles.fictionList}
                             onPress={() => goToPage(item)} >
@@ -96,41 +105,69 @@ function ListData() {
 }
 
 function Index(props:any) {
-    const [list, setList] = useState<post[]>([]);
+    const [list, setList] = useState<Collect[]>([]);
+    const [dataListError, setDataListError] = useState(false);
+    const [dataListLoad, setDataListLoad] = useState(false);
 
     const database = useDatabase();
-    const postsCollection = database.collections.get<post>('posts')
+    const collectCollection = database.collections.get<Collect>('collects');
 
     useEffect(() => {
         init();
     }, []);
     const init = async function init() {
+        setDataListError(false);
+        setList([]);
+        setDataListLoad(false);
         database.action(async () => {
-            const allPosts = await postsCollection.query().fetch();
-            setList(allPosts);
-            console.log('3----------', allPosts)
+            try {
+                const all = await collectCollection.query().fetch();
+                setList(all);
+            } catch(e) {
+                setDataListError(true);
+            }
         });
     }
     const addPosts = function() {
         database.action(async () => {
-            const newPost = await postsCollection.create((post) => {
-              post.title = 'New post'
-              post.body = 'Lorem ipsum...'
+            const newPost = await collectCollection.create((Collect) => {
+                Collect.title = '魔法种族大穿越';
+                Collect.logo = 'http://www.booksky.cc/headimgs/223/223512/s223512.jpg';
+                Collect.source = '快眼看书';
+                Collect.author = '西红柿';
+                Collect.catalogueUrl = '223512';
+                Collect.latestChapterTitle = '第1968章 广寒月宫姑射仙子今夜加入太阴战场进行狩猎！';
+                Collect.latestChapterUrl = '/novel/223512/read_2045.html';
+                Collect.haveReadTitle = '第12章 目标王百科';
+                Collect.haveReadUrl = '/novel/223512/read_12.html';
+                Collect.isCache = false;
             });
             init();
         });
+    };
+    const handleDelete = async function(id?:number) {
+        await database.action(async () => {
+            if (id) {
+                await collectCollection.query(
+                    Q.where('collect_id', id)
+                ).destroyAllPermanently();
+            } else {
+                await collectCollection.query().destroyAllPermanently();
+            }
+        });
+        init();
     };
 
     return (<View style={styles.indexWrap}>
         <View style={styles.HeaderBgContainer}>
             <HeaderBg/>
             <Button onPress={addPosts} title="添加"></Button>
+            <Button onPress={()=>handleDelete()} title="删除所有"></Button>
         </View>
-        {list.map((item: any, index) => {
-            return <Text key={index}>
-                {item._raw.id}-{item.title}---{item.body}</Text>
-        })}
-        <ListData/>
+        <ListData dataList={list}
+            dataListError={dataListError}
+            dataListLoad={dataListLoad}
+        />
     </View>)
 }
 Index.parentScreen = 'favorites';
