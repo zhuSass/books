@@ -17,16 +17,16 @@ export default class Catalogue extends Model {
   static columns:ColumnSchema[] = [
     { name: 'title', type: 'string' },
     { name: 'chapter_title', type: 'string' },
-    { name: 'chapter_url', type: 'string' },
+    { name: 'article', type: 'string' },
     { name: 'is_cache', type: 'boolean' },
     { name: 'collect_id', type: 'string', isIndexed: true },
   ];
   // 小说标题
   @field('title') title!: string;
-  // 章节标题
+  // 文章详情标题
   @field('chapter_title') chapterTitle!: string;
-  // 章节页面地址
-  @field('chapter_url') chapterUrl!: string;
+  // 文章详情页面地址
+  @field('article') article!: string;
   // 是否缓存
   @field('is_cache') isCache!: boolean;
   // 收藏表

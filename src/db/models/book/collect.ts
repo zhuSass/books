@@ -37,11 +37,11 @@ export default class Collect extends Model {
   @field('catalogue_url') catalogueUrl!: string;
   // 最新章节标题
   @field('latest_chapter_title') latestChapterTitle!: string;
-  // 最新章节页面地址
+  // 最新章节页面文章地址
   @field('latest_chapter_url') latestChapterUrl!: string;
   // 已阅读到的章节标题
   @field('have_read_title') haveReadTitle!: string;
-  // 已阅读到的章节页面地址
+  // 已阅读到的章节文章页面地址
   @field('have_read_url') haveReadUrl!: string;
   // 是否缓存
   @field('is_cache') isCache!: boolean;

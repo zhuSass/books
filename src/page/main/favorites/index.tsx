@@ -6,10 +6,14 @@ import {
     TouchableWithoutFeedback,
     Image,
     Text,
+    Modal,
     NativeScrollEvent,
     TouchableOpacity,
     ToastAndroid,
     Button,
+    Alert,
+    GestureResponderEvent,
+    TouchableHighlight,
 } from 'react-native';
 import withObservables from '@nozbe/with-observables';
 import { Q } from '@nozbe/watermelondb'
@@ -22,6 +26,7 @@ import { useRoute ,useNavigation,
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Header from '@/components/header';
+import IModal from '@/components/iModal';
 import LazyLoading from '@/components/lazyLoading';
 import Icon from '@/components/icon';
 import ShuYuanSdk,{FavoritesListType} from '@/common/shuYuanSdk';
@@ -43,20 +48,10 @@ type ListDataTypes = {
     dataList: Collect[],
     dataListError: boolean,
     dataListLoad: boolean,
+    handleMore: Function,
+    goToPage: (item: Collect) => void,
 }
 function ListData(props: ListDataTypes) {
-    const navigation = useNavigation();
-
-    const goToPage = function(item: any) {
-        navigation.navigate('Other', { 
-            screen: 'BookDirectory', 
-            params: {
-                id: item.id,
-                source: item.source,
-                title: item.title,
-            },
-        });
-    };
     const getFictionList = function() {
 
     };
@@ -64,7 +59,13 @@ function ListData(props: ListDataTypes) {
         dataList,
         dataListError,
         dataListLoad,
+        handleMore,
+        goToPage,
     } = props;
+    const handleMores =function(e: GestureResponderEvent, item: Collect) {
+        e.preventDefault();
+        handleMore(item);
+    };
 
     return <SafeAreaView style={styles.container}>
     <ScrollView style={styles.fictionScroll}>
@@ -83,7 +84,12 @@ function ListData(props: ListDataTypes) {
                                 resizeMode='cover'
                                 style={styles.bananaCameraImg}/>
                             <View style={styles.fictionListInfo}>
-                                <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+                                <Text style={styles.title}>
+                                    {item.title}
+                                    {item.isCache ? <Text style={styles.cache}>
+                                    &nbsp;&nbsp;&nbsp;已缓存
+                                    </Text> : null}
+                                </Text>
                                 <View style={styles.label}>
                                     <View style={styles.user}>
                                         <Icon fontFileName='AntDesign'
@@ -94,7 +100,19 @@ function ListData(props: ListDataTypes) {
                                         <Text style={styles.author}>{item.author}</Text>
                                     </View>
                                 </View>
+                                <Text style={styles.content}>
+                                    浏览：{item.haveReadTitle}
+                                </Text>
                             </View>
+                            <TouchableOpacity 
+                                onPress={(e) => handleMores(e, item)}
+                                style={styles.more}>
+                                <Icon fontFileName='Feather'
+                                    color='#969ba3'
+                                    size={22}
+                                    style={styles.userIcon}
+                                    name='more-horizontal'/>
+                            </TouchableOpacity>
                         </TouchableOpacity>
                 })}
                 </View>
@@ -103,11 +121,14 @@ function ListData(props: ListDataTypes) {
     </ScrollView>
 </SafeAreaView>
 }
-
 function Index(props:any) {
+    const navigation = useNavigation();
+
     const [list, setList] = useState<Collect[]>([]);
     const [dataListError, setDataListError] = useState(false);
     const [dataListLoad, setDataListLoad] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalInfo, setModalInfo] = useState<Collect>();
 
     const database = useDatabase();
     const collectCollection = database.collections.get<Collect>('collects');
@@ -145,11 +166,11 @@ function Index(props:any) {
             init();
         });
     };
-    const handleDelete = async function(id?:number) {
+    const handleDelete = async function(id?:string) {
         await database.action(async () => {
             if (id) {
                 await collectCollection.query(
-                    Q.where('collect_id', id)
+                    Q.where('id', id)
                 ).destroyAllPermanently();
             } else {
                 await collectCollection.query().destroyAllPermanently();
@@ -157,17 +178,75 @@ function Index(props:any) {
         });
         init();
     };
+    const handleMore = function(item: Collect) {
+        setModalInfo(item);
+        setModalVisible(true);
+    };
+    const closeModal = function() {
+        setModalVisible(false);
+    };
+    const openReading = function(item: Collect) {
+        navigation.navigate('Other', { 
+            screen: 'Reading', 
+            params: {
+                id: item.haveReadUrl,
+                source: item.source,
+                title: item.haveReadTitle,
+            },
+        });
+        closeModal();
+    };
+    const deleteBooks = function() {
+        handleDelete(modalInfo?._raw.id);
+        closeModal();
+    };
 
     return (<View style={styles.indexWrap}>
         <View style={styles.HeaderBgContainer}>
             <HeaderBg/>
-            <Button onPress={addPosts} title="添加"></Button>
-            <Button onPress={()=>handleDelete()} title="删除所有"></Button>
+            {/* <Button onPress={addPosts} title="添加"></Button> */}
+            {/* <Button onPress={()=>handleDelete()} title="删除所有"></Button> */}
         </View>
         <ListData dataList={list}
             dataListError={dataListError}
             dataListLoad={dataListLoad}
+            handleMore={handleMore}
+            goToPage={openReading}
         />
+        <IModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            onRequestClose={closeModal}
+            direction={'bottom'}
+        >
+            <View style={styles.modal}>
+                <View style={styles.modalCard}>
+                    <TouchableOpacity 
+                        onPress={() => openReading(modalInfo as Collect)}
+                        style={styles.modalCardItem}>
+                        <Text style={styles.modalCardItemText}>
+                            打开：{modalInfo?.haveReadTitle}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={deleteBooks}
+                        style={styles.modalCardItem}>
+                        <Text style={styles.modalCardItemText}>
+                            删除
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.modalCard}>
+                    <TouchableOpacity 
+                        onPress={closeModal}
+                        style={styles.modalCardItem}>
+                        <Text style={styles.modalCardItemText}>
+                            取消
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </IModal>
     </View>)
 }
 Index.parentScreen = 'favorites';

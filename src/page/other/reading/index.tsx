@@ -27,7 +27,20 @@ import {Toast} from '@/utils/ui';
 import styles from './css';
 
 type RootStackParamList = {
-    Profile: DirectoryListType[0];
+    Profile: {
+        /** 文章标题 **/
+        title?: string,
+        /** 第几章 **/
+        number?: string,
+        /** 文章地址 **/
+        id: string,
+        /** 平台标识 **/
+        source: AllShuYuanIdsKey,
+        /** 目录id **/
+        directoryId?: string,
+        /** 收藏id **/
+        collectId?: string,
+    };
   };
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
 // 上下文
@@ -187,13 +200,13 @@ function Index(props:any) {
         initDataHandle();
     }, []);
     const initDataHandle = async function() {
-        // const params:DirectoryListType[0] = {
-        //     "title":"高深莫测的老板",
-        //     "number":"002",
-        //     "id":"/novel/147649/read_2.html",
-        //     "source":"快眼看书",
-        // };
-        const params = route.params;
+        const params:DirectoryListType[0] = {
+            "title":"高深莫测的老板",
+            "number":"002",
+            "id":"/novel/147649/read_2.html",
+            "source":"快眼看书",
+        };
+        // const params = route.params;
         setUrlParams(params);
         // 获取文章数据
         const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);

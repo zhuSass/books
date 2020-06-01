@@ -1,9 +1,10 @@
-import { StyleSheet, } from "react-native";
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     indexWrap: {
         flex: 1,
         position: 'relative',
+        backgroundColor: '#fff',
     },
     headerBg: {
         position: 'absolute',
@@ -24,19 +25,25 @@ export default StyleSheet.create({
         paddingLeft: 16,
         paddingRight: 16,
     },
+    cache: {
+        display: 'flex',
+        paddingLeft: 10,
+        fontSize: 12,
+        color: '#969ba3',
+    },
     fictionList: {
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingTop: 10,
+        paddingBottom: 10,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: '#f0f1f2',
+        borderColor: '#EAEAEA',
         borderBottomWidth: 1,
     },
     bananaCameraImg: {
-        width: 66,
-        height: 68,
+        width: 70,
+        height: 90,
         marginRight: 8,
     },
     fictionListInfo: {
@@ -71,7 +78,29 @@ export default StyleSheet.create({
         alignContent: 'center'
     },
     userIcon: {
-
         marginRight: 5,
+    },
+    more: {
+    },
+    modal: {
+        width: '100%',
+    },
+    modalCard: {
+        backgroundColor: '#fff',
+        borderRadius: 4, 
+        marginBottom: 10,
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    modalCardItem: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 15,
+        paddingBottom: 15,
+    },
+    modalCardItemText: {
+        fontSize: 16,
+        color: '#857ADA',
     },
 });

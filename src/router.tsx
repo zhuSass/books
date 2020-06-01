@@ -143,7 +143,7 @@ function AppStack() {
         name="Bibliotheca" 
         component={BibliothecaModel} 
         options={{
-          tabBarLabel: '书库',
+          tabBarLabel: '发现',
           tabBarIcon: ({color}:any) => tabBarIcon('library', 'MaterialCommunityIcons', color),
         }}
        />
@@ -170,7 +170,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="App"
+      initialRouteName="Other"
       headerMode="none"
     >
        {/* 登录验证 */}
