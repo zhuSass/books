@@ -5,6 +5,7 @@ const {height} =  Dimensions.get('window');
 export default StyleSheet.create({
     homeWrap: {
         position: 'relative',
+        flex: 1,
     },
     bgColorContainer: {
         position: 'absolute',
@@ -36,7 +37,7 @@ export default StyleSheet.create({
         resizeMode: 'stretch',
     },
     readingMainContainer: {
-        paddingTop: 10,
+        flex: 1,
     },
     headerRight: {
         display: 'flex',
@@ -83,4 +84,11 @@ export default StyleSheet.create({
         lineHeight: 32.4,
         color: '#262626',
     },
+    leftAndRightWap: {
+        flex: 1,
+    },
+    leftAndRightWapView: {
+        flex: 1,
+        backgroundColor: 'red',
+    }
 });

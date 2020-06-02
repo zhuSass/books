@@ -82,7 +82,7 @@ function BibliothecaModel() {
 function OtherModel() {
   return (
     <Stack.Navigator
-      initialRouteName="search"
+      initialRouteName="Reading"
       headerMode="none"
     >
       {/* 文章详情 */}
@@ -170,7 +170,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="Other"
+      initialRouteName="App"
       headerMode="none"
     >
        {/* 登录验证 */}

@@ -9,11 +9,17 @@ import { View, Text, ScrollView,
     ToastAndroid,
     StatusBarIOS,
     Dimensions,
+    Animated,
     NativeSyntheticEvent,
     NativeScrollEvent,
     GestureResponderEvent,
 } from 'react-native';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
+import { PanGestureHandler,
+    PanGestureHandlerGestureEvent,
+    PanGestureHandlerStateChangeEvent,
+    State,
+} from 'react-native-gesture-handler';
 
 import ShuYuanSdk,{
     DirectoryListType,
@@ -46,7 +52,8 @@ type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Profile'>;
 // 上下文
 type GlobalDataType = {
     pageType: 'default' | 'setting', // 页面类型
-    readType: 'default' | 'upDown' | 'around' | 'center', // default 没有操作；upDown上下；around 左右;center 中部
+    readOperation: 'default' | 'upDown' | 'around' | 'center', // default 没有操作；upDown上下；around 左右;center 中部
+    readType: 'upAndDown' | 'leftAndRight', // 阅读类型；upAndDown 上下/ leftAndRight
     bgColor: string, // 书面背景色
     readingStyle: { // 阅读样式
         type: 'default', // default 默认；
@@ -76,7 +83,8 @@ type GlobalDataType = {
 const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
-    readType: 'default',
+    readOperation: 'default',
+    readType: 'leftAndRight',
     readingStyle: {
         type: 'default',
         titleFontSize: 27,
@@ -110,21 +118,23 @@ const initGlobalDataData:GlobalDataType = {
 const windowDevice =  Dimensions.get('window');
 
 const GlobalDataContext = React.createContext(initGlobalDataData);
-// 文章主体
-function ReadingMain(props:any, ref:any) {
-    const flatlistEl = useRef<any>(null);
+// 上下分页文章主体
+function UpAndDownReading(props:any, ref:any) {
+    const ReadingMainEl = useRef<any>(null);
+
     const globalData = useContext<GlobalDataType>(GlobalDataContext);
 
-    useImperativeHandle(ref, () => ({
-        flatlistEl: flatlistEl.current,
-    }));
+    const {
+        loadArticleHandle,
+        setGlobalData,
+    } = globalData;
 
     const  loadPrevArticleHandle = function() {
         globalData.loadArticleHandle('prev');
     };
     const getItemWH = function(index:number, layout:any) {
         if (index === 0 && globalData.isUnshiftOperation) {
-            flatlistEl.current?.scrollToOffset({
+            ReadingMainEl.current?.scrollToOffset({
                 offset: layout.height,
                 animated: false,
             })
@@ -148,30 +158,108 @@ function ReadingMain(props:any, ref:any) {
             }
         });
     }
+    // 上一页跳跃跳转
+    const handleSkip = function(readOperation:GlobalDataType['readOperation']) {
+        const {width, height} = windowDevice;
+        const ReadingMainTagretEl = ReadingMainEl.current;
+        const offsetY = height;
+
+        if (readOperation === 'upDown') {
+            let val = Math.floor(globalData.scrollConfig.y - offsetY + 62);
+            val = val < 0 ? 0 : val;
+            if (globalData.scrollConfig.y !== val) {
+                ReadingMainTagretEl.scrollToOffset({
+                    offset: val,
+                    animated: true,
+                });
+            }
+            if (val === 0) {
+                loadArticleHandle('prev');
+            } 
+        }
+        if (readOperation === 'around') {
+            let val = Math.floor(globalData.scrollConfig.y  + offsetY - 62);
+            if (globalData.scrollConfig.y !== val) {
+                ReadingMainTagretEl.scrollToOffset({
+                    offset: val,
+                    animated: true,
+                });
+            }
+        }
+    };
     
-    return <SafeAreaView>
-                <FlatList
-                ref={flatlistEl}
-                data={globalData.articleList}
-                refreshing={globalData.bottomLodding}
-                onEndReached={()=>globalData.loadArticleHandle('next')}
-                onRefresh={loadPrevArticleHandle}
-                onEndReachedThreshold={0.5}
-                onScroll={handleScrollEvent}
-                renderItem={({ item, index }) => <View 
-                    onLayout={(e)=>getItemWH(index, e.nativeEvent.layout)}
-                    style={{
-                        ...styles.ReadingMainItem,
-                        opacity: index == 0 && globalData.firstInvisible ? 0 : 1,
-                        }}>
-                    <Text style={styles.ReadingMainItemTitle}>{item.title}</Text>    
-                    <Text style={styles.ReadingMainItemcontent}>{item.doc}</Text>    
-                </View>}
-                keyExtractor={item => item.title}
-                />
-    </SafeAreaView>
+    const onResponderEndFun = useCallback(function(e:GestureResponderEvent) {
+        e.persist();
+        const {pageY, pageX} = e.nativeEvent;
+        const {width, height} = windowDevice;
+        const resulteHeight = height;
+        const areaHeight = resulteHeight / 3;
+        const upArea:Array<number> =  [0, areaHeight]; // 手指按上区域部分
+        const centerArea =  [areaHeight, areaHeight + areaHeight]; // 手指按中区域部分
+        const bottomArea =  [areaHeight * 2, height]; // 手指按下区域部分
+        let readOperation:GlobalDataType['readOperation'] = 'default';
+
+        if (upArea[0] < pageY &&  upArea[1] > pageY) {
+            readOperation = 'upDown';
+            console.log('按上')
+        }
+        if (centerArea[0] < pageY &&  centerArea[1] > pageY) {
+            readOperation = 'center';
+            console.log('按中')
+        }
+        if (bottomArea[0] < pageY &&  bottomArea[1] > pageY) {
+            readOperation = 'around';
+            console.log('按下')
+        }
+        setGlobalData((data: GlobalDataType) => {
+            return {
+                ...data,
+                readOperation: readOperation,
+            };
+        });
+        if (readOperation !== 'default') {
+            handleSkip(readOperation);
+        }
+        // console.log('坐标-------', pageY, height)
+    }, [globalData]);
+    
+    return <View style={{
+        flex: 1,
+        }}
+        onStartShouldSetResponder={() => true}
+        onMoveShouldSetResponder={() => true}
+        onResponderRelease={onResponderEndFun}
+        >
+        {/* 背景区块 */}
+        {
+            globalData.readingStyle.type === 'default' ?
+                <ReadTheBackground/> : null
+        }
+        <SafeAreaView>
+            <FlatList
+            ref={ReadingMainEl}
+            data={globalData.articleList}
+            refreshing={globalData.bottomLodding}
+            onEndReached={()=>globalData.loadArticleHandle('next')}
+            onRefresh={loadPrevArticleHandle}
+            onEndReachedThreshold={0.5}
+            onScroll={handleScrollEvent}
+            renderItem={({ item, index }) => <View 
+                onLayout={(e)=>getItemWH(index, e.nativeEvent.layout)}
+                style={{
+                    ...styles.ReadingMainItem,
+                    opacity: index == 0 && globalData.firstInvisible ? 0 : 1,
+                    }}>
+                <Text style={styles.ReadingMainItemTitle}>{item.title}</Text>    
+                <Text style={styles.ReadingMainItemcontent}>{item.doc}</Text>    
+            </View>}
+            keyExtractor={item => item.title}
+            />
+        </SafeAreaView>
+    </View> 
+    
+    
 }
-const ReadingMainRef = forwardRef(ReadingMain);
 // 阅读背景区块
 function ReadTheBackground() {
     const themglobalDatae = useContext(GlobalDataContext);
@@ -189,9 +277,65 @@ function ReadTheBackground() {
             </View>}
     </View>
 };
+// 左右分页文章主体
+function LeftAndRightReading() {
+    const [readOperation, setReadOperation] = useState('right');
+    const translateX = new Animated.Value(0);
+    const lastOffset = { x: 0, };
+
+    const onPanGestureEvent = Animated.event(
+        [
+          {
+            nativeEvent: {
+              translationX: translateX,
+            },
+          },
+        ],
+        { useNativeDriver: true }
+      );
+    const onHandlerStateChange = useCallback(function(event: PanGestureHandlerStateChangeEvent) {
+        lastOffset.x += event.nativeEvent.translationX;
+        translateX.setOffset(lastOffset.x);
+        // translateX.setValue(0);
+        console.log('偏移量---', lastOffset.x)
+        if (lastOffset.x < 0) {
+            setReadOperation('left');
+        } else {
+            setReadOperation('right');
+        }
+        console.log('5---------', event.nativeEvent.oldState, State)
+
+
+    }, [readOperation]);
+
+    return <View style={styles.leftAndRightWap}>
+        <PanGestureHandler
+            onHandlerStateChange={onHandlerStateChange}
+            onGestureEvent={onPanGestureEvent}>
+            <Animated.View
+                style={[
+                    styles.leftAndRightWapView, {
+                    transform: [
+                        {
+                            translateX: translateX,
+                        },
+                    ]
+                }]}
+            >
+                <Text>
+                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                </Text>
+            </Animated.View>
+      </PanGestureHandler>
+    </View>
+}
 
 function Index(props:any) {
-    const ReadingMainEl = useRef<any>(null);
     const route = useRoute<ProfileScreenRouteProp>();
     const [urlParams, setUrlParams] = useState<DirectoryListType[0]>();
     const [globalData, setGlobalData] = useState<GlobalDataType>(initGlobalDataData);
@@ -229,7 +373,6 @@ function Index(props:any) {
             }
         });
     };
-
     const loadArticleHandle = async function(type: 'next' | 'prev') {
         if (type === 'next' && !globalData.articleBase.next) {
             Toast({
@@ -314,78 +457,11 @@ function Index(props:any) {
             }
         });
     }
-    // 上一页跳跃跳转
-    const handleSkip = function(readType:GlobalDataType['readType']) {
-        const {width, height} = windowDevice;
-        const ReadingMainTagretEl = ReadingMainEl.current.flatlistEl;
-        const offsetY = height;
-
-        if (readType === 'upDown') {
-            let val = Math.floor(globalData.scrollConfig.y - offsetY + 62);
-            val = val < 0 ? 0 : val;
-            if (globalData.scrollConfig.y !== val) {
-                ReadingMainTagretEl.scrollToOffset({
-                    offset: val,
-                    animated: true,
-                });
-            }
-            if (val === 0) {
-                loadArticleHandle('prev');
-            } 
-        }
-        if (readType === 'around') {
-            let val = Math.floor(globalData.scrollConfig.y  + offsetY - 62);
-            if (globalData.scrollConfig.y !== val) {
-                ReadingMainTagretEl.scrollToOffset({
-                    offset: val,
-                    animated: true,
-                });
-            }
-        }
-    };
-    
-    const onResponderEndFun = useCallback(function(e:GestureResponderEvent) {
-        e.persist();
-        const {pageY, pageX} = e.nativeEvent;
-        const {width, height} = windowDevice;
-        const resulteHeight = height;
-        const areaHeight = resulteHeight / 3;
-        const upArea:Array<number> =  [0, areaHeight]; // 手指按上区域部分
-        const centerArea =  [areaHeight, areaHeight + areaHeight]; // 手指按中区域部分
-        const bottomArea =  [areaHeight * 2, height]; // 手指按下区域部分
-        let readType:GlobalDataType['readType'] = 'default';
-
-        if (upArea[0] < pageY &&  upArea[1] > pageY) {
-            readType = 'upDown';
-            console.log('按上')
-        }
-        if (centerArea[0] < pageY &&  centerArea[1] > pageY) {
-            readType = 'center';
-            console.log('按中')
-        }
-        if (bottomArea[0] < pageY &&  bottomArea[1] > pageY) {
-            readType = 'around';
-            console.log('按下')
-        }
-        setGlobalData((data: GlobalDataType) => {
-            return {
-                ...data,
-                readType: readType,
-            };
-        });
-        if (readType !== 'default') {
-            handleSkip(readType);
-        }
-        // console.log('坐标-------', pageY, height)
-    }, [globalData]);
 
     return (<View 
             style={[
                 styles.homeWrap,
-            ]} 
-            onStartShouldSetResponder={() => true}
-            onMoveShouldSetResponder={() => true}
-            onResponderRelease={onResponderEndFun}>
+            ]}>
             <GlobalDataContext.Provider value={{
                 ...globalData,
                 setArticleList,
@@ -399,12 +475,14 @@ function Index(props:any) {
                     headerLeft={true}
                     headerRight={rendenHeaderContentEl}
                 /> : null}
-                {/* 文章主题 */}
-                <View style={styles.readingMainContainer}>
-                    <ReadingMainRef ref={ReadingMainEl}/>
-                </View>
-                {/* 背景区块 */}
-                <ReadTheBackground/>
+                {/* 上下分页文章主体 */}
+                {globalData.readType === 'upAndDown' ? <View style={styles.readingMainContainer}>
+                    <UpAndDownReading/>
+                </View>:null}
+                {/* 上下分页文章主体 */}
+                {globalData.readType === 'leftAndRight' ? <View style={styles.readingMainContainer}>
+                    <LeftAndRightReading/>
+                </View>:null}
             </GlobalDataContext.Provider>
     </View>)
 }
