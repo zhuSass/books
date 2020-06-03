@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions, } from "react-native";
 
-const {height} =  Dimensions.get('window');
+const {height, width} =  Dimensions.get('window');
 
 export default StyleSheet.create({
     homeWrap: {
@@ -85,10 +85,12 @@ export default StyleSheet.create({
         color: '#262626',
     },
     leftAndRightWap: {
-        flex: 1,
+        position: 'relative',
     },
     leftAndRightWapView: {
-        flex: 1,
-        backgroundColor: 'red',
+        position: 'absolute',
+        width: width,
+        height: height,
+        backgroundColor: '#fff',
     }
 });

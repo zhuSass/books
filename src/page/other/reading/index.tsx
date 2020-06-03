@@ -3,6 +3,7 @@ import React,{useContext, useState,
     useImperativeHandle,
     useCallback,
     forwardRef,
+    useEffect,
     useRef, } from 'react';
 import { View, Text, ScrollView,
     SafeAreaView, FlatList, Image,
@@ -10,6 +11,7 @@ import { View, Text, ScrollView,
     StatusBarIOS,
     Dimensions,
     Animated,
+    Easing,
     NativeSyntheticEvent,
     NativeScrollEvent,
     GestureResponderEvent,
@@ -279,36 +281,236 @@ function ReadTheBackground() {
 };
 // 左右分页文章主体
 function LeftAndRightReading() {
-    const [readOperation, setReadOperation] = useState('right');
-    const translateX = new Animated.Value(0);
+    let readOperation = ''; // 左右方向
+
+    const currentArticle = useRef({ //当前文章数据
+        listIndex: 1, // 列表索引
+        key: 'fwerfwer2',
+        keyIndex: 0, 
+    }); 
+    const afterArticle = useRef({ //之后文章数据
+        listIndex: 1, // 列表索引
+        key: 'fwerfwer2',
+        keyIndex: 0, 
+    }); 
+    const translateX = useRef(new Animated.Value(0));
     const lastOffset = { x: 0, };
+    const [datas, setDatas] = useState<{
+        [key in string]: {title: string, content: string}[]
+    }>({
+        'fwerfwer2': [
+            {
+            title: 'fwerfwer2-修仙传1',
+            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+            },
+            {
+                title: 'fwerfwer2-修仙传2',
+                content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+            },
+            {
+                title: 'fwerfwer2-修仙传3',
+                content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+            },
+        ],
+    });
 
     const onPanGestureEvent = Animated.event(
         [
           {
             nativeEvent: {
-              translationX: translateX,
+              translationX: translateX.current,
             },
           },
         ],
         { useNativeDriver: true }
-      );
+    );
+    const loadArticleHandle = function(type:string) {
+        if (type === 'left') {
+            setDatas((data:any):any => {
+                return {
+                    'fwerfwer1': [
+                        {
+                        title: 'fwerfwer1-修仙传1',
+                        content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+                        },
+                        {
+                            title: 'fwerfwer1-修仙传2',
+                            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+                        },
+                        {
+                            title: 'fwerfwer1-修仙传3',
+                            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+                        },
+                    ],
+                    ...data,
+                }
+            });
+        } else {
+            setDatas((data:any):any => {
+                return {
+                    ...data,
+                    'fwerfwer3': [
+                        {
+                        title: 'fwerfwer3-修仙传1',
+                        content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+                        },
+                        {
+                            title: 'fwerfwer3-修仙传2',
+                            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+                        },
+                        {
+                            title: 'fwerfwer3-修仙传3',
+                            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
+                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
+                        },
+                    ],
+                }
+            });
+        }
+    };
     const onHandlerStateChange = useCallback(function(event: PanGestureHandlerStateChangeEvent) {
         lastOffset.x += event.nativeEvent.translationX;
-        translateX.setOffset(lastOffset.x);
+        // translateX.setOffset(lastOffset.x);
         // translateX.setValue(0);
         console.log('偏移量---', lastOffset.x)
         if (lastOffset.x < 0) {
-            setReadOperation('left');
+            readOperation = 'left';
+
+            if (currentArticle.current.keyIndex === 0) {
+                loadArticleHandle(readOperation);
+                currentArticle.current.keyIndex = 1;
+            }
+            const datasKeyList = Object.keys(datas);
+            if (currentArticle.current.listIndex === 0) {
+                afterArticle.current = {
+                    listIndex: 0, 
+                    key: datasKeyList[currentArticle.current.keyIndex - 1],
+                    keyIndex: (currentArticle.current.keyIndex - 1), 
+                };
+            } else {
+                afterArticle.current = {
+                    listIndex: currentArticle.current.listIndex - 1, 
+                    key: currentArticle.current.key,
+                    keyIndex: currentArticle.current.keyIndex, 
+                };
+            }
         } else {
-            setReadOperation('right');
+            readOperation = 'right';
+            const oldDatasKeyList = Object.keys(datas);
+            if (currentArticle.current.keyIndex === 0) {
+                loadArticleHandle(readOperation);
+                currentArticle.current.keyIndex = 1;
+            }
+            const datasKeyList = Object.keys(datas);
+            if (currentArticle.current.listIndex === 0) {
+                afterArticle.current = {
+                    listIndex: 0, 
+                    key: datasKeyList[currentArticle.current.keyIndex - 1],
+                    keyIndex: (currentArticle.current.keyIndex - 1), 
+                };
+            } else {
+                afterArticle.current = {
+                    listIndex: currentArticle.current.listIndex - 1, 
+                    key: currentArticle.current.key,
+                    keyIndex: currentArticle.current.keyIndex, 
+                };
+            }
         }
-        console.log('5---------', event.nativeEvent.oldState, State)
+        if (event.nativeEvent.oldState === 4) {
+            if (readOperation === 'left') {
+                Animated.timing(
+                    translateX.current,
+                    {
+                        duration: 260,
+                        toValue: -windowDevice.width,
+                        useNativeDriver: true,
+                    },
+                ).start();
 
+                console.log('left---------');
+            } else {
+                Animated.timing(
+                    translateX.current,
+                    {
+                        duration: 260,
+                        toValue: windowDevice.width,
+                        useNativeDriver: true,
+                    },
+                ).start();
+                console.log('right---------')
+            }
+            setTimeout(() => {
+                // currentArticle.current = JSON.parse(
+                //     JSON.stringify(afterArticle.current)
+                // );
+                console.log('3---------', currentArticle.current )
+                console.log('4---------', afterArticle.current )
+                translateX.current.setValue(0);
+            }, 270)
+        }
 
-    }, [readOperation]);
+    }, [datas]);
 
     return <View style={styles.leftAndRightWap}>
+        <View style={styles.leftAndRightWapView}>
+            <Text>
+                {datas[afterArticle.current.key][afterArticle.current.listIndex].title}
+                {datas[afterArticle.current.key][afterArticle.current.listIndex].content}
+            </Text>
+        </View>
         <PanGestureHandler
             onHandlerStateChange={onHandlerStateChange}
             onGestureEvent={onPanGestureEvent}>
@@ -317,18 +519,14 @@ function LeftAndRightReading() {
                     styles.leftAndRightWapView, {
                     transform: [
                         {
-                            translateX: translateX,
+                            translateX: translateX.current,
                         },
                     ]
                 }]}
             >
                 <Text>
-                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
-                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
-                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
-                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
-                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
-                fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾fsdfsd附件是东方结尾
+                {datas[currentArticle.current.key][currentArticle.current.listIndex].title}
+                {datas[currentArticle.current.key][currentArticle.current.listIndex].content}
                 </Text>
             </Animated.View>
       </PanGestureHandler>
