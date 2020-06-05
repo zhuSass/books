@@ -1,6 +1,9 @@
 import { StyleSheet, Dimensions, } from "react-native";
+import {
+    windowDevice,
+} from '@/utils/index';
 
-const {height, width} =  Dimensions.get('window');
+const {height, width} =  windowDevice;
 
 export default StyleSheet.create({
     homeWrap: {
@@ -70,19 +73,21 @@ export default StyleSheet.create({
     ReadingMainItem: {
         paddingLeft: 16,
         paddingRight: 16,
+        // backgroundColor: 'red',
+        // marginBottom: 5,
     },
     ReadingMainItemTitle: {
         textAlign: 'center',
         color: '#262626',
-        fontSize: 27,
-        marginTop: 27,
-        marginBottom: 27,
-        fontWeight: '400',
+        fontSize: 20,
+        marginTop: 10,
+        marginBottom: 10,
+        fontWeight: 'bold',
     },
     ReadingMainItemcontent: {
         fontSize: 18,
-        lineHeight: 32.4,
         color: '#262626',
+        backgroundColor: 'red',
     },
     leftAndRightWap: {
         position: 'relative',
@@ -92,5 +97,9 @@ export default StyleSheet.create({
         width: width,
         height: height,
         backgroundColor: '#fff',
-    }
+    },
+    ReadingMainItemWrap: {
+        width: width - 32,
+        height: height,
+    },
 });

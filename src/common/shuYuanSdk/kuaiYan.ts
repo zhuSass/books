@@ -90,7 +90,7 @@ export default class KuaiYan {
         return data;
     }
     // 获取小说详情
-    static getArticleInfo($:any):ArticleType {
+    static getArticleInfo($:any, current: string):ArticleType {
         const titleArray = ($('.title a').attr('title') || []).split(/\s+/);
         const title:string = titleArray.slice(1).join(' ');
         const doc:string = $('#chaptercontent').text();
@@ -105,6 +105,7 @@ export default class KuaiYan {
             doc,
             prev,
             next,
+            current,
         }
     }
     // 获取搜索信息

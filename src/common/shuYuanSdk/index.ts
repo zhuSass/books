@@ -60,6 +60,8 @@ export type ArticleType = {
     prev: string,
     /** 下一页地址 **/
     next: string,
+    /** 当前页面地址 **/
+    current: string,
     /** 文章 **/
     doc: string,
     /** 文章标题 **/
@@ -186,7 +188,7 @@ export default class ShuYuanSdk {
             );
         let handle = ShuYuanSdk.allShuYuanIds[data.source].handle;
 
-        return handle.getArticleInfo(html);
+        return handle.getArticleInfo(html, data.id);
     }
     /** 各大书院分类强推数据合并 **/
     mergeClassify(html: any, v:keyof typeof ShuYuanSdk.allShuYuanIds):HomeList {
