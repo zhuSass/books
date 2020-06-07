@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions, } from "react-native";
 import {
     windowDevice,
+    screen,
 } from '@/utils/index';
 
 const {height, width} =  windowDevice;
@@ -73,33 +74,28 @@ export default StyleSheet.create({
     ReadingMainItem: {
         paddingLeft: 16,
         paddingRight: 16,
-        // backgroundColor: 'red',
-        // marginBottom: 5,
     },
     ReadingMainItemTitle: {
         textAlign: 'center',
         color: '#262626',
-        fontSize: 20,
-        marginTop: 10,
-        marginBottom: 10,
-        fontWeight: 'bold',
+        paddingTop: 10,
+        paddingBottom: 10,
     },
     ReadingMainItemcontent: {
-        fontSize: 18,
         color: '#262626',
-        backgroundColor: 'red',
     },
     leftAndRightWap: {
         position: 'relative',
     },
     leftAndRightWapView: {
         position: 'absolute',
-        width: width,
+        width: screen.width,
         height: height,
+        paddingLeft: 16,
+        paddingRight: 16,
         backgroundColor: '#fff',
     },
     ReadingMainItemWrap: {
-        width: width - 32,
-        height: height,
+        width: screen.width - 32,
     },
 });

@@ -92,7 +92,7 @@ export default class KuaiYan {
     // 获取小说详情
     static getArticleInfo($:any, current: string):ArticleType {
         const titleArray = ($('.title a').attr('title') || []).split(/\s+/);
-        const title:string = titleArray.slice(1).join(' ');
+        const title:string = titleArray.slice(1).join(' ').replace(/\s/g, '\u3000');
         const doc:string = $('#chaptercontent').text();
         const operateDom = $('.operate ul').children();
         const prevDom = operateDom.first().find('a');

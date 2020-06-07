@@ -5602,6 +5602,11 @@ react-native-tab-view@^2.14.1:
   resolved "https://registry.npm.taobao.org/react-native-tab-view/download/react-native-tab-view-2.14.1.tgz#efa9c2e96f70d43ef6539d65a2e6e685d50fe31b"
   integrity sha1-76nC6W9w1D72U51loubmhdUP4xs=
 
+react-native-text-size@^4.0.0-rc.1:
+  version "4.0.0-rc.1"
+  resolved "https://registry.npm.taobao.org/react-native-text-size/download/react-native-text-size-4.0.0-rc.1.tgz#1e048d345dd6a5a8e1269e0585c1a5948c478da5"
+  integrity sha1-HgSNNF3WpajhJp4FhcGllIxHjaU=
+
 react-native-vector-icons@^6.6.0:
   version "6.6.0"
   resolved "https://registry.npm.taobao.org/react-native-vector-icons/download/react-native-vector-icons-6.6.0.tgz#66cf004918eb05d90778d64bd42077c1800d481b"

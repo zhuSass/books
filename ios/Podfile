@@ -79,6 +79,8 @@ target 'books' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNTextSize', :path => '../node_modules/react-native-text-size'
+
   target 'booksTests' do
     inherit! :complete
     # Pods for testing

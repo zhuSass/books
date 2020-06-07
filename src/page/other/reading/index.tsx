@@ -15,8 +15,10 @@ import { View, Text, ScrollView,
     Easing,
     NativeSyntheticEvent,
     NativeScrollEvent,
+    LayoutChangeEvent,
     GestureResponderEvent,
 } from 'react-native';
+import rnTextSize, { TSFontSpecs } from 'react-native-text-size';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
 import { PanGestureHandler,
     PanGestureHandlerGestureEvent,
@@ -35,8 +37,9 @@ import {
     Ui,
     formatChapter,
     timeFormat,
-    formatChapterResulteTypes,
     windowDevice,
+    formatChapterResulteTypes,
+    screen,
 } from '@/utils/index';
 
 import styles from './css';
@@ -63,6 +66,11 @@ type articleListFormatItemType = {
         list: formatChapterResulteTypes,
     }
 };
+type currentArticleType = {
+    key: string,
+    keyIndex: number, 
+    keylistIndex: number, // 列表索引
+};
 // 上下文
 type GlobalDataType = {
     pageType: 'default' | 'setting', // 页面类型
@@ -87,9 +95,13 @@ type GlobalDataType = {
         x: number,
         y: number,
     },
+    currentArticle: currentArticleType,
     articleListFormat: articleListFormatItemType, // 格式化文章列表
+    titleStyle: TSFontSpecs, // 文章标题样式
+    contentStyle: TSFontSpecs, // 文章内容样式
     bottomLodding: boolean, // 下拉刷新加载状态
     currentChapter: number, // 当前章节的页数
+    windowDeviceHeight: number, // 当前页面高度
     setArticleList: Function,
     setArticleBase: Function,
     loadArticleHandle: Function,
@@ -102,7 +114,7 @@ const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
     readOperation: 'default',
-    readType: 'upAndDown',
+    readType: 'leftAndRight',
     readingStyle: {
         type: 'default',
         titleFontSize: 27,
@@ -120,15 +132,28 @@ const initGlobalDataData:GlobalDataType = {
         doc: '',
         title: '',
     },
+    currentArticle: {
+        keylistIndex: 0, // 列表索引
+        key: '',
+        keyIndex: 0, 
+    },
     isUnshiftOperation: false,
     articleList: [], // 文章列表
     articleListFormat: {}, // 格式化文章列表
     bottomLodding: false, // 下拉刷新加载状态
     currentChapter: 0, // 当前章节的页数
+    windowDeviceHeight: windowDevice.height - 28, // 当前页面高度
     firstInvisible: false,
     scrollConfig: {
         x: 0,
         y: 0,
+    },
+    titleStyle: { // 文章标题样式
+        fontSize: 22,
+        fontWeight: 'bold',
+    }, 
+    contentStyle: { // 文章内容样式
+        fontSize: 18,
     },
     setArticleList: ()=>{},
     setArticleBase: ()=>{},
@@ -143,6 +168,8 @@ const GlobalDataContext = React.createContext(initGlobalDataData);
 // 上下分页文章主体
 function UpAndDownReading(props:any, ref:any) {
     const ReadingMainEl = useRef<any>(null);
+    // const textHeight = useRef<number>(0);
+    const [textHeight, setTextHeight] = useState(0);
 
     const globalData = useContext<GlobalDataType>(GlobalDataContext);
 
@@ -150,6 +177,9 @@ function UpAndDownReading(props:any, ref:any) {
         loadArticleHandle,
         setGlobalData,
         articleListFormat,
+        windowDeviceHeight,
+        titleStyle,
+        contentStyle,
     } = globalData;
 
     const  loadPrevArticleHandle = function() {
@@ -183,7 +213,7 @@ function UpAndDownReading(props:any, ref:any) {
     }
     // 上一页跳跃跳转
     const handleSkip = function(readOperation:GlobalDataType['readOperation']) {
-        const {width, height} = windowDevice;
+        const {width, height} = screen;
         const ReadingMainTagretEl = ReadingMainEl.current;
         const offsetY = height;
 
@@ -214,7 +244,7 @@ function UpAndDownReading(props:any, ref:any) {
     const onResponderEndFun = useCallback(function(e:GestureResponderEvent) {
         e.persist();
         const {pageY, pageX} = e.nativeEvent;
-        const {width, height} = windowDevice;
+        const {width, height} = screen;
         const resulteHeight = height;
         const areaHeight = resulteHeight / 3;
         const upArea:Array<number> =  [0, areaHeight]; // 手指按上区域部分
@@ -275,12 +305,31 @@ function UpAndDownReading(props:any, ref:any) {
                     ...styles.ReadingMainItem,
                     opacity: index == 0 && globalData.firstInvisible ? 0 : 1,
                     }}>
-                <Text style={styles.ReadingMainItemTitle}>{obj.title}</Text>
-                {obj.list.map((objItem, index) => {
-                    return <View key={index} style={styles.ReadingMainItemWrap}>
+  
+                {obj.list.map((objItem, index) => {    
+                    let height = windowDeviceHeight;
+                    return <View key={index} 
+                    style={{
+                        ...styles.ReadingMainItemWrap,
+                        ...{
+                            height: height,
+                        }
+                        }}>
+                            {index === 0 ? <Text 
+                            onLayout={((event: LayoutChangeEvent) => {
+                                let val = event.nativeEvent.layout.height;
+                                setTextHeight(val);
+                            })}
+                            style={{
+                                ...styles.ReadingMainItemTitle,
+                                ...titleStyle,
+                                }}>{obj.title}</Text>:null}
                             {
                                 objItem.map((objItemItem, itemIndex) => {
-                                    return <Text key={itemIndex} style={styles.ReadingMainItemcontent}
+                                    return <Text key={itemIndex} style={{
+                                        ...styles.ReadingMainItemcontent,
+                                        ...contentStyle,
+                                    }}
                                     >{objItemItem}</Text>
                                 })
                             }
@@ -326,61 +375,25 @@ function LeftAndRightReading() {
     //     key: 'fwerfwer2',
     //     keyIndex: 0, 
     // }); 
-    type ArticleType = {
-        key: string,
-        keyIndex: number, 
-        keylistIndex: number, // 列表索引
-    };
-    const [currentArticle, setCurrentArticle] = useState<ArticleType>({ //当前文章数据
-        key: 'fwerfwer2',
+    const [afterArticle, setAfterArticle] = useState<currentArticleType>({ //之后文章数据
+        key: '',
         keyIndex: 0, 
-        keylistIndex: 1, // 列表索引
-    });
-    const [afterArticle, setAfterArticle] = useState<ArticleType>({ //之后文章数据
-        key: 'fwerfwer2',
-        keyIndex: 0, 
-        keylistIndex: 1, // 列表索引
+        keylistIndex: 0, // 列表索引
     });
     const translateX = useRef(new Animated.Value(0));
     const lastOffset = useRef({ x: 0, }); // 偏移量
     const startX = useRef({ x: 0, }); // 手指刚接触的坐标
     const moveX = useRef({ x: 0, }); // 手指一动的坐标
-    const [datas, setDatas] = useState<{
-        [key in string]: {title: string, content: string}[]
-    }>({
-        'fwerfwer2': [
-            {
-            title: 'fwerfwer2-修仙传1',
-            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-            },
-            {
-                title: 'fwerfwer2-修仙传2',
-                content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-            },
-            {
-                title: 'fwerfwer2-修仙传3',
-                content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-            },
-        ],
-    });
+    const globalData = useContext<GlobalDataType>(GlobalDataContext);
+    const {
+        loadArticleHandle,
+        setGlobalData,
+        articleListFormat,
+        windowDeviceHeight,
+        titleStyle,
+        contentStyle,
+        currentArticle,
+    } = globalData;
 
     const onPanGestureEvent = Animated.event(
         [
@@ -392,86 +405,15 @@ function LeftAndRightReading() {
         ],
         { useNativeDriver: true }
     );
-    const loadArticleHandle = function(type:string) {
+    const loadArticleHandles = function(type:string) {
         if (type === 'left') {
-            let lists =  [
-                    {
-                    title: 'fwerfwer1-修仙传1',
-                    content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                    修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                    修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                    仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                    仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                    仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                    仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-                    },
-                    {
-                        title: 'fwerfwer1-修仙传2',
-                        content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-                    },
-                    {
-                        title: 'fwerfwer1-修仙传3',
-                        content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-                    },
-                ];
-            setDatas((data:any):any => {
-                return Object.assign({},
-                    {fwerfwer1: lists},data);
-            });
+            globalData.loadArticleHandle('prev');
         } else {
-            setDatas((data:any):any => {
-                return {
-                    ...data,
-                    'fwerfwer3': [
-                        {
-                        title: 'fwerfwer3-修仙传1',
-                        content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                        仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-                        },
-                        {
-                            title: 'fwerfwer3-修仙传2',
-                            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-                        },
-                        {
-                            title: 'fwerfwer3-修仙传3',
-                            content: `修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传,
-                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传，
-                            仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传修仙传`,
-                        },
-                    ],
-                }
-            });
+            globalData.loadArticleHandle('next');
         }
     };
     const onHandlerStateChange = function(event: PanGestureHandlerStateChangeEvent) {
-        let obj !: ArticleType;
+        let obj !: currentArticleType;
         let nativeInfo = event.nativeEvent;
         lastOffset.current.x += nativeInfo.translationX;
         // console.log('lastOffset.x---', nativeInfo, lastOffset.x)
@@ -490,14 +432,14 @@ function LeftAndRightReading() {
         if ((startX.current.x - moveX.current.x)  > 0) {
             readOperation = 'left';
             if (currentArticle.keyIndex === 0) {
-                loadArticleHandle(readOperation);
+                loadArticleHandles(readOperation);
                 currentArticle.keyIndex = 1;
             }
-            const datasKeyList = Object.keys(datas);
+            const datasKeyList = Object.keys(articleListFormat);
             if (currentArticle.keylistIndex === 0) {
                 let currentKey = datasKeyList[currentArticle.keyIndex - 1];
                 obj = {
-                    keylistIndex: datas[currentKey].length - 1, 
+                    keylistIndex: articleListFormat[currentKey].list.length - 1, 
                     key: currentKey,
                     keyIndex: (currentArticle.keyIndex - 1), 
                 };
@@ -510,12 +452,12 @@ function LeftAndRightReading() {
             }
         } else {
             readOperation = 'right';
-            const oldDatasKeyList = Object.keys(datas);
+            const oldDatasKeyList = Object.keys(articleListFormat);
             if (currentArticle.keyIndex === 0) {
                 loadArticleHandle(readOperation);
                 currentArticle.keyIndex = 1;
             }
-            const datasKeyList = Object.keys(datas);
+            const datasKeyList = Object.keys(articleListFormat);
             if (currentArticle.keylistIndex === 0) {
                 obj = {
                     keylistIndex: 0, 
@@ -539,7 +481,7 @@ function LeftAndRightReading() {
                     translateX.current,
                     {
                         duration: 260,
-                        toValue: -windowDevice.width,
+                        toValue: -screen.width,
                         useNativeDriver: true,
                     },
                 ).start();
@@ -548,14 +490,20 @@ function LeftAndRightReading() {
                     translateX.current,
                     {
                         duration: 260,
-                        toValue: windowDevice.width,
+                        toValue: screen.width,
                         useNativeDriver: true,
                     },
                 ).start();
             }
             setTimeout(() => {
-                setCurrentArticle(afterArticle);
-
+                setGlobalData((oldData:any) => {
+                    return {
+                        ...oldData,
+                        ...{
+                            currentArticle: afterArticle,
+                        }
+                    }
+                });
                 translateX.current.setValue(0);
             }, 60)
         }
@@ -563,10 +511,10 @@ function LeftAndRightReading() {
     const afterArticleObj = useMemo(() => {
         let defaults = {
             title: '', 
-            content: '',
-        }
+            list: [[]],
+        };
         try {
-            return datas[afterArticle.key][afterArticle.keylistIndex] || defaults;
+            return articleListFormat[afterArticle.key] || defaults;
         } catch(e) {
             console.log('产生出错-----', e)
             return defaults;
@@ -575,25 +523,36 @@ function LeftAndRightReading() {
     const currentArticleObj = useMemo(() => {
         let defaults = {
             title: '', 
-            content: '',
+            list: [[]],
         };
         try {
-            let data = datas[currentArticle.key][currentArticle.keylistIndex];
+            let data = articleListFormat[currentArticle.key] || defaults;
             return  data || defaults;
         } catch(e) {
             console.log('产生出错-----', e)
             return defaults;
         }
-    }, [ currentArticle]);
+    }, [ globalData]);
 
+    console.log('m-------', currentArticleObj);
+    let height = windowDeviceHeight;
 
     return <View style={styles.leftAndRightWap}>
         <View style={styles.leftAndRightWapView}>
-            <Text>
-                {JSON.stringify(afterArticle)}
-                {afterArticleObj.title}
-                {afterArticleObj.content}
-            </Text>
+            {afterArticle.keylistIndex === 0 ? <Text 
+                            style={{
+                                ...styles.ReadingMainItemTitle,
+                                ...titleStyle,
+                                }}>{afterArticleObj.title}</Text>:null}
+            {
+                afterArticleObj.list[afterArticle.keylistIndex].map((objItemItem, itemIndex) => {
+                    return <Text key={itemIndex} style={{
+                        ...styles.ReadingMainItemcontent,
+                        ...contentStyle,
+                    }}
+                    >{objItemItem}</Text>
+                })
+            }
         </View>
         <PanGestureHandler
             onHandlerStateChange={onHandlerStateChange}
@@ -612,11 +571,20 @@ function LeftAndRightReading() {
                      },
             ]}
             >
-                <Text>
-                    {JSON.stringify(currentArticle)}
-                    {currentArticleObj.title}
-                    {currentArticleObj.content}
-                </Text>
+            {afterArticle.keylistIndex === 0 ? <Text 
+                            style={{
+                                ...styles.ReadingMainItemTitle,
+                                ...titleStyle,
+                                }}>{currentArticleObj.title}</Text>:null}
+            {
+                currentArticleObj.list[currentArticle.keylistIndex].map((objItemItem, itemIndex) => {
+                    return <Text key={itemIndex} style={{
+                        ...styles.ReadingMainItemcontent,
+                        ...contentStyle,
+                    }}
+                    >{objItemItem}</Text>
+                })
+            }
             </Animated.View>
       </PanGestureHandler>
     </View>
@@ -644,7 +612,18 @@ function Index(props:any) {
         setArticleBase(data);
         setArticleList([data]);
         articleFormat(data);
-
+        setGlobalData((oldData) => {
+            return {
+                ...oldData,
+                ...{
+                    currentArticle: {
+                        key: data.current,
+                        keyIndex: 0, 
+                        keylistIndex: 0, // 列表索引
+                    },
+                }
+            }
+        });
     }
     const setArticleList = function(articleList:GlobalDataType['articleList']) {
         setGlobalData((data: GlobalDataType) => {
@@ -672,8 +651,24 @@ function Index(props:any) {
             }
         });
     };
-    const articleFormat = function(dataInfo:ArticleType, direction?:string) {
-        let _arr = formatChapter(dataInfo.doc, dataInfo.title);
+    const articleFormat = async function(dataInfo:ArticleType, direction?:string) {
+        const titleSize = await rnTextSize.measure({
+            text: dataInfo.title,             
+            width: windowDevice.width - 32,   
+            ...globalData.titleStyle,     // RN font specification
+            })
+        const titleInfo = await rnTextSize.fontFromSpecs(globalData.titleStyle);
+        const contentInfo = await rnTextSize.fontFromSpecs(globalData.contentStyle);
+        const titleHeight = titleSize.height + (titleSize.lineCount - 1) * (titleInfo.bottom || 0) + 20;
+        let _arr = formatChapter({
+            content: dataInfo.doc,
+            title: dataInfo.title,
+            width: windowDevice.width, 
+            height: globalData.windowDeviceHeight,
+            titleHeight,
+            contentInfo,
+        });
+
         setGlobalData((data: GlobalDataType) => {
             let resulte = Object.assign({},dataInfo, {
                 list: _arr,
@@ -701,7 +696,6 @@ function Index(props:any) {
             }
         });
         console.log('3----------', globalData.articleListFormat)
-        console.log('4----------', _arr, dataInfo)
     };
     const loadArticleHandle = async function(type: 'next' | 'prev') {
         if (type === 'next' && !globalData.articleBase.next) {
@@ -810,7 +804,7 @@ function Index(props:any) {
                 {globalData.readType === 'upAndDown' ? <View style={styles.readingMainContainer}>
                     <UpAndDownReading/>
                 </View>:null}
-                {/* 上下分页文章主体 */}
+                {/* 左右分页文章主体 */}
                 {globalData.readType === 'leftAndRight' ? <View style={styles.readingMainContainer}>
                     <LeftAndRightReading/>
                 </View>:null}
