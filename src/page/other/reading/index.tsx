@@ -100,6 +100,7 @@ type GlobalDataType = {
     titleStyle: TSFontSpecs, // 文章标题样式
     contentStyle: TSFontSpecs, // 文章内容样式
     bottomLodding: boolean, // 下拉刷新加载状态
+    contentLoadding: boolean, // 内容加载状态
     currentChapter: number, // 当前章节的页数
     windowDeviceHeight: number, // 当前页面高度
     setArticleList: Function,
@@ -141,6 +142,7 @@ const initGlobalDataData:GlobalDataType = {
     articleList: [], // 文章列表
     articleListFormat: {}, // 格式化文章列表
     bottomLodding: false, // 下拉刷新加载状态
+    contentLoadding: false, // 内容加载状态
     currentChapter: 0, // 当前章节的页数
     windowDeviceHeight: windowDevice.height - 28, // 当前页面高度
     firstInvisible: false,
@@ -393,6 +395,7 @@ function LeftAndRightReading() {
         titleStyle,
         contentStyle,
         currentArticle,
+        contentLoadding,
     } = globalData;
 
     const onPanGestureEvent = Animated.event(
@@ -405,14 +408,14 @@ function LeftAndRightReading() {
         ],
         { useNativeDriver: true }
     );
-    const loadArticleHandles = function(type:string) {
+    const loadArticleHandles = async function(type:string) {
         if (type === 'left') {
-            globalData.loadArticleHandle('prev');
-        } else {
             globalData.loadArticleHandle('next');
+        } else {
+            globalData.loadArticleHandle('prev');
         }
     };
-    const onHandlerStateChange = function(event: PanGestureHandlerStateChangeEvent) {
+    const onHandlerStateChange = async function(event: PanGestureHandlerStateChangeEvent) {
         let obj !: currentArticleType;
         let nativeInfo = event.nativeEvent;
         lastOffset.current.x += nativeInfo.translationX;
@@ -429,39 +432,62 @@ function LeftAndRightReading() {
         if (moveX.current.x === 0) {
             return;
         };
+        if (currentArticle.keyIndex === (Object.keys(articleListFormat).length - 1)
+            && contentLoadding === false) {
+            const currentArrayLeng = (articleListFormat[currentArticle.key].list.length - 1);
+            if (globalData.articleBase.next) {
+                loadArticleHandles('left');
+                console.log('---------加载最新数据')
+            } else if (!globalData.articleBase.next && 
+                currentArticle.keylistIndex === currentArrayLeng) {
+                    Ui.Toast({
+                        title: '已经到底了！',
+                    });
+            }
+        }
+        if (currentArticle.keyIndex === 0
+            && contentLoadding === false) {
+            if (globalData.articleBase.prev) {
+                loadArticleHandles('right');
+                currentArticle.keyIndex = 1;
+                console.log('---------加载上一页数据');
+            } else if (!globalData.articleBase.prev && 
+                currentArticle.keylistIndex === 0) {
+                    Ui.Toast({
+                        title: '已经到顶了！',
+                    });
+            }
+        }
         if ((startX.current.x - moveX.current.x)  > 0) {
             readOperation = 'left';
-            if (currentArticle.keyIndex === 0) {
-                loadArticleHandles(readOperation);
-                currentArticle.keyIndex = 1;
-            }
+
             const datasKeyList = Object.keys(articleListFormat);
-            if (currentArticle.keylistIndex === 0) {
-                let currentKey = datasKeyList[currentArticle.keyIndex - 1];
+            const currentArrayLeng = (articleListFormat[currentArticle.key].list.length - 1);
+
+            if (currentArticle.keylistIndex === currentArrayLeng) {
+                let currentKey = datasKeyList[currentArticle.keyIndex + 1];
                 obj = {
-                    keylistIndex: articleListFormat[currentKey].list.length - 1, 
+                    keylistIndex: 0, 
                     key: currentKey,
-                    keyIndex: (currentArticle.keyIndex - 1), 
+                    keyIndex: (currentArticle.keyIndex + 1), 
                 };
+                console.log('到尾部了0-----', obj)
             } else {
                 obj = {
-                    keylistIndex: currentArticle.keylistIndex - 1, 
+                    keylistIndex: currentArticle.keylistIndex + 1, 
                     key: currentArticle.key,
                     keyIndex: currentArticle.keyIndex, 
                 };
             }
         } else {
             readOperation = 'right';
-            const oldDatasKeyList = Object.keys(articleListFormat);
-            if (currentArticle.keyIndex === 0) {
-                loadArticleHandle(readOperation);
-                currentArticle.keyIndex = 1;
-            }
             const datasKeyList = Object.keys(articleListFormat);
             if (currentArticle.keylistIndex === 0) {
+                let key = datasKeyList[currentArticle.keyIndex - 1];
+                const currentArrayLeng = (articleListFormat[key].list.length - 1);
                 obj = {
-                    keylistIndex: 0, 
-                    key: datasKeyList[currentArticle.keyIndex - 1],
+                    keylistIndex: currentArrayLeng, 
+                    key: key,
                     keyIndex: (currentArticle.keyIndex - 1), 
                 };
             } else {
@@ -534,11 +560,15 @@ function LeftAndRightReading() {
         }
     }, [ globalData]);
 
-    console.log('m-------', currentArticleObj);
     let height = windowDeviceHeight;
 
     return <View style={styles.leftAndRightWap}>
-        <View style={styles.leftAndRightWapView}>
+        <View style={[
+            styles.leftAndRightWapView,
+            {
+                height,
+            }
+        ]}>
             {afterArticle.keylistIndex === 0 ? <Text 
                             style={{
                                 ...styles.ReadingMainItemTitle,
@@ -560,6 +590,7 @@ function LeftAndRightReading() {
             <Animated.View
                 style={[
                     {
+                        height,
                     },
                     styles.leftAndRightWapView,
                      {
@@ -571,7 +602,7 @@ function LeftAndRightReading() {
                      },
             ]}
             >
-            {afterArticle.keylistIndex === 0 ? <Text 
+            {currentArticle.keylistIndex === 0 ? <Text 
                             style={{
                                 ...styles.ReadingMainItemTitle,
                                 ...titleStyle,
@@ -698,57 +729,77 @@ function Index(props:any) {
         console.log('3----------', globalData.articleListFormat)
     };
     const loadArticleHandle = async function(type: 'next' | 'prev') {
-        if (type === 'next' && !globalData.articleBase.next) {
-            Ui.Toast({
-                title: '已经到底了！',
-            });
-            return;
-        };
-        if (type === 'prev' && !globalData.articleBase.prev) {
-            Ui.Toast({
-                title: '已经到顶了！',
-                directions: 'TOP',
-                offX: 0, 
-                offY: 20,
-            });
-            return;
-        };
-        let id = '';
-        let target:any = {};
-        if (type === 'next') {
-            target = globalData.articleList[globalData.articleList.length - 1];
-        }
-        if (type === 'prev') {
-            target = globalData.articleList[0];
+        return new Promise(async (resolve) => {
+            if (type === 'next' && !globalData.articleBase.next) {
+                Ui.Toast({
+                    title: '已经到底了！',
+                });
+                return;
+            };
+            if (type === 'prev' && !globalData.articleBase.prev) {
+                Ui.Toast({
+                    title: '已经到顶了！',
+                    directions: 'TOP',
+                    offX: 0, 
+                    offY: 20,
+                });
+                return;
+            };
+            if (globalData.contentLoadding) {
+                return;
+            } else {
+                setGlobalData((data: GlobalDataType) => {
+                    return {
+                        ...data,
+                        contentLoadding: true,
+                    }
+                });
+            }
+            let id = '';
+            let target:any = {};
+            if (type === 'next') {
+                target = globalData.articleList[globalData.articleList.length - 1];
+            }
+            if (type === 'prev') {
+                target = globalData.articleList[0];
+                setGlobalData((data: GlobalDataType) => {
+                    return {
+                        ...data,
+                        bottomLodding: true,
+                    }
+                });
+            }
+            id = target[type];
+            const params:DirectoryListType[0] = {
+                "id": id,
+                "source": urlParams?.source as AllShuYuanIdsKey,
+            };
+            console.log('发出请求------')
+            const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);
+            setArticleBase(data);
+            if (type === 'next') {
+                globalData.articleList.push(data);
+            }
+            if (type === 'prev') {
+                globalData.articleList.unshift(data);
+                setIsUnshiftOperation(true);
+                setGlobalData((data: GlobalDataType) => {
+                    return {
+                        ...data,
+                        firstInvisible: true,
+                    }
+                });
+            }
+            articleFormat(data, type);
+            setArticleList(globalData.articleList);
             setGlobalData((data: GlobalDataType) => {
                 return {
                     ...data,
-                    bottomLodding: true,
+                    contentLoadding: false,
                 }
             });
-        }
-        id = target[type];
-        const params:DirectoryListType[0] = {
-            "id": id,
-            "source": urlParams?.source as AllShuYuanIdsKey,
-        };
-        const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);
-        setArticleBase(data);
-        if (type === 'next') {
-            globalData.articleList.push(data);
-        }
-        if (type === 'prev') {
-            globalData.articleList.unshift(data);
-            setIsUnshiftOperation(true);
-            setGlobalData((data: GlobalDataType) => {
-                return {
-                    ...data,
-                    firstInvisible: true,
-                }
-            });
-        }
-        articleFormat(data, type);
-        setArticleList(globalData.articleList);
+            resolve();
+        });
     }
     const headerHaderRight = function() {
     }

@@ -86,11 +86,11 @@ export default StyleSheet.create({
     },
     leftAndRightWap: {
         position: 'relative',
+        flex: 1,
     },
     leftAndRightWapView: {
         position: 'absolute',
         width: screen.width,
-        height: height,
         paddingLeft: 16,
         paddingRight: 16,
         backgroundColor: '#fff',

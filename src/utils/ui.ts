@@ -23,7 +23,7 @@ export function Toast(params: ParamsType) {
     
     const defaultParams = {
         title: '', 
-        time: ToastAndroid.LONG, 
+        time: ToastAndroid.SHORT, 
         direction: ToastAndroid.BOTTOM, 
         offX: 25, 
         offY: 200,
