@@ -57,7 +57,7 @@ export let contentFormat = (data: ContentFormatType) => {
 export type formatChapterResulteTypes = Array<string>[];
 export let formatChapter = (data: ContentFormatType):formatChapterResulteTypes => {
     let _arr:formatChapterResulteTypes =[];
-    let _content = '\u3000\u3000' + data.content.replace(/\n[\n]+/g, '@').replace(/\s+/g, '').replace(/\@/g, '@\u3000\u3000');
+    let _content = '\u3000\u3000' + data.content.trim().replace(/\n[\n]+/g, '@').replace(/\s+/g, '').replace(/\@/g, '@\u3000\u3000');
     
     let _arrTemp = contentFormat({
       ...data,

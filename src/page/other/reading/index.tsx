@@ -104,6 +104,7 @@ type GlobalDataType = {
     contentLoadding: boolean, // 内容加载状态
     currentChapter: number, // 当前章节的页数
     windowDeviceHeight: number, // 当前页面高度
+    toolbarHeight: number, // 文章内容上下边的信息栏高度
     setArticleList: Function,
     setArticleBase: Function,
     loadArticleHandle: Function,
@@ -145,7 +146,8 @@ const initGlobalDataData:GlobalDataType = {
     bottomLodding: false, // 下拉刷新加载状态
     contentLoadding: false, // 内容加载状态
     currentChapter: 0, // 当前章节的页数
-    windowDeviceHeight: windowDevice.height - 28, // 当前页面高度
+    windowDeviceHeight: windowDevice.height - 28, // 当前页面高度,28=系统菜单栏
+    toolbarHeight: 42, // 文章内容上下边的信息栏高度
     firstInvisible: false,
     scrollConfig: {
         x: 0,
@@ -429,7 +431,6 @@ function LeftAndRightReading() {
         let obj !: currentArticleType;
         let nativeInfo = event.nativeEvent;
         lastOffset.current.x += nativeInfo.translationX;
-        // console.log('lastOffset.x---', nativeInfo, lastOffset.x)
         // 手指刚start
         if (nativeInfo.oldState === 0) {
             startX.current.x = nativeInfo.x;
@@ -573,6 +574,28 @@ function LeftAndRightReading() {
                 height,
             }
         ]}>
+            <View style={[styles.toolbar]}>
+                <View style={[
+                    styles.toolbarLeft,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                    ]}>
+                    <Text style={styles.toolbarText}>
+                        {afterArticleObj.title}
+                    </Text>
+                </View>
+                <View style={[
+                    styles.toolbarRight,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                    ]}>
+                    <Text style={styles.toolbarText}>
+                        待定
+                    </Text>
+                </View>
+            </View>
             {afterArticle.keylistIndex === 0 ? <Text 
                             style={{
                                 ...styles.ReadingMainItemTitle,
@@ -587,6 +610,29 @@ function LeftAndRightReading() {
                     >{objItemItem}</Text>
                 })
             }
+            <View style={[styles.toolbar]}>
+                <View style={[
+                    styles.toolbarLeft,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                    ]}>
+                </View>
+                <View style={[
+                    styles.toolbarRight,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                    ]}>
+                    <Text style={styles.toolbarText}>
+                        {
+                            `${afterArticle.keylistIndex + 1}/${
+                                afterArticleObj.list.length
+                            }`
+                        }
+                    </Text>
+                </View>
+            </View>
         </View>
         <PanGestureHandler
             onHandlerStateChange={onHandlerStateChange}
@@ -606,6 +652,28 @@ function LeftAndRightReading() {
                      },
             ]}
             >
+            <View style={[styles.toolbar]}>
+                <View style={[
+                    styles.toolbarLeft,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                    ]}>
+                    <Text style={styles.toolbarText}>
+                        {currentArticleObj.title}
+                    </Text>
+                </View>
+                <View style={[
+                    styles.toolbarRight,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                    ]}>
+                    <Text style={styles.toolbarText}>
+                        待定
+                    </Text>
+                </View> 
+            </View>
             {currentArticle.keylistIndex === 0 ? <Text 
                             style={{
                                 ...styles.ReadingMainItemTitle,
@@ -620,6 +688,31 @@ function LeftAndRightReading() {
                     >{objItemItem}</Text>
                 })
             }
+            <View style={[
+                styles.toolbar,
+                styles.toolbarBottom,
+                ]}>
+                <View style={[
+                    styles.toolbarLeft,
+                    {
+                        height: globalData.toolbarHeight,
+                    }]}>
+                </View>
+                <View style={[
+                    styles.toolbarRight,
+                    {
+                        height: globalData.toolbarHeight,
+                    }
+                ]}>
+                    <Text style={styles.toolbarText}>
+                        {
+                            `${currentArticle.keylistIndex + 1}/${
+                                currentArticleObj.list.length
+                            }`
+                        }
+                    </Text>
+                </View>
+            </View>
             </Animated.View>
       </PanGestureHandler>
     </View>
@@ -707,7 +800,7 @@ function Index(props:any) {
             content: dataInfo.doc,
             title: dataInfo.title,
             width: windowDevice.width, 
-            height: globalData.windowDeviceHeight,
+            height: (globalData.windowDeviceHeight - globalData.toolbarHeight * 2), // 文章内容上下边的信息栏高度需要减去才是内容高度
             titleHeight,
             contentInfo,
         });

@@ -98,4 +98,28 @@ export default StyleSheet.create({
     ReadingMainItemWrap: {
         width: screen.width - 32,
     },
+    toolbar: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    toolbarBottom: {
+        position: 'absolute',
+        bottom: 0,
+        left: 16,
+    },
+    toolbarLeft: {
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    toolbarRight: {
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    toolbarText: {
+        fontSize: 14,
+        color: '#898989',
+    },
 });
