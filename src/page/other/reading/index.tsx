@@ -17,6 +17,9 @@ import { View, Text, ScrollView,
     NativeScrollEvent,
     LayoutChangeEvent,
     GestureResponderEvent,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    ViewToken,
 } from 'react-native';
 import rnTextSize, { TSFontSpecs } from 'react-native-text-size';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
@@ -117,7 +120,7 @@ const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
     readOperation: 'default',
-    readType: 'leftAndRight',
+    readType: 'upAndDown',
     readingStyle: {
         type: 'default',
         titleFontSize: 27,
@@ -184,22 +187,39 @@ function UpAndDownReading(props:any, ref:any) {
         windowDeviceHeight,
         titleStyle,
         contentStyle,
+        currentArticle,
     } = globalData;
 
     const  loadPrevArticleHandle = function(direction:string) {
-        if (!globalData.articleBase.prev) {
+        if (direction === 'prev' && !globalData.articleBase.prev) {
             Ui.Toast({
                 title: '已经到顶了！',
             });
             return;
         }
-        if (!globalData.articleBase.next) {
+        if (direction === 'next' && !globalData.articleBase.next) {
             Ui.Toast({
                 title: '已经到底了！',
             });
             return;
         }
         globalData.loadArticleHandle(direction);
+    };
+    const changeCurrentArticle = function(key:any, index: number) {
+        let keyIndex = Object.keys(articleListFormat).find(i => i === key);
+
+        setGlobalData((oldData:any) => {
+            return {
+                ...oldData,
+                ...{
+                    currentArticle: {
+                        keylistIndex: index, 
+                        key: key,
+                        keyIndex: keyIndex, 
+                    },
+                }
+            }
+        });
     };
     const getItemWH = function(index:number, layout:any) {
         if (index === 0 && globalData.isUnshiftOperation) {
@@ -291,20 +311,81 @@ function UpAndDownReading(props:any, ref:any) {
         }
         // console.log('坐标-------', pageY, height)
     }, [globalData]);
+    const currentArticleObj = useMemo(() => {
+        let defaults = {
+            title: '', 
+            list: [[]],
+        };
+        try {
+            let data = articleListFormat[currentArticle.key] || defaults;
+            return  data || defaults;
+        } catch(e) {
+            console.log('产生出错-----', e)
+            return defaults;
+        }
+    }, [ globalData]);
     
     return <View style={{
         flex: 1,
+        paddingTop: globalData.toolbarHeight,
+        position: 'relative',
         }}
-        onStartShouldSetResponder={() => true}
-        onMoveShouldSetResponder={() => true}
-        onResponderRelease={onResponderEndFun}
-        >
+>
         {/* 背景区块 */}
         {
             globalData.readingStyle.type === 'default' ?
                 <ReadTheBackground/> : null
         }
-        <SafeAreaView>
+        {/* 文章内容上下边的信息栏 */}
+        <View style={[styles.toolbar, styles.toolbarTop]}>
+            <View style={[
+                styles.toolbarLeft,
+                {
+                    height: globalData.toolbarHeight,
+                }
+                ]}>
+                <Text style={styles.toolbarText}>
+                    {currentArticleObj.title}
+                </Text>
+            </View>
+            <View style={[
+                styles.toolbarRight,
+                {
+                    height: globalData.toolbarHeight,
+                }
+                ]}>
+            </View>
+        </View>
+        <View style={[
+            styles.toolbar,
+            styles.toolbarBottom,
+            ]}>
+            <View style={[
+                styles.toolbarLeft,
+                {
+                    height: globalData.toolbarHeight,
+                }]}>
+            </View>
+            <View style={[
+                styles.toolbarRight,
+                {
+                    height: globalData.toolbarHeight,
+                }
+            ]}>
+                <Text style={styles.toolbarText}>
+                    {
+                        `${currentArticle.keylistIndex + 1}/${
+                            currentArticleObj.list.length
+                        }`
+                    }
+                </Text>
+            </View>
+        </View>
+        <SafeAreaView style={{
+            flex: 1,
+        }}
+
+        >
             <FlatList
             ref={ReadingMainEl}
             data={Object.keys(articleListFormat)}
@@ -323,32 +404,35 @@ function UpAndDownReading(props:any, ref:any) {
                     }}>
   
                 {obj.list.map((objItem, index) => {    
-                    let height = windowDeviceHeight;
-                    return <View key={index} 
+                    return <View 
+                    key={index} 
+                    onStartShouldSetResponder={() => true}
+                    onMoveShouldSetResponder={() => true}
+                    onResponderGrant={() => changeCurrentArticle(item, index)}
+                    onResponderRelease={onResponderEndFun}
                     style={{
                         ...styles.ReadingMainItemWrap,
                         ...{
-                            height: height,
                         }
                         }}>
                             {index === 0 ? <Text 
-                            onLayout={((event: LayoutChangeEvent) => {
-                                let val = event.nativeEvent.layout.height;
-                                setTextHeight(val);
-                            })}
-                            style={{
-                                ...styles.ReadingMainItemTitle,
-                                ...titleStyle,
-                                }}>{obj.title}</Text>:null}
-                            {
-                                objItem.map((objItemItem, itemIndex) => {
-                                    return <Text key={itemIndex} style={{
-                                        ...styles.ReadingMainItemcontent,
-                                        ...contentStyle,
-                                    }}
-                                    >{objItemItem}</Text>
-                                })
-                            }
+                                onLayout={((event: LayoutChangeEvent) => {
+                                    let val = event.nativeEvent.layout.height;
+                                    setTextHeight(val);
+                                })}
+                                style={{
+                                    ...styles.ReadingMainItemTitle,
+                                    ...titleStyle,
+                                    }}>{obj.title}</Text>:null}
+                                {
+                                    objItem.map((objItemItem, itemIndex) => {
+                                        return <Text key={itemIndex} style={{
+                                            ...styles.ReadingMainItemcontent,
+                                            ...contentStyle,
+                                        }}
+                                        >{objItemItem}</Text>
+                                    })
+                                }
                     </View>
                 })}    
             </View>
@@ -591,25 +675,26 @@ function LeftAndRightReading() {
                         height: globalData.toolbarHeight,
                     }
                     ]}>
-                    <Text style={styles.toolbarText}>
-                        待定
-                    </Text>
                 </View>
             </View>
-            {afterArticle.keylistIndex === 0 ? <Text 
+            <View style={{
+                height: (globalData.windowDeviceHeight - globalData.toolbarHeight * 2),
+            }}>
+                {afterArticle.keylistIndex === 0 ? <Text 
                             style={{
                                 ...styles.ReadingMainItemTitle,
                                 ...titleStyle,
                                 }}>{afterArticleObj.title}</Text>:null}
-            {
-                afterArticleObj.list[afterArticle.keylistIndex].map((objItemItem, itemIndex) => {
-                    return <Text key={itemIndex} style={{
-                        ...styles.ReadingMainItemcontent,
-                        ...contentStyle,
-                    }}
-                    >{objItemItem}</Text>
-                })
-            }
+                {
+                    afterArticleObj.list[afterArticle.keylistIndex].map((objItemItem, itemIndex) => {
+                        return <Text key={itemIndex} style={{
+                            ...styles.ReadingMainItemcontent,
+                            ...contentStyle,
+                        }}
+                        >{objItemItem}</Text>
+                    })
+                }
+            </View>
             <View style={[styles.toolbar]}>
                 <View style={[
                     styles.toolbarLeft,
@@ -669,28 +754,29 @@ function LeftAndRightReading() {
                         height: globalData.toolbarHeight,
                     }
                     ]}>
-                    <Text style={styles.toolbarText}>
-                        待定
-                    </Text>
                 </View> 
             </View>
-            {currentArticle.keylistIndex === 0 ? <Text 
+            <View style={{
+                height: (globalData.windowDeviceHeight - globalData.toolbarHeight * 2),
+            }}>
+                {currentArticle.keylistIndex === 0 ? <Text 
                             style={{
                                 ...styles.ReadingMainItemTitle,
                                 ...titleStyle,
                                 }}>{currentArticleObj.title}</Text>:null}
-            {
-                currentArticleObj.list[currentArticle.keylistIndex].map((objItemItem, itemIndex) => {
-                    return <Text key={itemIndex} style={{
-                        ...styles.ReadingMainItemcontent,
-                        ...contentStyle,
-                    }}
-                    >{objItemItem}</Text>
-                })
-            }
+                {
+                    currentArticleObj.list[currentArticle.keylistIndex].map((objItemItem, itemIndex) => {
+                        return <Text key={itemIndex} style={{
+                            ...styles.ReadingMainItemcontent,
+                            ...contentStyle,
+                        }}
+                        >{objItemItem}</Text>
+                    })
+                }
+            </View>    
+            
             <View style={[
                 styles.toolbar,
-                styles.toolbarBottom,
                 ]}>
                 <View style={[
                     styles.toolbarLeft,

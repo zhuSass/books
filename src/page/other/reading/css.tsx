@@ -104,10 +104,17 @@ export default StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
+    toolbarTop: {
+        paddingLeft: 16,
+        paddingRight: 16,
+        position: 'absolute',
+        top: 0,
+    },
     toolbarBottom: {
+        paddingLeft: 16,
+        paddingRight: 16,
         position: 'absolute',
         bottom: 0,
-        left: 16,
     },
     toolbarLeft: {
         flex: 1,
