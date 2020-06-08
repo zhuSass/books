@@ -33,6 +33,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import Header from '@/components/header';
 import {IconBtn} from '@/components/icon';
+import LazyLoading from '@/components/lazyLoading';
 import {
     Ui,
     formatChapter,
@@ -170,7 +171,6 @@ const GlobalDataContext = React.createContext(initGlobalDataData);
 // 上下分页文章主体
 function UpAndDownReading(props:any, ref:any) {
     const ReadingMainEl = useRef<any>(null);
-    // const textHeight = useRef<number>(0);
     const [textHeight, setTextHeight] = useState(0);
 
     const globalData = useContext<GlobalDataType>(GlobalDataContext);
@@ -184,8 +184,20 @@ function UpAndDownReading(props:any, ref:any) {
         contentStyle,
     } = globalData;
 
-    const  loadPrevArticleHandle = function() {
-        globalData.loadArticleHandle('prev');
+    const  loadPrevArticleHandle = function(direction:string) {
+        if (!globalData.articleBase.prev) {
+            Ui.Toast({
+                title: '已经到顶了！',
+            });
+            return;
+        }
+        if (!globalData.articleBase.next) {
+            Ui.Toast({
+                title: '已经到底了！',
+            });
+            return;
+        }
+        globalData.loadArticleHandle(direction);
     };
     const getItemWH = function(index:number, layout:any) {
         if (index === 0 && globalData.isUnshiftOperation) {
@@ -229,7 +241,7 @@ function UpAndDownReading(props:any, ref:any) {
                 });
             }
             if (val === 0) {
-                loadArticleHandle('prev');
+                loadPrevArticleHandle('prev');
             } 
         }
         if (readOperation === 'around') {
@@ -295,8 +307,8 @@ function UpAndDownReading(props:any, ref:any) {
             ref={ReadingMainEl}
             data={Object.keys(articleListFormat)}
             refreshing={globalData.bottomLodding}
-            onEndReached={()=>globalData.loadArticleHandle('next')}
-            onRefresh={loadPrevArticleHandle}
+            onEndReached={()=>loadPrevArticleHandle('next')}
+            onRefresh={()=>loadPrevArticleHandle('prev')}
             onEndReachedThreshold={0.5}
             onScroll={handleScrollEvent}
             renderItem={({ item, index }) => {
@@ -366,17 +378,7 @@ function ReadTheBackground() {
 // 左右分页文章主体
 function LeftAndRightReading() {
     let readOperation = ''; // 左右方向
-
-    // const currentArticle = useRef({ //当前文章数据
-    //     keylistIndex: 1, // 列表索引
-    //     key: 'fwerfwer2',
-    //     keyIndex: 0, 
-    // }); 
-    // const afterArticle = useRef({ //之后文章数据
-    //     keylistIndex: 1, // 列表索引
-    //     key: 'fwerfwer2',
-    //     keyIndex: 0, 
-    // }); 
+ 
     const [afterArticle, setAfterArticle] = useState<currentArticleType>({ //之后文章数据
         key: '',
         keyIndex: 0, 
@@ -398,6 +400,10 @@ function LeftAndRightReading() {
         contentLoadding,
     } = globalData;
 
+    useEffect(() => {
+        updateRequestList();
+    }, []);
+
     const onPanGestureEvent = Animated.event(
         [
           {
@@ -408,13 +414,17 @@ function LeftAndRightReading() {
         ],
         { useNativeDriver: true }
     );
-    const loadArticleHandles = async function(type:string) {
-        if (type === 'left') {
+    const updateRequestList = function() {
+        if (currentArticle.keyIndex === (Object.keys(articleListFormat).length - 1)) {
             globalData.loadArticleHandle('next');
-        } else {
-            globalData.loadArticleHandle('prev');
         }
-    };
+        if (currentArticle.keyIndex === 0) {
+            if (globalData.articleBase.prev) {
+                globalData.loadArticleHandle('prev');
+                currentArticle.keyIndex = 1;
+            }; 
+        }
+    }
     const onHandlerStateChange = async function(event: PanGestureHandlerStateChangeEvent) {
         let obj !: currentArticleType;
         let nativeInfo = event.nativeEvent;
@@ -432,32 +442,27 @@ function LeftAndRightReading() {
         if (moveX.current.x === 0) {
             return;
         };
-        if (currentArticle.keyIndex === (Object.keys(articleListFormat).length - 1)
-            && contentLoadding === false) {
-            const currentArrayLeng = (articleListFormat[currentArticle.key].list.length - 1);
-            if (globalData.articleBase.next) {
-                loadArticleHandles('left');
-                console.log('---------加载最新数据')
-            } else if (!globalData.articleBase.next && 
-                currentArticle.keylistIndex === currentArrayLeng) {
-                    Ui.Toast({
-                        title: '已经到底了！',
-                    });
-            }
+        const oldCurrentArrayLeng = (articleListFormat[currentArticle.key].list.length - 1);
+        
+        if (!globalData.articleBase.next  
+             && currentArticle.keyIndex === (Object.keys(articleListFormat).length - 1)
+             && currentArticle.keylistIndex === oldCurrentArrayLeng) {
+                Ui.Toast({
+                    title: '已经到底了！',
+                });
+                translateX.current.setValue(0);
+                return;
         }
-        if (currentArticle.keyIndex === 0
-            && contentLoadding === false) {
-            if (globalData.articleBase.prev) {
-                loadArticleHandles('right');
-                currentArticle.keyIndex = 1;
-                console.log('---------加载上一页数据');
-            } else if (!globalData.articleBase.prev && 
-                currentArticle.keylistIndex === 0) {
-                    Ui.Toast({
-                        title: '已经到顶了！',
-                    });
-            }
+        if (!globalData.articleBase.prev
+            && currentArticle.keyIndex === 0
+            && currentArticle.keylistIndex === 0) {
+                Ui.Toast({
+                    title: '已经到顶了！',
+                });
+                translateX.current.setValue(0);
+                return;
         }
+        updateRequestList();
         if ((startX.current.x - moveX.current.x)  > 0) {
             readOperation = 'left';
 
@@ -499,7 +504,6 @@ function LeftAndRightReading() {
             }
         }
         setAfterArticle(obj);
-        console.log('2---------', obj);
 
         if (event.nativeEvent.oldState === 4) {
             if (readOperation === 'left') {
@@ -624,6 +628,7 @@ function LeftAndRightReading() {
 function Index(props:any) {
     const route = useRoute<ProfileScreenRouteProp>();
     const [urlParams, setUrlParams] = useState<DirectoryListType[0]>();
+    const [error, setError] = useState(false);
     const [globalData, setGlobalData] = useState<GlobalDataType>(initGlobalDataData);
 
     useLayoutEffect(() => {
@@ -638,23 +643,30 @@ function Index(props:any) {
         };
         // const params = route.params;
         setUrlParams(params);
-        // 获取文章数据
-        const data:ArticleType = await ShuYuanSdk.getArticleInfo(params);
-        setArticleBase(data);
-        setArticleList([data]);
-        articleFormat(data);
-        setGlobalData((oldData) => {
-            return {
-                ...oldData,
-                ...{
-                    currentArticle: {
-                        key: data.current,
-                        keyIndex: 0, 
-                        keylistIndex: 0, // 列表索引
-                    },
+        try {
+            // 获取文章数据
+            const data:ArticleType = await ShuYuanSdk.getArticleInfo(params);
+            setArticleBase({
+                ...globalData.articleBase,
+                ...data,
+            });
+            setGlobalData((oldData) => {
+                return {
+                    ...oldData,
+                    ...{
+                        currentArticle: {
+                            key: data.current,
+                            keyIndex: 0, 
+                            keylistIndex: 0, // 列表索引
+                        },
+                    }
                 }
-            }
-        });
+            });
+            setArticleList([data]);
+            articleFormat(data);
+        } catch {
+            setError(true);
+        }
     }
     const setArticleList = function(articleList:GlobalDataType['articleList']) {
         setGlobalData((data: GlobalDataType) => {
@@ -731,18 +743,9 @@ function Index(props:any) {
     const loadArticleHandle = async function(type: 'next' | 'prev') {
         return new Promise(async (resolve) => {
             if (type === 'next' && !globalData.articleBase.next) {
-                Ui.Toast({
-                    title: '已经到底了！',
-                });
                 return;
             };
             if (type === 'prev' && !globalData.articleBase.prev) {
-                Ui.Toast({
-                    title: '已经到顶了！',
-                    directions: 'TOP',
-                    offX: 0, 
-                    offY: 20,
-                });
                 return;
             };
             if (globalData.contentLoadding) {
@@ -774,11 +777,16 @@ function Index(props:any) {
                 "id": id,
                 "source": urlParams?.source as AllShuYuanIdsKey,
             };
-            console.log('发出请求------')
+            console.log('发出请求------', type);
             const data:ArticleType =  await ShuYuanSdk.getArticleInfo(params);
-            setArticleBase(data);
             if (type === 'next') {
                 globalData.articleList.push(data);
+                setArticleBase({
+                    ...globalData.articleBase,
+                    ...{
+                        next: data.next,
+                    },
+                });
             }
             if (type === 'prev') {
                 globalData.articleList.unshift(data);
@@ -788,6 +796,12 @@ function Index(props:any) {
                         ...data,
                         firstInvisible: true,
                     }
+                });
+                setArticleBase({
+                    ...globalData.articleBase,
+                    ...{
+                        prev: data.prev,
+                    },
                 });
             }
             articleFormat(data, type);
@@ -851,16 +865,23 @@ function Index(props:any) {
                     headerLeft={true}
                     headerRight={rendenHeaderContentEl}
                 /> : null}
-                {/* 上下分页文章主体 */}
-                {globalData.readType === 'upAndDown' ? <View style={styles.readingMainContainer}>
-                    <UpAndDownReading/>
-                </View>:null}
-                {/* 左右分页文章主体 */}
-                {globalData.readType === 'leftAndRight' ? <View style={styles.readingMainContainer}>
-                    <LeftAndRightReading/>
-                </View>:null}
+                <LazyLoading error={error} 
+                    parentScreen={Index.parentScreen}
+                    dataLeng={globalData.articleList.length}
+                    loading={!!!globalData.articleList.length}>
+                    {/* 上下分页文章主体 */}
+                    {globalData.readType === 'upAndDown' ? <View style={styles.readingMainContainer}>
+                        <UpAndDownReading/>
+                    </View>:null}
+                    {/* 左右分页文章主体 */}
+                    {globalData.readType === 'leftAndRight' ? <View style={styles.readingMainContainer}>
+                        <LeftAndRightReading/>
+                    </View>:null}
+                </LazyLoading>
+
             </GlobalDataContext.Provider>
     </View>)
 }
+Index.parentScreen = 'reading';
 
 export default Index;
