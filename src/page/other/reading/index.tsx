@@ -19,6 +19,7 @@ import { View, Text, ScrollView,
     GestureResponderEvent,
     TouchableOpacity,
     TouchableWithoutFeedback,
+    StatusBar,
     ViewToken,
 } from 'react-native';
 import rnTextSize, { TSFontSpecs } from 'react-native-text-size';
@@ -113,14 +114,13 @@ type GlobalDataType = {
     loadArticleHandle: Function,
     setIsUnshiftOperation: Function,
     setGlobalData: Function,
-    setCurrentChapter: Function,
     setArticleListFormat: Function,
 };
 const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
     readOperation: 'default',
-    readType: 'upAndDown',
+    readType: 'leftAndRight',
     readingStyle: {
         type: 'default',
         titleFontSize: 27,
@@ -149,7 +149,7 @@ const initGlobalDataData:GlobalDataType = {
     bottomLodding: false, // 下拉刷新加载状态
     contentLoadding: false, // 内容加载状态
     currentChapter: 0, // 当前章节的页数
-    windowDeviceHeight: windowDevice.height - 28, // 当前页面高度,28=系统菜单栏
+    windowDeviceHeight: windowDevice.height, // 当前页面高度,28=系统菜单栏
     toolbarHeight: 42, // 文章内容上下边的信息栏高度
     firstInvisible: false,
     scrollConfig: {
@@ -168,7 +168,6 @@ const initGlobalDataData:GlobalDataType = {
     loadArticleHandle: ()=>{},
     setIsUnshiftOperation: ()=>{},
     setGlobalData: ()=>{},
-    setCurrentChapter: ()=>{},
     setArticleListFormat: ()=>{},
 };
 
@@ -463,7 +462,7 @@ function ReadTheBackground() {
 };
 // 左右分页文章主体
 function LeftAndRightReading() {
-    let readOperation = ''; // 左右方向
+    const readOperation = useRef(''); // 左右方向
  
     const [afterArticle, setAfterArticle] = useState<currentArticleType>({ //之后文章数据
         key: '',
@@ -528,8 +527,14 @@ function LeftAndRightReading() {
             return;
         };
         const oldCurrentArrayLeng = (articleListFormat[currentArticle.key].list.length - 1);
+        if ((startX.current.x - moveX.current.x)  > 0) {
+            readOperation.current = 'left';
+        } else {
+            readOperation.current = 'right';
+        }
+
         
-        if (!globalData.articleBase.next  
+        if (readOperation.current === 'left' && !globalData.articleBase.next  
              && currentArticle.keyIndex === (Object.keys(articleListFormat).length - 1)
              && currentArticle.keylistIndex === oldCurrentArrayLeng) {
                 Ui.Toast({
@@ -538,7 +543,7 @@ function LeftAndRightReading() {
                 translateX.current.setValue(0);
                 return;
         }
-        if (!globalData.articleBase.prev
+        if (readOperation.current === 'right' && !globalData.articleBase.prev
             && currentArticle.keyIndex === 0
             && currentArticle.keylistIndex === 0) {
                 Ui.Toast({
@@ -548,9 +553,7 @@ function LeftAndRightReading() {
                 return;
         }
         updateRequestList();
-        if ((startX.current.x - moveX.current.x)  > 0) {
-            readOperation = 'left';
-
+        if (readOperation.current === 'left') {
             const datasKeyList = Object.keys(articleListFormat);
             const currentArrayLeng = (articleListFormat[currentArticle.key].list.length - 1);
 
@@ -570,7 +573,6 @@ function LeftAndRightReading() {
                 };
             }
         } else {
-            readOperation = 'right';
             const datasKeyList = Object.keys(articleListFormat);
             if (currentArticle.keylistIndex === 0) {
                 let key = datasKeyList[currentArticle.keyIndex - 1];
@@ -591,7 +593,7 @@ function LeftAndRightReading() {
         setAfterArticle(obj);
 
         if (event.nativeEvent.oldState === 4) {
-            if (readOperation === 'left') {
+            if (readOperation.current === 'left') {
                 Animated.timing(
                     translateX.current,
                     {
@@ -810,6 +812,12 @@ function Index(props:any) {
     const [error, setError] = useState(false);
     const [globalData, setGlobalData] = useState<GlobalDataType>(initGlobalDataData);
 
+    useEffect(() => {
+        StatusBar.setHidden(true);
+        return () => {
+            StatusBar.setHidden(false);
+        };
+    }, []);
     useLayoutEffect(() => {
         initDataHandle();
     }, []);
@@ -860,16 +868,6 @@ function Index(props:any) {
             return {
                 ...data,
                 articleBase,
-            }
-        });
-    };
-    const setCurrentChapter = function(num: number) {
-        setGlobalData((data: GlobalDataType) => {
-            return {
-                ...data,
-                ...{
-                    currentChapter: num,
-                },
             }
         });
     };
