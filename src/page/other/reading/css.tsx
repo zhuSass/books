@@ -3,6 +3,7 @@ import {
     windowDevice,
     screen,
 } from '@/utils/index';
+import { readonly } from "@nozbe/watermelondb/decorators";
 
 const {height, width} =  windowDevice;
 
@@ -15,9 +16,14 @@ export default StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        width: '100%',
-        height: height + 20,
+        right: 0,
+        bottom: 0,
         zIndex: -1,
+    },
+    bgColorContainerWhite: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#fff',
     },
     bgColorContainerTop: {
         position: 'absolute',
@@ -93,7 +99,7 @@ export default StyleSheet.create({
         width: screen.width,
         paddingLeft: 16,
         paddingRight: 16,
-        backgroundColor: '#fff',
+        zIndex: 2,
     },
     ReadingMainItemWrap: {
         width: screen.width - 32,
@@ -103,6 +109,8 @@ export default StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        zIndex: 2,
+        overflow: 'hidden',
     },
     toolbarTop: {
         paddingLeft: 16,
@@ -133,6 +141,7 @@ export default StyleSheet.create({
         position: 'absolute',
         width: width,
         height,
+        zIndex: 3,
     },
     clickCenterPublic: {
         position: 'absolute',
@@ -158,6 +167,7 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
     },
     clickCenterBottomItem: {
+        marginRight: 15,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

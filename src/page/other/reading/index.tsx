@@ -83,7 +83,7 @@ type GlobalDataType = {
     readType: 'upAndDown' | 'leftAndRight', // 阅读类型；upAndDown 上下/ leftAndRight
     bgColor: string, // 书面背景色
     readingStyle: { // 阅读样式
-        type: 'default', // default 默认；
+        type: 'default' | 'white', // default 默认；white 白色
         titleFontSize: number, // 标题阅读字体大小
         fontSize: number, // 阅读字体大小
         defaultParameter?: { // 类型为default的参数
@@ -120,9 +120,9 @@ const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
     readOperation: 'default',
-    readType: 'upAndDown',
+    readType: 'leftAndRight',
     readingStyle: {
-        type: 'default',
+        type: 'white',
         titleFontSize: 27,
         fontSize: 18,
         defaultParameter: {
@@ -345,14 +345,10 @@ function UpAndDownReading(props:any, ref:any) {
         paddingTop: globalData.toolbarHeight,
         position: 'relative',
         }}
->
-        {/* 背景区块 */}
-        {
-            globalData.readingStyle.type === 'default' ?
-                <ReadTheBackground/> : null
-        }
+        >
         {/* 文章内容上下边的信息栏 */}
         <View style={[styles.toolbar, styles.toolbarTop]}>
+            <ReadTheBackground/> 
             <View style={[
                 styles.toolbarLeft,
                 {
@@ -375,6 +371,7 @@ function UpAndDownReading(props:any, ref:any) {
             styles.toolbar,
             styles.toolbarBottom,
             ]}>
+            <ReadTheBackground/> 
             <View style={[
                 styles.toolbarLeft,
                 {
@@ -454,8 +451,6 @@ function UpAndDownReading(props:any, ref:any) {
             />
         </SafeAreaView>
     </View> 
-    
-    
 }
 // 阅读背景区块
 function ReadTheBackground() {
@@ -472,6 +467,8 @@ function ReadTheBackground() {
                 <Image style={styles.bgColorContainerMain}
                     source={{uri: defaultParameter?.imgSrcMain}}/> 
             </View>}
+        {type === 'white' && <View style={styles.bgColorContainerWhite}>
+        </View>}
     </View>
 };
 // 点击阅读页中部显示出来的内容
@@ -487,6 +484,7 @@ function ClickCenter() {
         contentStyle,
         currentArticle,
         readType,
+        readingStyle,
     } = globalData;
 
     const headerHaderRight = function() {
@@ -525,17 +523,31 @@ function ClickCenter() {
             }
         });
     };
-    const chanReadType = function() {
+    const handleOperation = function(type:string) {
+        let obj = {};
+        if (type === 'readType') {
+            obj = {
+                readType: (readType === 'upAndDown' ? 'leftAndRight' : 'upAndDown'),
+            }
+        }
+        if (type === 'readingStyle') {
+            obj = {
+                readingStyle: {
+                    ...readingStyle,
+                    type: readingStyle.type=== 'default' ? 'white' : 'default'
+                },
+            }
+        }
         setGlobalData((data: GlobalDataType) => {
             return {
                 ...data,
-                readType: (readType === 'upAndDown' ? 'leftAndRight' : 'upAndDown'),
+                ...obj,
             }
         });
         hide();
     };
-    return <View style={styles.clickCenterWrap}
-            onResponderGrant={(e) => hide(e)}
+    return <TouchableOpacity style={styles.clickCenterWrap}
+            onPress={(e) => hide(e)}
             >
             <View style={[styles.clickCenterPublic,styles.clickCenterHeader]}>
                 <Header
@@ -547,24 +559,39 @@ function ClickCenter() {
             <View style={[styles.clickCenterPublic,styles.clickCenterBottom]}>
                 <View style={styles.clickCenterBottomContainer}>
                     <TouchableOpacity 
-                        onPress={chanReadType}
+                        onPress={()=>handleOperation('readType')}
                         style={styles.clickCenterBottomItem}>
                         <View style={styles.bottomItemIcon}>
                             <IconBtn 
-                            onPress={chanReadType}
+                            onPress={()=>handleOperation('readType')}
                             style={styles.leaveMessageIcon}
-                            fontFileName='MaterialCommunityIcons'
-                            name='message-text-outline'
+                            fontFileName='FontAwesome5'
+                            name='hand-middle-finger'
                             />
                         </View>
                         <Text style={styles.bottomItemText}>{
-                            readType === 'upAndDown' ? '左右' : '上下'
+                            readType === 'upAndDown' ? '滑动' : '上下'
                         }阅读</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={()=>handleOperation('readingStyle')}
+                        style={styles.clickCenterBottomItem}>
+                        <View style={styles.bottomItemIcon}>
+                            <IconBtn 
+                            onPress={()=>handleOperation('readingStyle')}
+                            style={styles.leaveMessageIcon}
+                            fontFileName='Foundation'
+                            name='background-color'
+                            />
+                        </View>
+                        <Text style={styles.bottomItemText}>{
+                            readingStyle.type === 'default' ? '白色': '仿真' 
+                        }背景</Text>
                     </TouchableOpacity>
                 </View>
 
             </View>
-    </View>
+    </TouchableOpacity>
 };
 // 左右分页文章主体
 function LeftAndRightReading() {
@@ -803,7 +830,10 @@ function LeftAndRightReading() {
                 height,
             }
         ]}>
-            <View style={[styles.toolbar]}>
+            <View style={[
+                styles.toolbar,
+                ]}>
+                <ReadTheBackground/> 
                 <View style={[
                     styles.toolbarLeft,
                     {
@@ -841,6 +871,7 @@ function LeftAndRightReading() {
                 }
             </View>
             <View style={[styles.toolbar]}>
+                <ReadTheBackground/> 
                 <View style={[
                     styles.toolbarLeft,
                     {
@@ -869,20 +900,20 @@ function LeftAndRightReading() {
             onGestureEvent={onPanGestureEvent}>
             <Animated.View
                 style={[
-                    {
-                        height,
-                    },
                     styles.leftAndRightWapView,
                      {
                         transform: [
                             {
                                 translateX: translateX.current,
                             },
-                        ]
+                        ],
+                        height,
                      },
             ]}
             >
+            <ReadTheBackground/> 
             <View style={[styles.toolbar]}>
+                <ReadTheBackground/> 
                 <View style={[
                     styles.toolbarLeft,
                     {
@@ -919,10 +950,10 @@ function LeftAndRightReading() {
                     })
                 }
             </View>    
-            
             <View style={[
                 styles.toolbar,
                 ]}>
+                <ReadTheBackground/> 
                 <View style={[
                     styles.toolbarLeft,
                     {
@@ -948,7 +979,6 @@ function LeftAndRightReading() {
       </PanGestureHandler>
     </View>
 }
-
 function Index(props:any) {
     const route = useRoute<ProfileScreenRouteProp>();
     const [urlParams, setUrlParams] = useState<DirectoryListType[0]>();
@@ -1168,6 +1198,7 @@ function Index(props:any) {
                 setIsUnshiftOperation,
                 setGlobalData,
             }}>
+                <ReadTheBackground/> 
                 {globalData.pageType === 'setting' ? <ClickCenter/> : null}
                 <LazyLoading error={error} 
                     parentScreen={Index.parentScreen}
