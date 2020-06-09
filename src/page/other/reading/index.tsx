@@ -120,7 +120,7 @@ const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
     readOperation: 'default',
-    readType: 'leftAndRight',
+    readType: 'upAndDown',
     readingStyle: {
         type: 'default',
         titleFontSize: 27,
@@ -205,7 +205,7 @@ function UpAndDownReading(props:any, ref:any) {
         globalData.loadArticleHandle(direction);
     };
     const changeCurrentArticle = function(key:any, index: number) {
-        let keyIndex = Object.keys(articleListFormat).find(i => i === key);
+        let keyIndex = Object.keys(articleListFormat).findIndex(i => i === key);
 
         setGlobalData((oldData:any) => {
             return {
@@ -243,6 +243,7 @@ function UpAndDownReading(props:any, ref:any) {
             return {
                 ...data,
                 scrollConfig: e.nativeEvent.contentOffset,
+                pageType: 'default',
             }
         });
     }
@@ -289,15 +290,30 @@ function UpAndDownReading(props:any, ref:any) {
 
         if (upArea[0] < pageY &&  upArea[1] > pageY) {
             readOperation = 'upDown';
-            console.log('按上')
         }
         if (centerArea[0] < pageY &&  centerArea[1] > pageY) {
             readOperation = 'center';
-            console.log('按中')
+            setGlobalData((data: GlobalDataType) => {
+                return {
+                    ...data,
+                    ...{
+                        pageType: (data.pageType === 'setting' ? 
+                            'default' : 'setting'),
+                    },
+                }
+            });
+        } else {
+            setGlobalData((data: GlobalDataType) => {
+                return {
+                    ...data,
+                    ...{
+                        pageType: 'default',
+                    },
+                }
+            });
         }
         if (bottomArea[0] < pageY &&  bottomArea[1] > pageY) {
             readOperation = 'around';
-            console.log('按下')
         }
         setGlobalData((data: GlobalDataType) => {
             return {
@@ -382,9 +398,7 @@ function UpAndDownReading(props:any, ref:any) {
         </View>
         <SafeAreaView style={{
             flex: 1,
-        }}
-
-        >
+        }}>
             <FlatList
             ref={ReadingMainEl}
             data={Object.keys(articleListFormat)}
@@ -460,9 +474,105 @@ function ReadTheBackground() {
             </View>}
     </View>
 };
+// 点击阅读页中部显示出来的内容
+function ClickCenter() {
+    const globalData = useContext<GlobalDataType>(GlobalDataContext);
+
+    const {
+        loadArticleHandle,
+        setGlobalData,
+        articleListFormat,
+        windowDeviceHeight,
+        titleStyle,
+        contentStyle,
+        currentArticle,
+        readType,
+    } = globalData;
+
+    const headerHaderRight = function() {
+
+    }
+    // 头部右边内容显示
+    const rendenHeaderContentEl = function() {
+        return <View style={styles.headerRight}>
+            <View style={styles.leaveMessage}>
+                <Text style={styles.leaveMessageNum}>11w</Text>
+                <IconBtn 
+                    style={styles.leaveMessageIcon}
+                    onPress={headerHaderRight}
+                    fontFileName='MaterialCommunityIcons'
+                    name='message-text-outline'
+                    />
+            </View>
+            <View style={styles.iconMore}>
+                <IconBtn 
+                    style={styles.iconMoreIcon}
+                    onPress={headerHaderRight}
+                    fontFileName='Feather'
+                    name='more-vertical'
+                    />
+            </View>
+        </View>
+    };
+    const hide = function(e?:GestureResponderEvent) {
+        if (e) {
+            e.stopPropagation();
+        }
+        globalData.setGlobalData((data: GlobalDataType) => {
+            return {
+                ...data,
+                pageType: 'default',
+            }
+        });
+    };
+    const chanReadType = function() {
+        setGlobalData((data: GlobalDataType) => {
+            return {
+                ...data,
+                readType: (readType === 'upAndDown' ? 'leftAndRight' : 'upAndDown'),
+            }
+        });
+        hide();
+    };
+    return <View style={styles.clickCenterWrap}
+            onResponderGrant={(e) => hide(e)}
+            >
+            <View style={[styles.clickCenterPublic,styles.clickCenterHeader]}>
+                <Header
+                    layout='absolute'
+                    headerLeft={true}
+                    headerRight={rendenHeaderContentEl}
+                    />
+            </View>
+            <View style={[styles.clickCenterPublic,styles.clickCenterBottom]}>
+                <View style={styles.clickCenterBottomContainer}>
+                    <TouchableOpacity 
+                        onPress={chanReadType}
+                        style={styles.clickCenterBottomItem}>
+                        <View style={styles.bottomItemIcon}>
+                            <IconBtn 
+                            onPress={chanReadType}
+                            style={styles.leaveMessageIcon}
+                            fontFileName='MaterialCommunityIcons'
+                            name='message-text-outline'
+                            />
+                        </View>
+                        <Text style={styles.bottomItemText}>{
+                            readType === 'upAndDown' ? '左右' : '上下'
+                        }阅读</Text>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+    </View>
+};
 // 左右分页文章主体
 function LeftAndRightReading() {
     const readOperation = useRef(''); // 左右方向
+    const startAndMove = useRef({ // 开始移动的坐标
+        startX: 0,
+        moveX: 0,
+    }); 
  
     const [afterArticle, setAfterArticle] = useState<currentArticleType>({ //之后文章数据
         key: '',
@@ -506,10 +616,29 @@ function LeftAndRightReading() {
         if (currentArticle.keyIndex === 0) {
             if (globalData.articleBase.prev) {
                 globalData.loadArticleHandle('prev');
-                currentArticle.keyIndex = 1;
             }; 
         }
     }
+    // 验证手指按下是否居中
+    const checkPressCenter = function(event: PanGestureHandlerStateChangeEvent) {
+        const {absoluteX} = event.nativeEvent;
+        const {width, height} = screen;
+        const resulteWidth = width;
+        const areaWidth = resulteWidth / 3;
+        const upArea:Array<number> =  [0, areaWidth]; // 手指按上区域部分
+        const centerArea =  [areaWidth, areaWidth + areaWidth]; // 手指按中区域部分
+        if (centerArea[0] < absoluteX &&  centerArea[1] > absoluteX) {
+            setGlobalData((data: GlobalDataType) => {
+                return {
+                    ...data,
+                    ...{
+                        pageType: (data.pageType === 'setting' ? 
+                            'default' : 'setting'),
+                    },
+                }
+            });
+        }
+    };
     const onHandlerStateChange = async function(event: PanGestureHandlerStateChangeEvent) {
         let obj !: currentArticleType;
         let nativeInfo = event.nativeEvent;
@@ -517,11 +646,26 @@ function LeftAndRightReading() {
         // 手指刚start
         if (nativeInfo.oldState === 0) {
             startX.current.x = nativeInfo.x;
+            startAndMove.current.startX = nativeInfo.absoluteX;
         }
         // 手指移动时
         if (nativeInfo.oldState === 2) {
+            startAndMove.current.moveX = nativeInfo.absoluteX;
             moveX.current.x = nativeInfo.x;
+            if (startAndMove.current.startX === startAndMove.current.moveX) {
+                checkPressCenter(event);
+            } else {
+                setGlobalData((data: GlobalDataType) => {
+                    return {
+                        ...data,
+                        ...{
+                            pageType: 'default',
+                        },
+                    }
+                });
+            }
         }
+
         // 手指刚点击时oldState状态是1，这个时候移动坐标为0
         if (moveX.current.x === 0) {
             return;
@@ -532,7 +676,6 @@ function LeftAndRightReading() {
         } else {
             readOperation.current = 'right';
         }
-
         
         if (readOperation.current === 'left' && !globalData.articleBase.next  
              && currentArticle.keyIndex === (Object.keys(articleListFormat).length - 1)
@@ -983,6 +1126,17 @@ function Index(props:any) {
             }
             articleFormat(data, type);
             setArticleList(globalData.articleList);
+            if (type === 'prev') {
+                setGlobalData((data: GlobalDataType) => {
+                    return {
+                        ...data,
+                        currentArticle: {
+                            ...globalData.currentArticle,
+                            keyIndex: globalData.currentArticle.keyIndex + 1,
+                        },
+                    }
+                });
+            }
             setGlobalData((data: GlobalDataType) => {
                 return {
                     ...data,
@@ -992,30 +1146,7 @@ function Index(props:any) {
             resolve();
         });
     }
-    const headerHaderRight = function() {
-    }
-    // 头部右边内容显示
-    const rendenHeaderContentEl = function() {
-        return <View style={styles.headerRight}>
-            <View style={styles.leaveMessage}>
-                <Text style={styles.leaveMessageNum}>11w</Text>
-                <IconBtn 
-                    style={styles.leaveMessageIcon}
-                    onPress={headerHaderRight}
-                    fontFileName='MaterialCommunityIcons'
-                    name='message-text-outline'
-                    />
-            </View>
-            <View style={styles.iconMore}>
-                <IconBtn 
-                    style={styles.iconMoreIcon}
-                    onPress={headerHaderRight}
-                    fontFileName='Feather'
-                    name='more-vertical'
-                    />
-            </View>
-        </View>
-    };
+
     const setIsUnshiftOperation = function(isUnshiftOperation: boolean) {
         setGlobalData((data: GlobalDataType) => {
             return {
@@ -1037,11 +1168,7 @@ function Index(props:any) {
                 setIsUnshiftOperation,
                 setGlobalData,
             }}>
-                {globalData.pageType === 'setting' ? <Header
-                    layout='absolute'
-                    headerLeft={true}
-                    headerRight={rendenHeaderContentEl}
-                /> : null}
+                {globalData.pageType === 'setting' ? <ClickCenter/> : null}
                 <LazyLoading error={error} 
                     parentScreen={Index.parentScreen}
                     dataLeng={globalData.articleList.length}

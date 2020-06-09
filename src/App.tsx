@@ -36,7 +36,6 @@ const AppContainer = function() {
               </NavigationContainer>
             </SafeAreaView>
     </>
-            
     </DatabaseProvider>
   )
 };

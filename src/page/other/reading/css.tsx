@@ -129,4 +129,43 @@ export default StyleSheet.create({
         fontSize: 14,
         color: '#898989',
     },
+    clickCenterWrap: {
+        position: 'absolute',
+        width: width,
+        height,
+    },
+    clickCenterPublic: {
+        position: 'absolute',
+        zIndex: 2,
+        left: 0,
+        width: width,
+    },
+    clickCenterHeader: {
+        top: 0,
+    }, 
+    clickCenterBottom: {
+        bottom: 0,
+    },
+    clickCenterBottomContainer: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        width: '100%',
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 30,
+        paddingBottom: 30,
+        backgroundColor: '#fff',
+    },
+    clickCenterBottomItem: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    bottomItemText: {
+
+    },
+    bottomItemIcon: {
+        marginBottom: 5,
+    },
 });
