@@ -516,12 +516,14 @@ function ClickCenter() {
         if (e) {
             e.stopPropagation();
         }
-        globalData.setGlobalData((data: GlobalDataType) => {
-            return {
-                ...data,
-                pageType: 'default',
-            }
-        });
+        setTimeout(() => {
+            globalData.setGlobalData((data: GlobalDataType) => {
+                return {
+                    ...data,
+                    pageType: 'default',
+                }
+            });
+        }, 700);
     };
     const handleOperation = function(type:string) {
         let obj = {};
@@ -853,7 +855,6 @@ function LeftAndRightReading() {
                 </View>
             </View>
             <View style={{
-                height: (globalData.windowDeviceHeight - globalData.toolbarHeight * 2),
             }}>
                 {afterArticle.keylistIndex === 0 ? <Text 
                             style={{
@@ -870,7 +871,7 @@ function LeftAndRightReading() {
                     })
                 }
             </View>
-            <View style={[styles.toolbar]}>
+            <View style={[styles.toolbar,styles.toolbarBottom,]}>
                 <ReadTheBackground/> 
                 <View style={[
                     styles.toolbarLeft,
@@ -933,7 +934,6 @@ function LeftAndRightReading() {
                 </View> 
             </View>
             <View style={{
-                height: (globalData.windowDeviceHeight - globalData.toolbarHeight * 2),
             }}>
                 {currentArticle.keylistIndex === 0 ? <Text 
                             style={{
@@ -952,6 +952,7 @@ function LeftAndRightReading() {
             </View>    
             <View style={[
                 styles.toolbar,
+                styles.toolbarBottom,
                 ]}>
                 <ReadTheBackground/> 
                 <View style={[

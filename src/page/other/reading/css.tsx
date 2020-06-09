@@ -105,7 +105,7 @@ export default StyleSheet.create({
         width: screen.width - 32,
     },
     toolbar: {
-        width: '100%',
+        width: width,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
