@@ -512,18 +512,19 @@ function ClickCenter() {
             </View>
         </View>
     };
-    const hide = function(e?:GestureResponderEvent) {
-        if (e) {
-            e.stopPropagation();
-        }
+    const pressHide = function(e:GestureResponderEvent) {
+        e.stopPropagation();
         setTimeout(() => {
-            globalData.setGlobalData((data: GlobalDataType) => {
-                return {
-                    ...data,
-                    pageType: 'default',
-                }
-            });
+            hide();
         }, 700);
+    }
+    const hide = function() {
+        globalData.setGlobalData((data: GlobalDataType) => {
+            return {
+                ...data,
+                pageType: 'default',
+            }
+        });
     };
     const handleOperation = function(type:string) {
         let obj = {};
@@ -549,7 +550,7 @@ function ClickCenter() {
         hide();
     };
     return <TouchableOpacity style={styles.clickCenterWrap}
-            onPress={(e) => hide(e)}
+            onPress={pressHide}
             >
             <View style={[styles.clickCenterPublic,styles.clickCenterHeader]}>
                 <Header
@@ -834,6 +835,7 @@ function LeftAndRightReading() {
         ]}>
             <View style={[
                 styles.toolbar,
+                styles.toolbarTop,
                 ]}>
                 <ReadTheBackground/> 
                 <View style={[
@@ -855,6 +857,7 @@ function LeftAndRightReading() {
                 </View>
             </View>
             <View style={{
+                paddingTop: globalData.toolbarHeight,
             }}>
                 {afterArticle.keylistIndex === 0 ? <Text 
                             style={{
@@ -913,7 +916,7 @@ function LeftAndRightReading() {
             ]}
             >
             <ReadTheBackground/> 
-            <View style={[styles.toolbar]}>
+            <View style={[styles.toolbar, styles.toolbarTop,]}>
                 <ReadTheBackground/> 
                 <View style={[
                     styles.toolbarLeft,
@@ -934,6 +937,7 @@ function LeftAndRightReading() {
                 </View> 
             </View>
             <View style={{
+                paddingTop: globalData.toolbarHeight,
             }}>
                 {currentArticle.keylistIndex === 0 ? <Text 
                             style={{

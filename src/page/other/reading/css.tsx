@@ -100,6 +100,7 @@ export default StyleSheet.create({
         paddingLeft: 16,
         paddingRight: 16,
         zIndex: 2,
+        backgroundColor: '#fff',
     },
     ReadingMainItemWrap: {
         width: screen.width - 32,
