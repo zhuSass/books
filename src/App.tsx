@@ -29,12 +29,14 @@ const AppContainer = function() {
 
   return (<DatabaseProvider database={database}>
     <>
-            <StatusBar barStyle="dark-content" />
-            <SafeAreaView style={{flex: 1, }}> 
-              <NavigationContainer>
-                <MinRouter/>
-              </NavigationContainer>
-            </SafeAreaView>
+        <StatusBar translucent 
+          barStyle="light-content"
+          backgroundColor="rgba(0, 0, 0, 0)"/>
+        <SafeAreaView style={{flex: 1, }}> 
+          <NavigationContainer>
+            <MinRouter/>
+          </NavigationContainer>
+        </SafeAreaView>
     </>
     </DatabaseProvider>
   )

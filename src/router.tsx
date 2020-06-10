@@ -56,7 +56,8 @@ function BibliothecaModel() {
         activeTintColor: '#484848',
         indicatorStyle: {backgroundColor: '#484848',},
         style: { 
-          backgroundColor: '#f4f5f6',
+          backgroundColor: '#fff',
+          paddingTop: 16,
         },
         tabStyle: {
           width: 'auto',
@@ -170,7 +171,7 @@ function AppStack() {
 export default function MinRouter() {
   return (
     <Stack.Navigator
-      initialRouteName="Other"
+      initialRouteName="App"
       headerMode="none"
     >
        {/* 登录验证 */}

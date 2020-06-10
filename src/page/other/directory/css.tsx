@@ -4,6 +4,7 @@ const publicSize = 16;
 
 export default StyleSheet.create({
     directory: {
+        paddingTop: 15,
         flex: 1,
         backgroundColor: '#fff',
     },
