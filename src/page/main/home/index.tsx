@@ -277,7 +277,7 @@ function Index(props:any) {
         });
     const gotoPage = function() {
         navigation.navigate('Other', { 
-            screen: 'search', 
+            screen: 'Search', 
         });
     };
 

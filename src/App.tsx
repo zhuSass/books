@@ -30,7 +30,7 @@ const AppContainer = function() {
   return (<DatabaseProvider database={database}>
     <>
         <StatusBar translucent 
-          barStyle="light-content"
+          barStyle='dark-content'
           backgroundColor="rgba(0, 0, 0, 0)"/>
         <SafeAreaView style={{flex: 1, }}> 
           <NavigationContainer>
