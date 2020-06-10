@@ -23,6 +23,10 @@ import { View, Text, ScrollView,
     ViewToken,
 } from 'react-native';
 import rnTextSize, { TSFontSpecs } from 'react-native-text-size';
+import { 
+    hideNavigationBar,
+    showNavigationBar,
+ } from 'react-native-navigation-bar-color';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
 import { PanGestureHandler,
     PanGestureHandlerGestureEvent,
@@ -149,7 +153,7 @@ const initGlobalDataData:GlobalDataType = {
     bottomLodding: false, // 下拉刷新加载状态
     contentLoadding: false, // 内容加载状态
     currentChapter: 0, // 当前章节的页数
-    windowDeviceHeight: windowDevice.height, // 当前页面高度,28=系统菜单栏
+    windowDeviceHeight: screen.height, // 当前页面高度,28=系统菜单栏
     toolbarHeight: 42, // 文章内容上下边的信息栏高度
     firstInvisible: false,
     scrollConfig: {
@@ -992,7 +996,9 @@ function Index(props:any) {
 
     useEffect(() => {
         StatusBar.setHidden(true);
+        hideNavigationBar();
         return () => {
+            showNavigationBar();
             StatusBar.setHidden(false);
         };
     }, []);

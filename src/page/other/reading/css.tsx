@@ -141,7 +141,7 @@ export default StyleSheet.create({
     clickCenterWrap: {
         position: 'absolute',
         width: width,
-        height,
+        height: screen.height,
         zIndex: 3,
     },
     clickCenterPublic: {
