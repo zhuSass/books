@@ -153,7 +153,7 @@ const initGlobalDataData:GlobalDataType = {
     bottomLodding: false, // 下拉刷新加载状态
     contentLoadding: false, // 内容加载状态
     currentChapter: 0, // 当前章节的页数
-    windowDeviceHeight: screen.height, // 当前页面高度,28=系统菜单栏
+    windowDeviceHeight: Math.floor(screen.height), // 当前页面高度,28=系统菜单栏
     toolbarHeight: 42, // 文章内容上下边的信息栏高度
     firstInvisible: false,
     scrollConfig: {

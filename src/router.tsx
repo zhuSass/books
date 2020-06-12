@@ -113,7 +113,7 @@ function OtherModel() {
       />
       {/* 小说搜索 */}
       <Stack.Screen
-        name="search"
+        name="Search"
         component={searchScreen}
         options={{
           title: '小说搜索',
