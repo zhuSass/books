@@ -83,8 +83,9 @@ function BibliothecaModel() {
 function OtherModel() {
   return (
     <Stack.Navigator
-      initialRouteName="Reading"
+      initialRouteName="Search"
       headerMode="none"
+      screenOptions={{animationEnabled: false}}
     >
       {/* 文章详情 */}
       <Stack.Screen
@@ -173,6 +174,7 @@ export default function MinRouter() {
     <Stack.Navigator
       initialRouteName="App"
       headerMode="none"
+      screenOptions={{animationEnabled: false}}
     >
        {/* 登录验证 */}
       <Stack.Screen

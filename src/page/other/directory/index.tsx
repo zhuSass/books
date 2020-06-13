@@ -126,14 +126,14 @@ function Index(props:any) {
     const renderFlatList = function(data:{item: any, index: number}) {
         const {item, index} = data;
 
-        return  <TouchableOpacity onPress={() => goToPage(item)}>
+        return  <TouchableWithoutFeedback onPress={() => goToPage(item)}>
                 <View style={styles.renderFlatListWap}>
                     <View style={styles.renderFlatListBolck}>
                         {item.number?<Text style={styles.renderFlatListBolckCount}>{item.number}</Text>:null}
                         <Text style={styles.renderFlatListBolckTitle} numberOfLines={1}>{item.title}</Text>
                     </View>
                 </View>
-        </TouchableOpacity> 
+        </TouchableWithoutFeedback> 
     }
 
     return (<View style={styles.directory}>

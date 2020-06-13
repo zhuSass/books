@@ -11,6 +11,7 @@ export default StyleSheet.create({
     homeWrap: {
         position: 'relative',
         flex: 1,
+        backgroundColor: '#fff',
     },
     bgColorContainer: {
         position: 'absolute',

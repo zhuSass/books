@@ -193,6 +193,16 @@ function UpAndDownReading(props:any, ref:any) {
         currentArticle,
     } = globalData;
 
+    useEffect(() => {
+        console.log('b------', articleListFormat[currentArticle.key],
+        currentArticle.keyIndex, articleListFormat)
+
+        // ReadingMainEl.current.scrollToItem({
+        //     animated: false,
+        //     item: articleListFormat[currentArticle.keyIndex - 1],
+        // });
+
+    }, []);
     const  loadPrevArticleHandle = function(direction:string) {
         if (direction === 'prev' && !globalData.articleBase.prev) {
             Ui.Toast({
@@ -402,6 +412,7 @@ function UpAndDownReading(props:any, ref:any) {
         }}>
             <FlatList
             ref={ReadingMainEl}
+            initialScrollIndex={currentArticle.keyIndex}
             data={Object.keys(articleListFormat)}
             refreshing={globalData.bottomLodding}
             onEndReached={()=>loadPrevArticleHandle('next')}
