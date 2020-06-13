@@ -36,7 +36,6 @@ export default StyleSheet.create({
     },
     headerInputFocus: {
         borderColor: 'rgb(229, 151, 0)',
-        borderWidth: 2,
     },
     headerInputIcon: {
         position: 'absolute',
