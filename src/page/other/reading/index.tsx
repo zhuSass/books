@@ -39,6 +39,7 @@ import ShuYuanSdk,{
     ArticleType,
     AllShuYuanIdsKey,
 } from '@/common/shuYuanSdk';
+import TouchView from '@/components/touchView';
 import Header from '@/components/header';
 import {IconBtn} from '@/components/icon';
 import LazyLoading from '@/components/lazyLoading';
@@ -124,7 +125,7 @@ const initGlobalDataData:GlobalDataType = {
     pageType: 'default', 
     bgColor: '#F6F1E7', 
     readOperation: 'default',
-    readType: 'leftAndRight',
+    readType: 'upAndDown',
     readingStyle: {
         type: 'white',
         titleFontSize: 27,
@@ -503,7 +504,7 @@ function ClickCenter() {
     } = globalData;
 
     const headerHaderRight = function() {
-
+        console.log('weizhi')
     }
     // 头部右边内容显示
     const rendenHeaderContentEl = function() {
@@ -564,7 +565,8 @@ function ClickCenter() {
         });
         hide();
     };
-    return <TouchableOpacity style={styles.clickCenterWrap}
+    return <TouchableOpacity 
+            style={styles.clickCenterWrap}
             onPress={pressHide}
             >
             <View style={[styles.clickCenterPublic,styles.clickCenterHeader]}>
@@ -576,7 +578,7 @@ function ClickCenter() {
             </View>
             <View style={[styles.clickCenterPublic,styles.clickCenterBottom]}>
                 <View style={styles.clickCenterBottomContainer}>
-                    <TouchableOpacity 
+                    <TouchView 
                         onPress={()=>handleOperation('readType')}
                         style={styles.clickCenterBottomItem}>
                         <View style={styles.bottomItemIcon}>
@@ -590,8 +592,8 @@ function ClickCenter() {
                         <Text style={styles.bottomItemText}>{
                             readType === 'upAndDown' ? '滑动' : '上下'
                         }阅读</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
+                    </TouchView>
+                    <TouchView 
                         onPress={()=>handleOperation('readingStyle')}
                         style={styles.clickCenterBottomItem}>
                         <View style={styles.bottomItemIcon}>
@@ -605,7 +607,7 @@ function ClickCenter() {
                         <Text style={styles.bottomItemText}>{
                             readingStyle.type === 'default' ? '白色': '仿真' 
                         }背景</Text>
-                    </TouchableOpacity>
+                    </TouchView>
                 </View>
 
             </View>
@@ -1235,7 +1237,7 @@ function Index(props:any) {
                     {globalData.readType === 'leftAndRight' ? <View style={styles.readingMainContainer}>
                         <LeftAndRightReading/>
                     </View>:null}
-                </LazyLoading>
+                </LazyLoading> 
 
             </GlobalDataContext.Provider>
     </View>)

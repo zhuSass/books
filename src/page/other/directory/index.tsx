@@ -3,7 +3,6 @@ import React,{useEffect,useState,
 import { View, Text,
     SafeAreaView, FlatList,
     FlatListProps,
-    TouchableOpacity,
     TouchableWithoutFeedback,
 } from 'react-native';
 import useSWR from 'swr';
@@ -15,6 +14,7 @@ import ShuYuanSdk,{
 } from '@/common/shuYuanSdk';
 import Header, {HeaderPropsType,
 } from '@/components/header';
+import TouchView from '@/components/touchView';
 import Icon from '@/components/icon';
 import LazyLoading from '@/components/lazyLoading';
 
@@ -140,13 +140,13 @@ function Index(props:any) {
             {/* 头部 */}
             <Header 
                 headerLeft={
-                    <TouchableOpacity style={styles.btn} onPress={goBack}>
+                    <TouchView style={styles.btn} onPress={goBack}>
                         <Icon fontFileName='Ionicons'
                             color='#33373d'
                             size={26}
                             name='ios-arrow-back'/>
                         <Text style={styles.headerLeftText}>{baseInfo?.title}</Text>  
-                    </TouchableOpacity>
+                    </TouchView>
                 }
             />
             <View style={styles.separatedTitle}>
@@ -158,11 +158,11 @@ function Index(props:any) {
                     loading={!!!dataList.length}>
                 <View style={styles.baseInfo}>
                     <Text style={styles.baseInfoTotalNumber}>共{allDataList.length}章</Text>
-                    <TouchableOpacity style={styles.btn} onPress={toggleOrderHandle}>
+                    <TouchView style={styles.btn} onPress={toggleOrderHandle}>
                         <Text style={styles.baseInfoTotalSort}>
                             {pageInfo.sort === 'positiveSequence' ? '倒序' : '正序'}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchView>
                 </View>
                 <View style={styles.contentType}>
                     <Text style={styles.contentTypeText}>正文卷</Text>

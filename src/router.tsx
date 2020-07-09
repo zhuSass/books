@@ -4,6 +4,7 @@ import {
   } from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import {tabBarIcon,} from '@/components/icon';
 //*************************账户************************************//
@@ -27,6 +28,7 @@ import ShuYuanSdk,{
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
+const Drawer = createDrawerNavigator();
 
 // 书库模块
 function BibliothecaModel() {
@@ -84,8 +86,10 @@ function OtherModel() {
   return (
     <Stack.Navigator
       initialRouteName="Search"
-      headerMode="none"
-      screenOptions={{animationEnabled: false}}
+      headerMode='none'
+      screenOptions={{
+        animationEnabled: false,
+      }}
     >
       {/* 文章详情 */}
       <Stack.Screen
@@ -168,48 +172,45 @@ function AppStack() {
     </Tab.Navigator>
   );
 }
-// 入口路由
+// 路由入口文件
 export default function MinRouter() {
   return (
-    <Stack.Navigator
-      initialRouteName="App"
-      headerMode="none"
-      screenOptions={{animationEnabled: false}}
-    >
-       {/* 登录验证 */}
-      <Stack.Screen
-        name="AuthLoading"
-        component={LoginAuthScreen}
-        options={{
-          title: '登录验证',
-        }}
-      />
-      {/* 主界面-tab */}
-      <Stack.Screen
-        name="App"
-        component={AppStack}
-        options={{
-          title: '主界面-tab',
-        }}
-      />
-      {/* 登录 */}
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{
-          title: '登录',
-          gestureEnabled: true,
-        }}
-      />
-      {/* 其它 */}
-      <Stack.Screen
-        name="Other"
-        component={OtherModel}
-        options={{
-          title: '其它',
-        }}
-      />
-    </Stack.Navigator>
+    <Drawer.Navigator       
+        initialRouteName="App">
+          {/* 登录验证 */}
+          <Drawer.Screen
+            name="AuthLoading"
+            component={LoginAuthScreen}
+            options={{
+              title: '登录验证',
+            }}
+          />
+          {/* 主界面-tab */}
+          <Drawer.Screen
+            name="App"
+            component={AppStack}
+            options={{
+              title: '主界面-tab',
+            }}
+          />
+          {/* 登录 */}
+          <Drawer.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              title: '登录',
+              gestureEnabled: true,
+            }}
+          />
+          {/* 其它 */}
+          <Drawer.Screen
+            name="Other"
+            component={OtherModel}
+            options={{
+              title: '其它',
+            }}
+          />
+      </Drawer.Navigator>
   );
 };
 
