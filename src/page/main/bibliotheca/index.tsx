@@ -30,6 +30,7 @@ import ShuYuanSdk,{
     BibliothecaFictionListType,
 } from '@/common/shuYuanSdk';
 import Icon from '@/components/icon';
+import TouchView from '@/components/touchView';
 import LazyLoading from '@/components/lazyLoading';
 import LabelList from '@/components/labelList';
 
@@ -103,7 +104,7 @@ function Index(props:any) {
                     parentScreen={Index.parentScreen}>
                         <View>
                         {dataList.map((item:BibliothecaFictionListType[0], index:number) => {
-                            return <TouchableOpacity 
+                            return <TouchView 
                                     key={index} style={styles.fictionList}
                                     onPress={() => goToPage(item)} >
                                     <ImageBackground  
@@ -125,7 +126,7 @@ function Index(props:any) {
                     
                                         </View>
                                     </View>
-                                </TouchableOpacity>
+                            </TouchView>
                         })}
                         </View>
                         

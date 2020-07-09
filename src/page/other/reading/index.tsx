@@ -571,7 +571,6 @@ function ClickCenter() {
             >
             <View style={[styles.clickCenterPublic,styles.clickCenterHeader]}>
                 <Header
-                    layout='absolute'
                     headerLeft={true}
                     headerRight={rendenHeaderContentEl}
                     />
