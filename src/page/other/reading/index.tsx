@@ -23,10 +23,10 @@ import { View, Text, ScrollView,
     ViewToken,
 } from 'react-native';
 import rnTextSize, { TSFontSpecs } from 'react-native-text-size';
-import { 
-    hideNavigationBar,
-    showNavigationBar,
- } from 'react-native-navigation-bar-color';
+// import { 
+//     hideNavigationBar,
+//     showNavigationBar,
+//  } from 'react-native-navigation-bar-color';
 import { useRoute ,useNavigation,RouteProp, } from '@react-navigation/native';
 import { PanGestureHandler,
     PanGestureHandlerGestureEvent,
@@ -1009,9 +1009,9 @@ function Index(props:any) {
 
     useEffect(() => {
         StatusBar.setHidden(true);
-        hideNavigationBar();
+        // hideNavigationBar();
         return () => {
-            showNavigationBar();
+            // showNavigationBar();
             StatusBar.setHidden(false);
         };
     }, []);
