@@ -1,7 +1,7 @@
 # books 个人小说开源小程序项目
 > 爱读书，adnroid、ios 应用app
 > 一个基于web前端开源的react native快速开发模板，参考学习一同进步
-### 点击预览地址
+### 预览效果
 ![点击预览地址](https://github.com/zhuSass/books/blob/master/static/project/1.gif)
 
 ![示例图片](https://github.com/zhuSass/books/blob/master/static/project/1.png)
