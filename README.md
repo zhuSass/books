@@ -1,19 +1,6 @@
 # books 个人小说开源小程序项目
 > 爱读书，adnroid、ios 应用app
 > 一个基于web前端开源的react native快速开发模板，参考学习一同进步
-### 预览效果
-![点击预览地址](https://github.com/zhuSass/books/blob/master/static/project/1.gif)
-
-![示例图片](https://github.com/zhuSass/books/blob/master/static/project/1.png)
-
-![示例图片](https://github.com/zhuSass/books/blob/master/static/project/2.png)
-
-![示例图片](https://github.com/zhuSass/books/blob/master/static/project/3.png)
-
-![示例图片](https://github.com/zhuSass/books/blob/master/static/project/4.png)
-
-![示例图片](https://github.com/zhuSass/books/blob/master/static/project/5.png)
-
 
 ## 介绍
 项目基于ReactNative 框架开发。项目中的小说数据来自搜索引擎网站，纯属共享学习之用！！
@@ -29,19 +16,32 @@
 > * [ ] 书签功能
 > * [ ] 阅读页引入章节列表
 
+### 预览效果
+![点击预览地址](https://github.com/zhuSass/books/blob/master/static/project/1.gif)
+
+![示例图片](https://github.com/zhuSass/books/blob/master/static/project/1.png)
+
+![示例图片](https://github.com/zhuSass/books/blob/master/static/project/2.png)
+
+![示例图片](https://github.com/zhuSass/books/blob/master/static/project/3.png)
+
+![示例图片](https://github.com/zhuSass/books/blob/master/static/project/4.png)
+
+![示例图片](https://github.com/zhuSass/books/blob/master/static/project/5.png)
+
 ### `觉得不错，给个5星好评吧`
 
 | `有什么问题，加我wx:pjhwonms369,备注"github"` 
 
 
+
+
+
 ### `开源不易，需要花费很多精力，打个赏吧`
 | `微信打赏码` 
-|![微信打赏二维码](https://github.com/zhuSass/books/blob/master/static/user/pay1.jpg)
+| ![微信打赏二维码](https://github.com/zhuSass/books/blob/master/static/user/pay1.jpg)
 
 | `支付宝打赏码`
-|![支付宝打赏二维码](https://github.com/zhuSass/books/blob/master/static/user/pay2.jpg)
+| ![支付宝打赏二维码](https://github.com/zhuSass/books/blob/master/static/user/pay2.jpg)
 
-### 常见问题
-- 1.如何运行？
 
-* 答：不依赖任何后端api，纯靠
