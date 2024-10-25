@@ -2,11 +2,16 @@
 > 爱读书，adnroid、ios 应用app
 > 一个基于web前端开源的react native快速开发模板，参考学习一同进步
 ### 点击预览地址
-[![点击预览地址](https://github.com/zhuSass/books/blob/master/static/project/1.gif)]
+![点击预览地址](https://github.com/zhuSass/books/blob/master/static/project/1.gif)
+
 ![示例图片](https://github.com/zhuSass/books/blob/master/static/project/1.png)
+
 ![示例图片](https://github.com/zhuSass/books/blob/master/static/project/2.png)
+
 ![示例图片](https://github.com/zhuSass/books/blob/master/static/project/3.png)
+
 ![示例图片](https://github.com/zhuSass/books/blob/master/static/project/4.png)
+
 ![示例图片](https://github.com/zhuSass/books/blob/master/static/project/5.png)
 
 
